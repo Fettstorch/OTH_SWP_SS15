@@ -26,7 +26,7 @@ if not defined -solution.Necessity          set "-solution.Necessity="Required""
 if not defined -solution.Multiplicity       set "-solution.Multiplicity="Single""
 if not defined -solution.GuiEntryType       set "-solution.GuiEntryType="File""
 if not defined -solution.Values             set "-solution.Values="""
-if not defined -solution.GuiDefaultValues   set "-solution.GuiDefaultValues="C:\temp\MathArts\MathArts.sln""
+if not defined -solution.GuiDefaultValues   set "-solution.GuiDefaultValues="%SWP_BRANCH_ROOT%\03_Implementierung\src\src.sln""
 
 if not defined -configuration.Usage              set "-configuration.Usage="Select configuration that should to built.""
 if not defined -configuration.Necessity          set "-configuration.Necessity="Required""
