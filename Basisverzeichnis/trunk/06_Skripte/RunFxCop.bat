@@ -18,7 +18,7 @@ set "!-Script.Name!.Errorlevel=0"
 REM configure ParseArguments
 set "OptionDefaults=-target:"" -outDir:"""
 
-set "FxCopDropLocation=%SWP_BRANCH_ROOT%/Documentation/StaticCodeAnalysis/FxCop"
+set "FxCopDropLocation=%SWP_BRANCH_ROOT%/Build/StaticCodeAnalysis/FxCop"
 if not exist !FxCopDropLocation! (
   echo Create !FxCopDropLocation!.
   mkdir !FxCopDropLocation!
@@ -31,8 +31,7 @@ if not defined -target.Usage              set "-target.Usage="Select target *.dl
 if not defined -target.Necessity          set "-target.Necessity="Required""
 if not defined -target.Multiplicity       set "-target.Multiplicity="Single""
 if not defined -target.GuiEntryType       set "-target.GuiEntryType="File""
-if not defined -target.Values             set "-target.Values="""
-if not defined -target.GuiDefaultValues   set "-target.GuiDefaultValues="""
+if not defined -target.GuiDefaultValues   set "-target.GuiDefaultValues="%SWP_BRANCH_ROOT%""
 
 if not defined -outDir.Usage              set "-outDir.Usage="Select root out directory for xml file. This directory will be expanded by target name.""
 if not defined -outDir.Necessity          set "-outDir.Necessity="Required""
