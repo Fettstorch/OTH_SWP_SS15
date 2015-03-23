@@ -1,0 +1,18 @@
+@echo off
+echo Setup FxCop environment variables.
+
+set "SWP_FXCOP_VERSION_MAJOR=10"
+set "SWP_FXCOP_VERSION_MINOR=0"
+set "SWP_FXCOP_VERSION_SUBMINOR=0"
+
+set "SWP_FXCOP_VERSION=%SWP_FXCOP_VERSION_MAJOR%.%SWP_FXCOP_VERSION_MINOR%.%SWP_FXCOP_VERSION_SUBMINOR%"
+
+set "SWP_FXCOP_ROOT=%SWP_TOOLS_ROOT%/Fxcop-%SWP_FXCOP_VERSION%/"
+
+
+set "SWP_FXCOP_EXE=%SWP_FXCOP_ROOT%/FxCop.exe"
+set "SWP_FXCOP_CMD_EXE=%SWP_FXCOP_ROOT%/FxCopCmd.exe"
+
+
+REM output all NUnit relevant environmental variables:
+set SWP_FXCOP
