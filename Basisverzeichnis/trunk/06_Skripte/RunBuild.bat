@@ -1,7 +1,7 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
 
-call "%~dp0\SetEnv.bat"
+call "%~dp0\SetEnv.bat" > NUL
 
 REM ===========================================================================================
 REM Script description
@@ -51,8 +51,13 @@ if not defined -additionalOptions.GuiDefaultValues   set "-additionalOptions.Gui
 call %SWP_PARSEARGUMENTS_GUI_BAT% %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
-echo OPTIONS:
-set -
+rem output selected options
+echo !-Script.Name!
+for %%A in (%OptionDefaults%) do for /f "tokens=1,* delims=:" %%B in ("%%A") do (
+  set name=!%%B!
+  if /I "!%%B!" NEQ "" echo %%B=!name!
+)
+echo.
 
 REM get plain solution name
 for %%F in ("!-solution!") do set "solutionName=%%~nF"
@@ -74,7 +79,7 @@ if not exist "!devenvCom!" set "devenvCom=%VS120COMNTOOLS%\..\IDE\devenv.com"
 
 
 REM call devenv.com
-echo "!devenvCom!" "!-solution!" !-additionalOptions! "!-configuration!|AnyCPU" /out "!logFile!"
+echo Call: "!devenvCom!" "!-solution!" !-additionalOptions! "!-configuration!|AnyCPU" /out "!logFile!"
 call "!devenvCom!" "!-solution!" !-additionalOptions! "!-configuration!|AnyCPU" /out "!logFile!"
 if errorlevel 1 ( 
   echo !devenvCom! failed.

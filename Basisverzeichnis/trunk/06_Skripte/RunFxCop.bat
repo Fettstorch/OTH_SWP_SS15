@@ -1,7 +1,7 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
 
-call "%~dp0\SetEnv.bat"
+call "%~dp0\SetEnv.bat" > NUL
 
 REM ===========================================================================================
 REM Script description
@@ -21,7 +21,7 @@ set "OptionDefaults=-target:"" -outDir:"""
 set "FxCopDropLocation=%SWP_BRANCH_ROOT%/Build/StaticCodeAnalysis/FxCop"
 if not exist !FxCopDropLocation! (
   echo Create !FxCopDropLocation!.
-  mkdir !FxCopDropLocation!
+  mkdir "!FxCopDropLocation!"
 )
 
 REM ===========================================================================================
@@ -42,8 +42,13 @@ if not defined -outDir.GuiDefaultValues   set "-outDir.GuiDefaultValues="!FxCopD
 call %SWP_PARSEARGUMENTS_GUI_BAT% %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
-echo OPTIONS:
-set -
+rem output selected options
+echo !-Script.Name!
+for %%A in (%OptionDefaults%) do for /f "tokens=1,* delims=:" %%B in ("%%A") do (
+  set name=!%%B!
+  if /I "!%%B!" NEQ "" echo %%B=!name!
+)
+echo.
 
 REM get plain target name
 for %%F in ("!-target!") do set "targetName=%%~nF"
@@ -54,7 +59,7 @@ rem create sub-folder for target
 if not exist "!-outDir!/!targetName!" mkdir "!-outDir!/!targetName!"
 
 set "FxCopCmd=%SWP_FXCOP_CMD_EXE%"
-echo %FxCopCmd% /out:!-outFile! /file:!-target!
+echo Call: %FxCopCmd% /out:!-outFile! /file:!-target!
 call %FxCopCmd% /out:!-outFile! /file:!-target!
 if errorlevel 1 ( 
   echo %FxCopCmd% failed.
