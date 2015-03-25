@@ -10,30 +10,24 @@ set "-Script.Name=%~nx0"
 set "-Script.Path=%~dp0"
 set "-Script.Usage="^
 Usage for !-Script.Name!: ^
-Run NUnit module test for a target.^
+Run ReportGenerator for OpenCover report.^
 ""
 
 set "!-Script.Name!.Errorlevel=0"
 
 REM configure ParseArguments
-set "OptionDefaults=-target:"" -logDir:"""
+set "OptionDefaults=-reports:"""
 
 
 REM ===========================================================================================
 REM configure ParseOptions.bat GUI interface
 REM ===========================================================================================
-if not defined -target.Usage              set "-target.Usage="Select target *.dll/*.exe which should be analyzed.""
-if not defined -target.Necessity          set "-target.Necessity="Required""
-if not defined -target.Multiplicity       set "-target.Multiplicity="Single""
-if not defined -target.GuiEntryType       set "-target.GuiEntryType="File""
-if not defined -target.Values             set "-target.Values="""
-if not defined -target.GuiDefaultValues   set "-target.GuiDefaultValues="%SWP_BRANCH_ROOT%\03_Implementierung\src\NUnitTestLib\NUnitTest\bin\Debug\NUnitTestLib.dll"
-
-if not defined -logDir.Usage              set "-logDir.Usage="Select root out directory for xml file. This directory wwill be expanded by target name.""
-if not defined -logDir.Necessity          set "-logDir.Necessity="Optional""
-if not defined -logDir.GuiEntryType       set "-logDir.GuiEntryType="Folder""
-if not defined -logDir.Multiplicity       set "-logDir.Multiplicity="Single""
-if not defined -logDir.GuiDefaultValues   set "-logDir.GuiDefaultValues="""
+if not defined -reports.Usage              set "-reports.Usage="Select unit test report *.xml.""
+if not defined -reports.Necessity          set "-reports.Necessity="Required""
+if not defined -reports.Multiplicity       set "-reports.Multiplicity="Single""
+if not defined -reports.GuiEntryType       set "-reports.GuiEntryType="File""
+if not defined -reports.Values             set "-reports.Values="""
+if not defined -reports.GuiDefaultValues   set "-reports.GuiDefaultValues="%SWP_BRANCH_ROOT%\Build\UnitTest\NUnitTestLib\Log\2015_03_25_NUnitTestLib_OpenCover.xml"
 
 call %SWP_PARSEARGUMENTS_GUI_BAT% %*
 if errorlevel 1 exit /b %ERRORLEVEL%
@@ -46,32 +40,14 @@ for %%A in (%OptionDefaults%) do for /f "tokens=1,* delims=:" %%B in ("%%A") do 
 )
 echo.
 
-REM get plain target name
-for %%F in ("!-target!") do set "targetName=%%~nF"
+REM get report directory name
+FOR /f %%i IN ("!-reports!") DO set "reportDir=%%~di%%~pi"
 
-REM define log directory and log file
-set logDir=!-logDir!
-if not defined -logDir (
-  set "logDir=%SWP_BRANCH_ROOT%\Build\!-configuration!\UnitTest\!targetName!\Log"
-  if not exist !logDir! (
-    echo Create !logDir!.
-    mkdir "%SWP_BRANCH_ROOT%\Build\!-configuration!\UnitTest\!targetName!\Log"
-  )
-)
-set logFileNUnit=!logDir!\%SWP_LOCALTIME_DATESTAMP%_!targetName!_NUnit.xml
-set logFileOpenCover=!logDir!\%SWP_LOCALTIME_DATESTAMP%_!targetName!_OpenCover.xml
-if exist !logFile! del !logFile!
+set reportDir=!reportDir!\Report
 
-
-echo Call: "%SWP_OPENCOVER_CMD_EXE%" -target:"%SWP_NUNIT_CMD_EXE%" -targetargs:"/nologo /noshadow /xml:\"!logFileNUnit!\" \"!-target!\"" -register:user -output:"!logFileOpenCover!"
-echo.
-call "%SWP_OPENCOVER_CMD_EXE%" -target:"%SWP_NUNIT_CMD_EXE%" -targetargs:"/nologo /noshadow /xml:\"!logFileNUnit!\" \"!-target!\"" -register:user -output:"!logFileOpenCover!"
-if errorlevel 1 ( 
-  echo %SWP_OPENCOVER_CMD_EXE% failed.
-  set !-Script.Name!.Errorlevel=100
-) else (
-  echo %SWP_OPENCOVER_CMD_EXE% succedded.
-)
+echo Call: "%SWP_REPORTGENERATOR_CMD_EXE%" -reports:"!-reports!" -targetdir:"!reportDir!"
+call "%SWP_REPORTGENERATOR_CMD_EXE%" -reports:"!-reports!" -targetdir:"!reportDir!"
 
 IF DEFINED CALLED_FROM_EXPLORER pause
 exit /b !%-Script.Name%.Errorlevel!
+ No newline at end of file
