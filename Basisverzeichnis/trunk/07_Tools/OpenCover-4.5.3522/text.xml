@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoverageSession xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Summary numSequencePoints="6" visitedSequencePoints="6" numBranchPoints="2" visitedBranchPoints="2" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" />
+  <Modules>
+    <Module skippedDueTo="Filter" hash="0D-96-F6-4F-F5-BE-F1-5E-07-DD-20-C4-04-E5-80-8B-81-52-C7-5F">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_64\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll</FullName>
+      <ModuleName>mscorlib</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="9F-C3-2E-51-B5-EB-69-B9-60-21-42-1F-17-25-12-07-16-11-20-50">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\nunit-console.exe</FullName>
+      <ModuleName>nunit-console</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="F2-ED-FF-09-01-C9-D7-BC-29-AC-A6-93-C5-97-8A-0D-43-DD-8D-F2">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\lib\nunit-console-runner.dll</FullName>
+      <ModuleName>nunit-console-runner</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="36-B9-FF-C0-07-EA-59-4D-23-2E-FD-CD-5A-45-CF-C0-2C-42-2A-98">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\lib\nunit.core.dll</FullName>
+      <ModuleName>nunit.core</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="14-C3-4B-3E-39-7A-EE-C0-B9-2F-83-44-2F-04-8A-F7-48-7B-67-DE">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\lib\nunit.util.dll</FullName>
+      <ModuleName>nunit.util</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="5E-95-A6-AD-88-48-98-B1-62-7F-4E-5A-C1-0E-F3-B7-85-56-44-E8">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\lib\nunit.core.interfaces.dll</FullName>
+      <ModuleName>nunit.core.interfaces</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="8F-6E-E8-4F-40-6A-75-31-1B-08-C2-22-D5-EA-FE-23-3B-7B-82-15">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System.Configuration\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Configuration.dll</FullName>
+      <ModuleName>System.Configuration</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="38-4A-D4-CE-0C-44-E3-14-2E-0C-38-16-21-36-08-FC-9E-19-4A-F0">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll</FullName>
+      <ModuleName>System</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="36-6D-BE-CC-C6-8D-5C-6B-D8-CE-E3-42-E9-1D-D1-3D-6E-FD-D9-5C">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System.Xml\v4.0_4.0.0.0__b77a5c561934e089\System.Xml.dll</FullName>
+      <ModuleName>System.Xml</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="8B-6B-0D-0B-C5-5B-10-A0-CD-78-05-B7-13-A2-4C-DA-E5-47-4E-70">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System.Runtime.Remoting\v4.0_4.0.0.0__b77a5c561934e089\System.Runtime.Remoting.dll</FullName>
+      <ModuleName>System.Runtime.Remoting</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="36-B9-FF-C0-07-EA-59-4D-23-2E-FD-CD-5A-45-CF-C0-2C-42-2A-98">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\lib\nunit.core.dll</FullName>
+      <ModuleName>nunit.core</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="38-4A-D4-CE-0C-44-E3-14-2E-0C-38-16-21-36-08-FC-9E-19-4A-F0">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll</FullName>
+      <ModuleName>System</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="53-25-23-C6-63-70-35-C6-0C-82-04-1A-0A-BF-1A-E7-1F-EA-74-A3">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\pnunit.framework.dll</FullName>
+      <ModuleName>pnunit.framework</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="21-69-E9-47-C6-F8-02-12-31-E6-18-DE-8E-43-24-C9-AB-F7-C2-BE">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\pnunit-agent.exe</FullName>
+      <ModuleName>pnunit-agent</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="5E-95-A6-AD-88-48-98-B1-62-7F-4E-5A-C1-0E-F3-B7-85-56-44-E8">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\07_Tools\NUnit-2.6.4\bin\lib\nunit.core.interfaces.dll</FullName>
+      <ModuleName>nunit.core.interfaces</ModuleName>
+      <Classes />
+    </Module>
+    <Module hash="CE-A5-89-3B-14-3B-EB-C3-4B-98-B1-06-E9-E9-C5-0B-9D-DE-46-04">
+      <Summary numSequencePoints="6" visitedSequencePoints="6" numBranchPoints="2" visitedBranchPoints="2" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" />
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\03_Implementierung\src\NUnitTestLib\NUnitTest\bin\Debug\NUnitTestLib.dll</FullName>
+      <ModuleName>NUnitTestLib</ModuleName>
+      <Files>
+        <File uid="1" fullPath="c:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\03_Implementierung\src\NUnitTestLib\NUnitTestLib\Class1.cs" />
+      </Files>
+      <Classes>
+        <Class>
+          <Summary numSequencePoints="0" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="0" maxCyclomaticComplexity="0" minCyclomaticComplexity="0" />
+          <FullName>&lt;Module&gt;</FullName>
+          <Methods />
+        </Class>
+        <Class>
+          <Summary numSequencePoints="6" visitedSequencePoints="6" numBranchPoints="2" visitedBranchPoints="2" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" />
+          <FullName>NUnitTestLib.Test</FullName>
+          <Methods>
+            <Method visited="true" cyclomaticComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="false" isStatic="false" isGetter="false" isSetter="false">
+              <Summary numSequencePoints="3" visitedSequencePoints="3" numBranchPoints="1" visitedBranchPoints="1" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" />
+              <MetadataToken>100663297</MetadataToken>
+              <Name>System.Void NUnitTestLib.Test::test_1()</Name>
+              <FileRef uid="1" />
+              <SequencePoints>
+                <SequencePoint vc="1" uspid="1" ordinal="0" offset="0" sl="13" sc="9" el="13" ec="10" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="1" uspid="2" ordinal="1" offset="1" sl="14" sc="13" el="14" ec="34" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="1" uspid="3" ordinal="2" offset="9" sl="15" sc="9" el="15" ec="10" bec="0" bev="0" fileid="1" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint xsi:type="SequencePoint" vc="1" uspid="1" ordinal="0" offset="0" sl="13" sc="9" el="13" ec="10" bec="0" bev="0" fileid="1" />
+            </Method>
+            <Method visited="true" cyclomaticComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="false" isStatic="false" isGetter="false" isSetter="false">
+              <Summary numSequencePoints="3" visitedSequencePoints="3" numBranchPoints="1" visitedBranchPoints="1" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" />
+              <MetadataToken>100663298</MetadataToken>
+              <Name>System.Void NUnitTestLib.Test::test_2()</Name>
+              <FileRef uid="1" />
+              <SequencePoints>
+                <SequencePoint vc="1" uspid="4" ordinal="0" offset="0" sl="20" sc="9" el="20" ec="10" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="1" uspid="5" ordinal="1" offset="1" sl="21" sc="13" el="21" ec="34" bec="0" bev="0" fileid="1" />
+                <SequencePoint vc="1" uspid="6" ordinal="2" offset="9" sl="22" sc="9" el="22" ec="10" bec="0" bev="0" fileid="1" />
+              </SequencePoints>
+              <BranchPoints />
+              <MethodPoint xsi:type="SequencePoint" vc="1" uspid="4" ordinal="0" offset="0" sl="20" sc="9" el="20" ec="10" bec="0" bev="0" fileid="1" />
+            </Method>
+            <Method visited="true" cyclomaticComplexity="1" sequenceCoverage="0" branchCoverage="0" isConstructor="true" isStatic="false" isGetter="false" isSetter="false">
+              <Summary numSequencePoints="0" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="0" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" />
+              <MetadataToken>100663299</MetadataToken>
+              <Name>System.Void NUnitTestLib.Test::.ctor()</Name>
+              <SequencePoints />
+              <BranchPoints />
+              <MethodPoint vc="1" uspid="7" ordinal="0" offset="0" />
+            </Method>
+          </Methods>
+        </Class>
+      </Classes>
+    </Module>
+    <Module skippedDueTo="MissingPdb" hash="A2-D0-DB-C9-20-FB-37-90-D4-D6-25-E5-C4-7B-E0-42-CA-32-C0-51">
+      <FullName>C:\Users\MathiasSchneider\Desktop\SWP_Neu\OTH_SWP_SS15\Basisverzeichnis\trunk\03_Implementierung\src\NUnitTestLib\NUnitTest\bin\Debug\nunit.framework.dll</FullName>
+      <ModuleName>nunit.framework</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="8F-6E-E8-4F-40-6A-75-31-1B-08-C2-22-D5-EA-FE-23-3B-7B-82-15">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System.Configuration\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Configuration.dll</FullName>
+      <ModuleName>System.Configuration</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="36-6D-BE-CC-C6-8D-5C-6B-D8-CE-E3-42-E9-1D-D1-3D-6E-FD-D9-5C">
+      <FullName>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System.Xml\v4.0_4.0.0.0__b77a5c561934e089\System.Xml.dll</FullName>
+      <ModuleName>System.Xml</ModuleName>
+      <Classes />
+    </Module>
+  </Modules>
+</CoverageSession>
