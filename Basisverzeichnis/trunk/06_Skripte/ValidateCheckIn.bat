@@ -19,7 +19,7 @@ rem run unit tests coverage
 call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunUnitTestCoverage.bat" -target="%SWP_SRC_ROOT%\src\NUnitTestLib\NUnitTestLib\bin\Release\NUnitTestLib.dll"
 
 rem create coverage report
-call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunReportGenerator.bat" -reports="%SWP_BRANCH_ROOT%\Build\UnitTest\NUnitTestLib\Log\%SWP_LOCALTIME_DATESTAMP%_NUnitTestLib_OpenCover.xml"
+call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunReportGenerator.bat" -reports="%SWP_BRANCH_ROOT%\Build\UnitTest\NUnitTestLib\Log\%SWP_LOCALTIME_DATESTAMP%_NUnitTestLib.xml"
 
 rem create static code analysis report
 call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunFxCop.bat" -target="%SWP_SRC_ROOT%\src\NUnitTestLib\NUnitTestLib\bin\Release\NUnitTestLib.dll" -outDir="%SWP_BRANCH_ROOT%/Build/StaticCodeAnalysis/FxCop"
@@ -27,6 +27,7 @@ call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunFxCop.bat" -target="%SWP_S
 exit /b %internalErrorLevel%
 
 
+REM :call_and_check_errorlevel <COMMAND>
 :call_and_check_errorlevel <COMMAND>
 for %%F in ("%~1") do set "cmdName=%%~nF"
 echo=============================================================================================
