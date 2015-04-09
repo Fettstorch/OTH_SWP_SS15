@@ -69,6 +69,7 @@ echo.
 if not exist "%SWP_BRANCH_ROOT%\Documentation\Issues" mkdir "%SWP_BRANCH_ROOT%\Documentation\Issues"
 
 echo Call: %SWP_RUBY_EXE% %SWP_GITHUB_TO_CSV_EXE% "!-userName! !-organization! !-repository! !-outFile! !-password!"
+%SWP_RUBY_EXE% %SWP_GITHUB_TO_CSV_EXE% "!-userName! !-organization! !-repository! !-outFile! !-password!"
 if errorlevel 1 (
   echo %SWP_GITHUB_TO_CSV_EXE% failed.
 ) else (
