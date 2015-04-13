@@ -19,7 +19,7 @@ rem run unit tests coverage
 call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunUnitTestCoverage.bat" -target="%SWP_SRC_ROOT%\src\NUnitTestLib\NUnitTestLib\bin\Release\NUnitTestLib.dll"
 
 rem create coverage report
-call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunReportGenerator.bat" -reports="%SWP_BRANCH_ROOT%\Build\UnitTest\NUnitTestLib\Log\%SWP_LOCALTIME_DATESTAMP%_NUnitTestLib.xml"
+call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunReportGenerator.bat" -reports="%SWP_BRANCH_ROOT%\Build\UnitTest\NUnitTestLib\Log\%SWP_LOCALTIME_DATESTAMP%_NUnitTestLib_OpenCover.xml"
 
 rem create static code analysis report
 call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunFxCop.bat" -target="%SWP_SRC_ROOT%\src\NUnitTestLib\NUnitTestLib\bin\Release\NUnitTestLib.dll" -outDir="%SWP_BRANCH_ROOT%/Build/StaticCodeAnalysis/FxCop"
