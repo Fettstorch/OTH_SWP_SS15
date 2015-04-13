@@ -5,10 +5,28 @@ set "SWP_GITHUB_ORGANIZATION_NAME=Fettstorch"
 set "SWP_GITHUB_REPOSITORY_NAME=OTH_SWP_SS15"
 set "SWP_GITHUB_REPOSITORY_URL=https://github.com/%SWP_GITHUB_ORGANIZATION_NAME%/%SWP_GITHUB_REPOSITORY_NAME%"
 
-set "SWP_GITHUB_GIT_EXE=%ProgramFiles(x86)%\Git\bin\git.exe"
+set "SWP_GITHUB_GIT_VERSION_MAJOR=1"
+set "SWP_GITHUB_GIT_VERSION_MINOR=9"
+set "SWP_GITHUB_GIT_VERSION_SUBMINOR=5"
 
-set SWP_GITHUB_OTH_SWP_SS15_MEMBER=Fettstorch monsterspace Coder-Luke Parsen07 Ratatoeskr
+REM set "SWP_GITHUB_GIT_EXE=%ProgramFiles(x86)%\Git\cmd\git.exe"
+REM set "SWP_GITHUB_GIT_CMD=%ProgramFiles(x86)%\Git\cmd\gitk.cmd"
+REM set "SWP_GITHUB_GIT_SHELL_EXE=%ProgramFiles(x86)%\Git\bin\sh.exe"
 
-REM output all Ruby relevant environmental variables:
-set SWP_GITHUB_
+set "SWP_GITHUB_GIT_VERSION=%SWP_GITHUB_GIT_VERSION_MAJOR%.%SWP_GITHUB_GIT_VERSION_MINOR%.%SWP_GITHUB_GIT_VERSION_SUBMINOR%"
+
+set "SWP_GITHUB_GIT_ROOT=%SWP_TOOLS_ROOT%/Git-%SWP_GITHUB_GIT_VERSION%/"
+
+set "SWP_GITHUB_GIT_EXE=%SWP_GITHUB_GIT_ROOT%cmd\git.exe"
+set "SWP_GITHUB_GIT_CMD=%SWP_GITHUB_GIT_ROOT%cmd\gitk.cmd"
+set "SWP_GITHUB_GIT_SHELL_EXE=%SWP_GITHUB_GIT_ROOT%bin\sh.exe"
+
+
+set "SWP_GITHUB_GIT_LAST_SYNCHRONIZATION_COMMIT=%SWP_SCRIPT_ROOT%Synchronization"
+
+
+set SWP_GITHUB_OTH_SWP_SS15_MEMBER=Fettstorch monsterspace Coder-Luke Parsen07 Ratatoeskr DasAddition r0oto0r SebMertz
+
+REM output all GitHub relevant environmental variables:
+set SWP_GIT
 
