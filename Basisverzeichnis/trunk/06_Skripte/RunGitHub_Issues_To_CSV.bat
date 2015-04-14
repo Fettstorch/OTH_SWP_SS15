@@ -1,7 +1,7 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
 
-call "%~dp0\SetEnv.bat"
+call "%~dp0\SetEnv.bat" > NUL
 
 REM ===========================================================================================
 REM Script description
@@ -58,12 +58,18 @@ if not defined -openOutFile.GuiDefaultValues   set "-openOutFile.GuiDefaultValue
 call %SWP_PARSEARGUMENTS_GUI_BAT% %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
-echo OPTIONS:
-set -
+rem output selected options
+echo !-Script.Name!
+for %%A in (%OptionDefaults%) do for /f "tokens=1,* delims=:" %%B in ("%%A") do (
+  set name=!%%B!
+  if /I "!%%B!" NEQ "" echo %%B=!name!
+)
+echo.
 
 if not exist "%SWP_BRANCH_ROOT%\Documentation\Issues" mkdir "%SWP_BRANCH_ROOT%\Documentation\Issues"
 
-call %SWP_RUBY_EXE% %SWP_GITHUB_TO_CSV_EXE% "!-userName! !-organization! !-repository! !-outFile! !-password!"
+echo Call: %SWP_RUBY_EXE% %SWP_GITHUB_TO_CSV_EXE% "!-userName! !-organization! !-repository! !-outFile! !-password!"
+%SWP_RUBY_EXE% %SWP_GITHUB_TO_CSV_EXE% "!-userName! !-organization! !-repository! !-outFile! !-password!"
 if errorlevel 1 (
   echo %SWP_GITHUB_TO_CSV_EXE% failed.
 ) else (

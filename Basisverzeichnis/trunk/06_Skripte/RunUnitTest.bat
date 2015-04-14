@@ -1,7 +1,7 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
 
-call "%~dp0\SetEnv.bat"
+call "%~dp0\SetEnv.bat" > NUL
 
 REM ===========================================================================================
 REM Script description
@@ -27,7 +27,7 @@ if not defined -target.Necessity          set "-target.Necessity="Required""
 if not defined -target.Multiplicity       set "-target.Multiplicity="Single""
 if not defined -target.GuiEntryType       set "-target.GuiEntryType="File""
 if not defined -target.Values             set "-target.Values="""
-if not defined -target.GuiDefaultValues   set "-target.GuiDefaultValues="%SWP_NUNIT_ROOT%bin/tests/nunit-console.tests.dll""
+if not defined -target.GuiDefaultValues   set "-target.GuiDefaultValues="%SWP_BRANCH_ROOT%\03_Implementierung\src\NUnitTestLib\NUnitTestLib\bin\Debug\NUnitTestLib.dll""
 
 if not defined -logDir.Usage              set "-logDir.Usage="Select root out directory for xml file. This directory wwill be expanded by target name.""
 if not defined -logDir.Necessity          set "-logDir.Necessity="Optional""
@@ -38,8 +38,13 @@ if not defined -logDir.GuiDefaultValues   set "-logDir.GuiDefaultValues="!FxCopD
 call %SWP_PARSEARGUMENTS_GUI_BAT% %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
-echo OPTIONS:
-set -
+rem output selected options
+echo !-Script.Name!
+for %%A in (%OptionDefaults%) do for /f "tokens=1,* delims=:" %%B in ("%%A") do (
+  set name=!%%B!
+  if /I "!%%B!" NEQ "" echo %%B=!name!
+)
+echo.
 
 REM get plain target name
 for %%F in ("!-target!") do set "targetName=%%~nF"
@@ -56,8 +61,14 @@ if not defined -logDir (
 set logFile=!logDir!\%SWP_LOCALTIME_DATESTAMP%_!targetName!.xml
 if exist !logFile! del !logFile!
 
+REM http://stackoverflow.com/questions/4163615/get-net-to-consider-a-specific-network-share-to-be-fully-trusted
+REM http://stackoverflow.com/questions/974612/edit-and-run-net-projects-from-network-shares
+REM http://stackoverflow.com/questions/930438/nunit-isnt-running-visual-studio-2010-code
 
-echo %SWP_NUNIT_CMD_EXE% !-target! /xml:!logFile!
+rem call "%windir%\Microsoft.NET\Framework\v2.0.50727"
+
+
+echo Call: %SWP_NUNIT_CMD_EXE% !-target! /xml:!logFile!
 %SWP_NUNIT_CMD_EXE% !-target! /xml:!logFile!
 if errorlevel 1 ( 
   echo %SWP_NUNIT_CMD_EXE% failed.
