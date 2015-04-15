@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)https://github.com/Microsoft/automatic-graph-layout -->
+<html lang="en" class=""><head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    
+    
+    <title>Microsoft/automatic-graph-layout · GitHub</title>
+    <link rel="search" type="application/opensearchdescription+xml" href="https://github.com/opensearch.xml" title="GitHub">
+    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
+    <link rel="apple-touch-icon" sizes="57x57" href="https://github.com/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://github.com/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://github.com/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://github.com/apple-touch-icon-144.png">
+    <meta property="fb:app_id" content="1401488693436528">
+
+      <meta content="@github" name="twitter:site"><meta content="summary" name="twitter:card"><meta content="Microsoft/automatic-graph-layout" name="twitter:title"><meta content="automatic-graph-layout - A set of tools for graph layout and viewing" name="twitter:description"><meta content="https://avatars0.githubusercontent.com/u/6154722?v=3&amp;s=400" name="twitter:image:src">
+      <meta content="GitHub" property="og:site_name"><meta content="object" property="og:type"><meta content="https://avatars0.githubusercontent.com/u/6154722?v=3&amp;s=400" property="og:image"><meta content="Microsoft/automatic-graph-layout" property="og:title"><meta content="https://github.com/Microsoft/automatic-graph-layout" property="og:url"><meta content="automatic-graph-layout - A set of tools for graph layout and viewing" property="og:description">
+      <meta name="browser-stats-url" content="https://api.github.com/_private/browser/stats">
+    <meta name="browser-errors-url" content="https://api.github.com/_private/browser/errors">
+    <link rel="assets" href="https://assets-cdn.github.com/">
+    
+    <meta name="pjax-timeout" content="1000">
+    
+
+    <meta name="msapplication-TileImage" content="/windows-tile.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="selected-link" value="repo_source" data-pjax-transient="">
+      <meta name="google-analytics" content="UA-3769691-2">
+
+    <meta content="collector.githubapp.com" name="octolytics-host"><meta content="collector-cdn.github.com" name="octolytics-script-host"><meta content="github" name="octolytics-app-id"><meta content="4FED9758:58E6:1F5BED:5522DCB8" name="octolytics-dimension-request_id">
+    
+    <meta content="Rails, view, files#disambiguate" name="analytics-event">
+    <meta class="js-ga-set" name="dimension1" content="Logged Out">
+    <meta class="js-ga-set" name="dimension2" content="Header v3">
+    <meta name="is-dotcom" content="true">
+    <meta name="hostname" content="github.com">
+    <meta name="user-login" content="">
+
+    
+    <link rel="icon" type="image/x-icon" href="https://assets-cdn.github.com/favicon.ico">
+
+
+    <meta content="authenticity_token" name="csrf-param">
+<meta content="wOYPI5gvZrKu3326W/pzC91u9seYCEqbkIRdZeaqXM1sHrt4y2d1/kvv4mCT0H4RG4DyiDVvWWSkTTOGF5jqhA==" name="csrf-token">
+
+    <link href="https://assets-cdn.github.com/assets/github-b9a6ff74be89fc3bd0700145f09893176e0217b525876169a377b19cc4434e53.css" media="all" rel="stylesheet">
+    <link href="https://assets-cdn.github.com/assets/github2-c52092ec66da34c30c59f04456bc9596135db6e6f397ab48420462c9a05abee6.css" media="all" rel="stylesheet">
+    
+    
+
+
+    <meta http-equiv="x-pjax-version" content="ab96a5e190e9792c394fe4c1bea14619">
+
+      
+  <meta name="description" content="automatic-graph-layout - A set of tools for graph layout and viewing">
+  <meta name="go-import" content="github.com/Microsoft/automatic-graph-layout git https://github.com/Microsoft/automatic-graph-layout.git">
+
+  <meta content="6154722" name="octolytics-dimension-user_id"><meta content="Microsoft" name="octolytics-dimension-user_login"><meta content="31185775" name="octolytics-dimension-repository_id"><meta content="Microsoft/automatic-graph-layout" name="octolytics-dimension-repository_nwo"><meta content="true" name="octolytics-dimension-repository_public"><meta content="false" name="octolytics-dimension-repository_is_fork"><meta content="31185775" name="octolytics-dimension-repository_network_root_id"><meta content="Microsoft/automatic-graph-layout" name="octolytics-dimension-repository_network_root_nwo">
+  <link href="https://github.com/Microsoft/automatic-graph-layout/commits/master.atom" rel="alternate" title="Recent Commits to automatic-graph-layout:master" type="application/atom+xml">
+
+  <script type="text/javascript" async="" src="https://collector-cdn.github.com/assets/api.js"></script></head>
+
+
+  <body class="logged_out  env-production windows vis-public">
+    <a href="https://github.com/Microsoft/automatic-graph-layout#start-of-content" tabindex="1" class="accessibility-aid js-skip-to-content">Skip to content</a>
+    <div class="wrapper">
+      
+      
+      
+
+
+        
+        <div class="header header-logged-out" role="banner">
+  <div class="container clearfix">
+
+    <a class="header-logo-wordmark" href="https://github.com/" data-ga-click="(Logged out) Header, go to homepage, icon:logo-wordmark">
+      <span class="mega-octicon octicon-logo-github"></span>
+    </a>
+
+    <div class="header-actions" role="navigation">
+        <a class="btn btn-primary" href="https://github.com/join" data-ga-click="(Logged out) Header, clicked Sign up, text:sign-up">Sign up</a>
+      <a class="btn" href="https://github.com/login?return_to=%2FMicrosoft%2Fautomatic-graph-layout" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
+    </div>
+
+    <div class="site-search repo-scope js-site-search" role="search">
+      <form accept-charset="UTF-8" action="https://github.com/Microsoft/automatic-graph-layout/search" class="js-site-search-form" data-global-search-url="/search" data-repo-search-url="/Microsoft/automatic-graph-layout/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"></div>
+  <input type="text" class="js-site-search-field is-clearable" data-hotkey="s" name="q" placeholder="Search" data-global-scope-placeholder="Search GitHub" data-repo-scope-placeholder="Search" tabindex="1" autocapitalize="off">
+  <div class="scope-badge">This repository</div>
+</form>
+    </div>
+
+      <ul class="header-nav left" role="navigation">
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="https://github.com/explore" data-ga-click="(Logged out) Header, go to explore, text:explore">Explore</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="https://github.com/features" data-ga-click="(Logged out) Header, go to features, text:features">Features</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="https://enterprise.github.com/" data-ga-click="(Logged out) Header, go to enterprise, text:enterprise">Enterprise</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="https://github.com/blog" data-ga-click="(Logged out) Header, go to blog, text:blog">Blog</a>
+          </li>
+      </ul>
+
+  </div>
+</div>
+
+
+
+      <div id="start-of-content" class="accessibility-aid"></div>
+          <div class="site" itemscope="" itemtype="http://schema.org/WebPage">
+    <div id="js-flash-container">
+      
+    </div>
+    <div class="pagehead repohead instapaper_ignore readability-menu">
+      <div class="container">
+        
+<ul class="pagehead-actions">
+
+  <li>
+      <a href="https://github.com/login?return_to=%2FMicrosoft%2Fautomatic-graph-layout" class="btn btn-sm btn-with-count tooltipped tooltipped-n" aria-label="You must be signed in to watch a repository" rel="nofollow">
+    <span class="octicon octicon-eye"></span>
+    Watch
+  </a>
+  <a class="social-count" href="https://github.com/Microsoft/automatic-graph-layout/watchers">
+    26
+  </a>
+
+  </li>
+
+  <li>
+      <a href="https://github.com/login?return_to=%2FMicrosoft%2Fautomatic-graph-layout" class="btn btn-sm btn-with-count tooltipped tooltipped-n" aria-label="You must be signed in to star a repository" rel="nofollow">
+    <span class="octicon octicon-star"></span>
+    Star
+  </a>
+
+    <a class="social-count js-social-count" href="https://github.com/Microsoft/automatic-graph-layout/stargazers">
+      97
+    </a>
+
+  </li>
+
+    <li>
+      <a href="https://github.com/login?return_to=%2FMicrosoft%2Fautomatic-graph-layout" class="btn btn-sm btn-with-count tooltipped tooltipped-n" aria-label="You must be signed in to fork a repository" rel="nofollow">
+        <span class="octicon octicon-repo-forked"></span>
+        Fork
+      </a>
+      <a href="https://github.com/Microsoft/automatic-graph-layout/network" class="social-count">
+        17
+      </a>
+    </li>
+</ul>
+
+        <h1 itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public">
+          <span class="mega-octicon octicon-repo"></span>
+          <span class="author"><a href="https://github.com/Microsoft" class="url fn" itemprop="url" rel="author"><span itemprop="title">Microsoft</span></a></span><!--
+       --><span class="path-divider">/</span><!--
+       --><strong><a href="./Microsoft_GitHub_files/Microsoft_GitHub.html" class="js-current-repository" data-pjax="#js-repo-pjax-container">automatic-graph-layout</a></strong>
+
+          <span class="page-context-loader">
+            <img alt="" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+          </span>
+
+        </h1>
+      </div><!-- /.container -->
+    </div><!-- /.repohead -->
+
+    <div class="container">
+      <div class="repository-with-sidebar repo-container new-discussion-timeline with-full-navigation">
+        <div class="repository-sidebar clearfix">
+            
+<nav class="sunken-menu repo-nav js-repo-nav js-sidenav-container-pjax js-octicon-loaders" role="navigation" data-pjax="#js-repo-pjax-container" data-issue-count-url="/Microsoft/automatic-graph-layout/issues/counts">
+  <ul class="sunken-menu-group">
+    <li class="tooltipped tooltipped-w" aria-label="Code">
+      <a href="./Microsoft_GitHub_files/Microsoft_GitHub.html" aria-label="Code" class="selected js-selected-navigation-item sunken-menu-item" data-hotkey="g c" data-selected-links="repo_source repo_downloads repo_commits repo_releases repo_tags repo_branches /Microsoft/automatic-graph-layout">
+        <span class="octicon octicon-code"></span> <span class="full-word">Code</span>
+        <img alt="" class="mini-loader" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+</a>    </li>
+
+      <li class="tooltipped tooltipped-w" aria-label="Issues">
+        <a href="https://github.com/Microsoft/automatic-graph-layout/issues" aria-label="Issues" class="js-selected-navigation-item sunken-menu-item" data-hotkey="g i" data-selected-links="repo_issues repo_labels repo_milestones /Microsoft/automatic-graph-layout/issues">
+          <span class="octicon octicon-issue-opened"></span> <span class="full-word">Issues</span>
+          <span class="counter">2</span>
+
+          <img alt="" class="mini-loader" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+</a>      </li>
+
+    <li class="tooltipped tooltipped-w" aria-label="Pull requests">
+      <a href="https://github.com/Microsoft/automatic-graph-layout/pulls" aria-label="Pull requests" class="js-selected-navigation-item sunken-menu-item" data-hotkey="g p" data-selected-links="repo_pulls /Microsoft/automatic-graph-layout/pulls">
+          <span class="octicon octicon-git-pull-request"></span> <span class="full-word">Pull requests</span>
+          <span class="counter">0</span>
+
+          <img alt="" class="mini-loader" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+</a>    </li>
+
+  </ul>
+  <div class="sunken-menu-separator"></div>
+  <ul class="sunken-menu-group">
+
+    <li class="tooltipped tooltipped-w" aria-label="Pulse">
+      <a href="https://github.com/Microsoft/automatic-graph-layout/pulse" aria-label="Pulse" class="js-selected-navigation-item sunken-menu-item" data-selected-links="pulse /Microsoft/automatic-graph-layout/pulse">
+        <span class="octicon octicon-pulse"></span> <span class="full-word">Pulse</span>
+        <img alt="" class="mini-loader" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+</a>    </li>
+
+    <li class="tooltipped tooltipped-w" aria-label="Graphs">
+      <a href="https://github.com/Microsoft/automatic-graph-layout/graphs" aria-label="Graphs" class="js-selected-navigation-item sunken-menu-item" data-selected-links="repo_graphs repo_contributors /Microsoft/automatic-graph-layout/graphs">
+        <span class="octicon octicon-graph"></span> <span class="full-word">Graphs</span>
+        <img alt="" class="mini-loader" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+</a>    </li>
+  </ul>
+
+
+</nav>
+
+              <div class="only-with-full-nav">
+                  
+<div class="clone-url open" data-protocol-type="http" data-url="/users/set_protocol?protocol_selector=http&amp;protocol_type=clone">
+  <h3><span class="text-emphasized">HTTPS</span> clone URL</h3>
+  <div class="input-group js-zeroclipboard-container">
+    <input type="text" class="input-mini input-monospace js-url-field js-zeroclipboard-target" value="https://github.com/Microsoft/automatic-graph-layout.git" readonly="readonly">
+    <span class="input-group-button">
+      <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+    </span>
+  </div>
+</div>
+
+  
+<div class="clone-url " data-protocol-type="subversion" data-url="/users/set_protocol?protocol_selector=subversion&amp;protocol_type=clone">
+  <h3><span class="text-emphasized">Subversion</span> checkout URL</h3>
+  <div class="input-group js-zeroclipboard-container">
+    <input type="text" class="input-mini input-monospace js-url-field js-zeroclipboard-target" value="https://github.com/Microsoft/automatic-graph-layout" readonly="readonly">
+    <span class="input-group-button">
+      <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+    </span>
+  </div>
+</div>
+
+
+
+<p class="clone-options">You can clone with
+  <a href="https://github.com/Microsoft/automatic-graph-layout#" class="js-clone-selector" data-protocol="http">HTTPS</a> or <a href="https://github.com/Microsoft/automatic-graph-layout#" class="js-clone-selector" data-protocol="subversion">Subversion</a>.
+  <a href="https://help.github.com/articles/which-remote-url-should-i-use" class="help tooltipped tooltipped-n" aria-label="Get help on which URL is right for you.">
+    <span class="octicon octicon-question"></span>
+  </a>
+</p>
+
+
+  <a href="https://windows.github.com/" class="btn btn-sm sidebar-button" title="Save Microsoft/automatic-graph-layout to your computer and use it in GitHub Desktop." aria-label="Save Microsoft/automatic-graph-layout to your computer and use it in GitHub Desktop.">
+    <span class="octicon octicon-device-desktop"></span>
+    Clone in Desktop
+  </a>
+
+                <a href="https://github.com/Microsoft/automatic-graph-layout/archive/master.zip" class="btn btn-sm sidebar-button" aria-label="Download the contents of Microsoft/automatic-graph-layout as a zip file" title="Download the contents of Microsoft/automatic-graph-layout as a zip file" rel="nofollow">
+                  <span class="octicon octicon-cloud-download"></span>
+                  Download ZIP
+                </a>
+              </div>
+        </div><!-- /.repository-sidebar -->
+
+        <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container="">
+          
+<span id="js-show-full-navigation"></span>
+
+<div class="repository-meta js-details-container ">
+    <div class="repository-description">
+      A set of tools for graph layout and viewing
+    </div>
+
+
+
+</div>
+
+<div class="overall-summary overall-summary-bottomless">
+
+  <div class="stats-switcher-viewport js-stats-switcher-viewport">
+    <div class="stats-switcher-wrapper">
+    <ul class="numbers-summary">
+      <li class="commits">
+        <a data-pjax="" href="https://github.com/Microsoft/automatic-graph-layout/commits/master">
+            <span class="octicon octicon-history"></span>
+            <span class="num text-emphasized">
+              13
+            </span>
+            commits
+        </a>
+      </li>
+      <li>
+        <a data-pjax="" href="https://github.com/Microsoft/automatic-graph-layout/branches">
+          <span class="octicon octicon-git-branch"></span>
+          <span class="num text-emphasized">
+            1
+          </span>
+          branch
+        </a>
+      </li>
+
+      <li>
+        <a data-pjax="" href="https://github.com/Microsoft/automatic-graph-layout/releases">
+          <span class="octicon octicon-tag"></span>
+          <span class="num text-emphasized">
+            0
+          </span>
+          releases
+        </a>
+      </li>
+
+      <li>
+        
+  <a href="https://github.com/Microsoft/automatic-graph-layout/graphs/contributors">
+    <span class="octicon octicon-organization"></span>
+    <span class="num text-emphasized">
+      5
+    </span>
+    contributors
+  </a>
+      </li>
+    </ul>
+
+      <div class="repository-lang-stats">
+        <ol class="repository-lang-stats-numbers">
+          <li>
+              <a href="https://github.com/Microsoft/automatic-graph-layout/search?l=csharp">
+                <span class="color-block language-color" style="background-color:#178600;"></span>
+                <span class="lang">C#</span>
+                <span class="percent">51.5%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/Microsoft/automatic-graph-layout/search?l=javascript">
+                <span class="color-block language-color" style="background-color:#f1e05a;"></span>
+                <span class="lang">JavaScript</span>
+                <span class="percent">38.9%</span>
+              </a>
+          </li>
+          <li>
+              <a href="https://github.com/Microsoft/automatic-graph-layout/search?l=glsl">
+                <span class="color-block language-color" style="background-color:#ccc;"></span>
+                <span class="lang">GLSL</span>
+                <span class="percent">8.9%</span>
+              </a>
+          </li>
+          <li>
+              <span class="other">
+                <span data-lang="Other" class="color-block language-color" style="background-color:#ededed;"></span>
+                <span class="lang">Other</span>
+                <span class="percent">0.7%</span>
+              </span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <div class="repository-lang-stats-graph js-toggle-lang-stats" title="Click for language details">
+    <span class="language-color" aria-label="C# 51.5%" style="width:51.5%; background-color:#178600;" itemprop="keywords">C#</span>
+    <span class="language-color" aria-label="JavaScript 38.9%" style="width:38.9%; background-color:#f1e05a;" itemprop="keywords">JavaScript</span>
+    <span class="language-color" aria-label="GLSL 8.9%" style="width:8.9%; background-color:#ccc;" itemprop="keywords">GLSL</span>
+    <span class="language-color" aria-label="Other 0.7%" style="width:0.7%; background-color:#ededed;" itemprop="keywords">Other</span>
+  </div>
+
+
+
+<div class="file-navigation in-mid-page">
+  <a href="https://github.com/Microsoft/automatic-graph-layout/find/master" class="js-show-file-finder btn btn-sm empty-icon tooltipped tooltipped-s right" data-pjax="" data-hotkey="t" aria-label="Quickly jump between files">
+    <span class="octicon octicon-list-unordered"></span>
+  </a>
+    <a href="https://github.com/Microsoft/automatic-graph-layout/compare" aria-label="Compare, review, create a pull request" class="btn btn-sm btn-primary tooltipped tooltipped-se left compare-button" data-pjax="" data-ga-click="Repository, go to compare view, location:repo overview; icon:git-compare">
+      <span class="octicon octicon-git-compare"></span>
+    </a>
+
+  
+<div class="select-menu js-menu-container js-select-menu left">
+  <span class="btn btn-sm select-menu-button js-menu-target css-truncate" data-hotkey="w" data-master-branch="master" data-ref="master" title="master" role="button" aria-label="Switch branches or tags" tabindex="0" aria-haspopup="true">
+    <span class="octicon octicon-git-branch"></span>
+    <i>branch:</i>
+    <span class="js-select-button css-truncate-target">master</span>
+  </span>
+
+  <div class="select-menu-modal-holder js-menu-content js-navigation-container" data-pjax="" aria-hidden="true">
+
+    <div class="select-menu-modal">
+      <div class="select-menu-header">
+        <span class="select-menu-title">Switch branches/tags</span>
+        <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+      </div>
+
+      <div class="select-menu-filters">
+        <div class="select-menu-text-filter">
+          <input type="text" aria-label="Filter branches/tags" id="context-commitish-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter branches/tags">
+        </div>
+        <div class="select-menu-tabs">
+          <ul>
+            <li class="select-menu-tab">
+              <a href="https://github.com/Microsoft/automatic-graph-layout#" data-tab-filter="branches" data-filter-placeholder="Filter branches/tags" class="js-select-menu-tab">Branches</a>
+            </li>
+            <li class="select-menu-tab">
+              <a href="https://github.com/Microsoft/automatic-graph-layout#" data-tab-filter="tags" data-filter-placeholder="Find a tag…" class="js-select-menu-tab">Tags</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="branches">
+
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <a class="select-menu-item js-navigation-item js-navigation-open selected" href="https://github.com/Microsoft/automatic-graph-layout/tree/master" data-name="master" data-skip-pjax="true" rel="nofollow">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <span class="select-menu-item-text css-truncate-target" title="master">
+                master
+              </span>
+            </a>
+        </div>
+
+          <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tags">
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+        </div>
+
+        <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+  <div class="breadcrumb"><span class="repo-root js-repo-root"><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="./Microsoft_GitHub_files/Microsoft_GitHub.html" class="" data-branch="master" data-direction="back" data-pjax="true" itemscope="url"><span itemprop="title">automatic-graph-layout</span></a></span></span><span class="separator">/</span>
+    <a class="btn-link disabled tooltipped tooltipped-e" href="https://github.com/Microsoft/automatic-graph-layout#" aria-label="You must be signed in to make or propose changes">
+      <span class="octicon octicon-plus"></span>
+    </a>
+</div>
+</div>
+
+
+
+  
+  <div class="commit commit-tease js-details-container">
+    <p class="commit-title ">
+        <a href="https://github.com/Microsoft/automatic-graph-layout/commit/06bb0b284e261e729dc3789eac0a2f2fdc1bdc0f" class="message" data-pjax="true" title="Merge pull request #5 from FilippoPolo/master
+
+MSAGL: applied changes in support of SharpKit">Merge pull request</a> <a href="https://github.com/Microsoft/automatic-graph-layout/pull/5" class="issue-link" title="MSAGL: applied changes in support of SharpKit">#5</a> <a href="https://github.com/Microsoft/automatic-graph-layout/commit/06bb0b284e261e729dc3789eac0a2f2fdc1bdc0f" class="message" data-pjax="true" title="Merge pull request #5 from FilippoPolo/master
+
+MSAGL: applied changes in support of SharpKit">from FilippoPolo/master</a>
+        <span class="hidden-text-expander inline"><a href="https://github.com/Microsoft/automatic-graph-layout#" class="js-details-target">…</a></span>
+    </p>
+      <div class="commit-desc"><pre>MSAGL: applied changes in support of SharpKit</pre></div>
+    <div class="commit-meta">
+      <button aria-label="Copy SHA" class="js-zeroclipboard zeroclipboard-link" data-clipboard-text="06bb0b284e261e729dc3789eac0a2f2fdc1bdc0f" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+      <a href="https://github.com/Microsoft/automatic-graph-layout/commit/06bb0b284e261e729dc3789eac0a2f2fdc1bdc0f" class="sha-block" data-pjax="">latest commit <span class="sha">06bb0b284e</span></a>
+
+      <div class="authorship">
+        <img alt="@levnach" class="avatar" data-user="5377127" height="20" src="./Microsoft_GitHub_files/5377127" width="20">
+        <span class="author-name"><a href="https://github.com/levnach" rel="contributor">levnach</a></span>
+        authored <time class="updated" datetime="2015-04-05T17:38:25Z" is="relative-time" title="5. Apr. 2015 19:38 MESZ">a day ago</time>
+
+      </div>
+    </div>
+  </div>
+
+  
+<div class="file-wrap">
+
+  <table class="files" data-pjax="">
+
+
+    <tbody>
+      <tr class="warning include-fragment-error">
+        <td class="icon"><span class="octicon octicon-alert"></span></td>
+        <td class="content" colspan="3">Failed to load latest commit information.</td>
+      </tr>
+
+        <tr>
+          <td class="icon">
+            <span class="octicon octicon-file-directory"></span>
+            <img alt="" class="spinner" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="https://github.com/Microsoft/automatic-graph-layout/tree/master/GraphLayout" class="js-directory-link" id="9a3d5e11fc8d043274c7a840faf9c81d-2eca70a8d31d2598653bb7fe97a1f45257f5cbd4" title="GraphLayout">GraphLayout</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="https://github.com/Microsoft/automatic-graph-layout/commit/0b3e7614e8f28478eca89f8ee48c41c78c253835" class="message" data-pjax="true" title="MSAGL: applied changes in support of SharpKit
+MsaglSharpkit: updated with latest msagl build, latest sharpkit version, bug fixes, and also added JS dependencies">MSAGL: applied changes in support of SharpKit</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-04-05T16:56:30Z" is="time-ago" title="5. Apr. 2015 18:56 MESZ">a day ago</time></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="https://github.com/Microsoft/automatic-graph-layout/blob/master/.gitattributes" class="js-directory-link" id="fc723d30b02a4cca7a534518111c1a66-1ff0c423042b46cb1d617b81efb715defbe8054d" title=".gitattributes">.gitattributes</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="https://github.com/Microsoft/automatic-graph-layout/commit/0a902c5b112d5bfcdf9f20108c900224030948c1" class="message" data-pjax="true" title="first push of the sources, add reference to MSAGL to license">first push of the sources, add reference to MSAGL to license</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-02-26T00:39:36Z" is="time-ago" title="26. Feb. 2015 01:39 MEZ">a month ago</time></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="https://github.com/Microsoft/automatic-graph-layout/blob/master/.gitignore" class="js-directory-link" id="a084b794bc0759e7a6b77810e01874f2-d2e7190456ca9f9004866ef6c01743cc5cebf2e4" title=".gitignore">.gitignore</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="https://github.com/Microsoft/automatic-graph-layout/commit/0a902c5b112d5bfcdf9f20108c900224030948c1" class="message" data-pjax="true" title="first push of the sources, add reference to MSAGL to license">first push of the sources, add reference to MSAGL to license</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-02-26T00:39:36Z" is="time-ago" title="26. Feb. 2015 01:39 MEZ">a month ago</time></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="https://github.com/Microsoft/automatic-graph-layout/blob/master/LICENSE" class="js-directory-link" id="9879d6db96fd29134fc802214163b95a-6175374395768e3ae00b46cd815cfc8eec98cb5b" title="LICENSE">LICENSE</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="https://github.com/Microsoft/automatic-graph-layout/commit/0a902c5b112d5bfcdf9f20108c900224030948c1" class="message" data-pjax="true" title="first push of the sources, add reference to MSAGL to license">first push of the sources, add reference to MSAGL to license</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-02-26T00:39:36Z" is="time-ago" title="26. Feb. 2015 01:39 MEZ">a month ago</time></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="./Microsoft_GitHub_files/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16">
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="https://github.com/Microsoft/automatic-graph-layout/blob/master/README.md" class="js-directory-link" id="04c6e90faac2675aa89e2176d2eec7d8-871ed7dc6f91d412ad8bf7a43b941b20de494796" title="README.md">README.md</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="https://github.com/Microsoft/automatic-graph-layout/commit/6381aaf7deb6f2b606e9c32f6c83e74722d56fbb" class="message" data-pjax="true" title="Copied details from Microsoft Research page.
+
+Page: http://research.microsoft.com/en-us/projects/msagl/">Copied details from Microsoft Research page.</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-03-28T02:52:01Z" is="time-ago" title="28. März 2015 03:52 MEZ">10 days ago</time></span>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+  <div id="readme" class="boxed-group flush clearfix announce instapaper_body md">
+    <h3>
+      <span class="octicon octicon-book"></span>
+      README.md
+    </h3>
+
+    <article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1>
+<a id="user-content-microsoft-automatic-graph-layout" class="anchor" href="https://github.com/Microsoft/automatic-graph-layout#microsoft-automatic-graph-layout" aria-hidden="true"><span class="octicon octicon-link"></span></a>Microsoft Automatic Graph Layout</h1>
+
+<p>A set of tools for graph layout and viewing</p>
+
+<p>The simplest way to start with MSAGL in C# is to open GraphLayout.sln in Visual Studio 2013, and have a look at Samples there.</p>
+
+<p>MSAGL is a .NET tool for graph layout and viewing. It was developed in Microsoft by Lev Nachmanson, Sergey Pupyrev, Tim Dwyer and Ted Hart. MSAGL is available as open source at <a href="https://github.com/Microsoft/automatic-graph-layout.git">https://github.com/Microsoft/automatic-graph-layout.git</a>.</p>
+
+<h2>
+<a id="user-content-the-distribution-content-and-important-features" class="anchor" href="https://github.com/Microsoft/automatic-graph-layout#the-distribution-content-and-important-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Distribution Content and Important Features</h2>
+
+<p>The package contains the following:</p>
+
+<ul class="task-list">
+<li>Layout engine (Microsoft.MSAGL.dll) - The core layout functionality. This component can be used directly in cases when visualization is handled by a tool other than MSAGL.</li>
+<li>Drawing module (Microsoft.MSAGL.Drawing.dll) - The Definitions of different drawing attributes like colors, line styles, etc. It also contains definitions of a node class, an edge class, and a graph class. By using these classes a user can create a graph object and use it later for layout, and rendering.</li>
+<li>Viewer control (Microsoft.MSAGL.GraphViewerGDIGraph.dll) - The viewer control, and  some other rendering functionality.</li>
+</ul>
+
+<p>Some important features of the viewer are:</p>
+
+<ul class="task-list">
+<li>Pan and Zoom of the graph.</li>
+<li>Forward and Backward navigation.</li>
+<li>Ability to configure tooltips and highlighting of graph entities.</li>
+<li>Ability to search for and focus on entities of the graph.</li>
+</ul>
+
+<h1>
+<a id="user-content-code-samples" class="anchor" href="https://github.com/Microsoft/automatic-graph-layout#code-samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Samples</h1>
+
+<p>The code snippet demonstrates the basic usage of the viewer. It uses the C# language.</p>
+
+<h2>
+<a id="user-content-the-viewer-sample" class="anchor" href="https://github.com/Microsoft/automatic-graph-layout#the-viewer-sample" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Viewer sample</h2>
+
+<p><a href="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f6162632e6a7067" target="_blank"><img src="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f6162632e6a7067" alt="Drawing of the graph from the sampleDrawing of the graph from the sample" data-canonical-src="http://research.microsoft.com/en-us/projects/msagl/abc.jpg" style="max-width:100%;"></a></p>
+
+<p><em>Drawing of the graph from the sampleDrawing of the graph from the sample</em></p>
+
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> System;
+<span class="pl-k">using</span> System.Collections.Generic; 
+<span class="pl-k">using</span> System.Windows.Forms; 
+<span class="pl-k">class</span> <span class="pl-en">ViewerSample</span> { 
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">Main</span>() { 
+    <span class="pl-c">//create a form </span>
+        System.Windows.Forms.Form form = <span class="pl-k">new</span> System.Windows.Forms.Form(); 
+    <span class="pl-c">//create a viewer object </span>
+        Microsoft.Msagl.GraphViewerGdi.GViewer viewer = <span class="pl-k">new</span> Microsoft.Msagl.GraphViewerGdi.GViewer(); 
+    <span class="pl-c">//create a graph object </span>
+        Microsoft.Msagl.Drawing.Graph graph = <span class="pl-k">new</span> Microsoft.Msagl.Drawing.Graph(<span class="pl-s"><span class="pl-pds">"</span>graph<span class="pl-pds">"</span></span>); 
+    <span class="pl-c">//create the graph content </span>
+        graph.AddEdge(<span class="pl-s"><span class="pl-pds">"</span>A<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>B<span class="pl-pds">"</span></span>);
+        graph.AddEdge(<span class="pl-s"><span class="pl-pds">"</span>B<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>C<span class="pl-pds">"</span></span>); 
+        graph.AddEdge(<span class="pl-s"><span class="pl-pds">"</span>A<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>C<span class="pl-pds">"</span></span>).EdgeAttr.Color = Microsoft.Msagl.Drawing.Color.Green; 
+        graph.FindNode(<span class="pl-s"><span class="pl-pds">"</span>A<span class="pl-pds">"</span></span>).Attr.Fillcolor = Microsoft.Msagl.Drawing.Color.Magenta; 
+        graph.FindNode(<span class="pl-s"><span class="pl-pds">"</span>B<span class="pl-pds">"</span></span>).Attr.Fillcolor = Microsoft.Msagl.Drawing.Color.MistyRose; 
+        Microsoft.Msagl.Drawing.Node c = graph.FindNode(<span class="pl-s"><span class="pl-pds">"</span>C<span class="pl-pds">"</span></span>);  
+        c.Attr.Fillcolor = Microsoft.Msagl.Drawing.Color.PaleGreen;
+        c.Attr.Shape = Microsoft.Msagl.Drawing.Shape.Diamond; 
+    <span class="pl-c">//bind the graph to the viewer </span>
+        viewer.Graph = graph; 
+    <span class="pl-c">//associate the viewer with the form </span>
+        form.SuspendLayout(); 
+        viewer.Dock = System.Windows.Forms.DockStyle.Fill; 
+        form.Controls.Add(viewer); 
+        form.ResumeLayout(); 
+    <span class="pl-c">//show the form </span>
+        form.ShowDialog(); 
+    } 
+}</pre></div>
+
+<p><a href="http://research.microsoft.com/en-us/projects/msagl/codesamples.aspx">More code samples…</a></p>
+
+<h1>
+<a id="user-content-layouts-created-by-msagl" class="anchor" href="https://github.com/Microsoft/automatic-graph-layout#layouts-created-by-msagl" aria-hidden="true"><span class="octicon octicon-link"></span></a>Layouts Created by MSAGL</h1>
+
+<p><a href="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f31393566316232333131366234663034396236653564633831356439366338392e706e67" target="_blank"><img src="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f31393566316232333131366234663034396236653564633831356439366338392e706e67" alt="" data-canonical-src="http://research.microsoft.com/en-us/projects/msagl/195f1b23116b4f049b6e5dc815d96c89.png" style="max-width:100%;"></a>
+<a href="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f65376338653839366266643934326637383736633339346335323530613538342e6a7067" target="_blank"><img src="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f65376338653839366266643934326637383736633339346335323530613538342e6a7067" alt="" data-canonical-src="http://research.microsoft.com/en-us/projects/msagl/e7c8e896bfd942f7876c394c5250a584.jpg" style="max-width:100%;"></a>
+<a href="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f63333438323661356533616634636563626438313635666162633934376233362e6a7067" target="_blank"><img src="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f63333438323661356533616634636563626438313635666162633934376233362e6a7067" alt="" data-canonical-src="http://research.microsoft.com/en-us/projects/msagl/c34826a5e3af4cecbd8165fabc947b36.jpg" style="max-width:100%;"></a>
+<a href="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f34346137623131373734613534636162393261336637356139353031363031622e706e67" target="_blank"><img src="./Microsoft_GitHub_files/687474703a2f2f72657365617263682e6d6963726f736f66742e636f6d2f656e2d75732f70726f6a656374732f6d7361676c2f34346137623131373734613534636162393261336637356139353031363031622e706e67" alt="" data-canonical-src="http://research.microsoft.com/en-us/projects/msagl/44a7b11774a54cab92a3f75a9501601b.png" style="max-width:100%;"></a></p>
+</article>
+  </div>
+
+
+        </div>
+
+      </div><!-- /.repo-container -->
+      <div class="modal-backdrop"></div>
+    </div><!-- /.container -->
+  </div><!-- /.site -->
+
+
+    </div><!-- /.wrapper -->
+
+      <div class="container">
+  <div class="site-footer" role="contentinfo">
+    <ul class="site-footer-links right">
+        <li><a href="https://status.github.com/" data-ga-click="Footer, go to status, text:status">Status</a></li>
+      <li><a href="https://developer.github.com/" data-ga-click="Footer, go to api, text:api">API</a></li>
+      <li><a href="https://training.github.com/" data-ga-click="Footer, go to training, text:training">Training</a></li>
+      <li><a href="https://shop.github.com/" data-ga-click="Footer, go to shop, text:shop">Shop</a></li>
+        <li><a href="https://github.com/blog" data-ga-click="Footer, go to blog, text:blog">Blog</a></li>
+        <li><a href="https://github.com/about" data-ga-click="Footer, go to about, text:about">About</a></li>
+
+    </ul>
+
+    <a href="https://github.com/" aria-label="Homepage">
+      <span class="mega-octicon octicon-mark-github" title="GitHub"></span>
+</a>
+    <ul class="site-footer-links">
+      <li>© 2015 <span title="0.03700s from github-fe124-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
+        <li><a href="https://github.com/site/terms" data-ga-click="Footer, go to terms, text:terms">Terms</a></li>
+        <li><a href="https://github.com/site/privacy" data-ga-click="Footer, go to privacy, text:privacy">Privacy</a></li>
+        <li><a href="https://github.com/security" data-ga-click="Footer, go to security, text:security">Security</a></li>
+        <li><a href="https://github.com/contact" data-ga-click="Footer, go to contact, text:contact">Contact</a></li>
+    </ul>
+  </div>
+</div>
+
+
+    <div class="fullscreen-overlay js-fullscreen-overlay" id="fullscreen_overlay">
+  <div class="fullscreen-container js-suggester-container">
+    <div class="textarea-wrap">
+      <textarea name="fullscreen-contents" id="fullscreen-contents" class="fullscreen-contents js-fullscreen-contents" placeholder=""></textarea>
+      <div class="suggester-container">
+        <div class="suggester fullscreen-suggester js-suggester js-navigation-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fullscreen-sidebar">
+    <a href="https://github.com/Microsoft/automatic-graph-layout#" class="exit-fullscreen js-exit-fullscreen tooltipped tooltipped-w" aria-label="Exit Zen Mode">
+      <span class="mega-octicon octicon-screen-normal"></span>
+    </a>
+    <a href="https://github.com/Microsoft/automatic-graph-layout#" class="theme-switcher js-theme-switcher tooltipped tooltipped-w" aria-label="Switch themes">
+      <span class="octicon octicon-color-mode"></span>
+    </a>
+  </div>
+</div>
+
+
+
+    
+    
+
+    <div id="ajax-error-message" class="flash flash-error">
+      <span class="octicon octicon-alert"></span>
+      <a href="https://github.com/Microsoft/automatic-graph-layout#" class="octicon octicon-x flash-close js-ajax-error-dismiss" aria-label="Dismiss error"></a>
+      Something went wrong with that request. Please try again.
+    </div>
+
+
+      <script crossorigin="anonymous" src="./Microsoft_GitHub_files/frameworks-2c8ae50712a47d2b83d740cb875d55cdbbb3fdbccf303951cc6b7e63731e0c38.js"></script>
+      <script async="async" crossorigin="anonymous" src="./Microsoft_GitHub_files/github-f5ada145ff6db8369f07f1a97f8acd67b8c4d0ed98fc6d863f82e1afac262ee3.js"></script>
+      
+      
+
+  
+
+
+<div id="global-zeroclipboard-html-bridge" class="global-zeroclipboard-container" style="position: absolute; left: 0px; top: -9999px; width: 1px; height: 1px; z-index: 999999999;"><object id="global-zeroclipboard-flash-bridge" name="global-zeroclipboard-flash-bridge" width="100%" height="100%" type="application/x-shockwave-flash" data="https://assets-cdn.github.com/flash/ZeroClipboard.v2.1.6.swf"><param name="allowScriptAccess" value="always"><param name="allowNetworking" value="all"><param name="menu" value="false"><param name="wmode" value="transparent"><param name="flashvars" value="trustedOrigins=github.com%2C%2F%2Fgithub.com%2Chttps%3A%2F%2Fgithub.com&amp;swfObjectId=global-zeroclipboard-flash-bridge"></object></div></body></html>
