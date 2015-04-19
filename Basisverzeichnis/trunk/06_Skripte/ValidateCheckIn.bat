@@ -27,6 +27,7 @@ call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunFxCop.bat" -target="%SWP_S
 exit /b %internalErrorLevel%
 
 
+REM :call_and_check_errorlevel <COMMAND>
 :call_and_check_errorlevel <COMMAND>
 for %%F in ("%~1") do set "cmdName=%%~nF"
 echo=============================================================================================
