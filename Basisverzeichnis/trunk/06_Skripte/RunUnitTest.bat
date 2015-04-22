@@ -27,13 +27,13 @@ if not defined -target.Necessity          set "-target.Necessity="Required""
 if not defined -target.Multiplicity       set "-target.Multiplicity="Single""
 if not defined -target.GuiEntryType       set "-target.GuiEntryType="File""
 if not defined -target.Values             set "-target.Values="""
-if not defined -target.GuiDefaultValues   set "-target.GuiDefaultValues="%SWP_BRANCH_ROOT%\03_Implementierung\src\NUnitTestLib\NUnitTestLib\bin\Debug\NUnitTestLib.dll""
+if not defined -target.GuiDefaultValues   set "-target.GuiDefaultValues="%SWP_SRC_OUTDIR%""
 
 if not defined -logDir.Usage              set "-logDir.Usage="Select root out directory for xml file. This directory wwill be expanded by target name.""
 if not defined -logDir.Necessity          set "-logDir.Necessity="Optional""
 if not defined -logDir.GuiEntryType       set "-logDir.GuiEntryType="Folder""
 if not defined -logDir.Multiplicity       set "-logDir.Multiplicity="Single""
-if not defined -logDir.GuiDefaultValues   set "-logDir.GuiDefaultValues="!FxCopDropLocation!""
+if not defined -logDir.GuiDefaultValues   set "-logDir.GuiDefaultValues="%SWP_BUILD_ROOT%\UnitTest\""
 
 call %SWP_PARSEARGUMENTS_GUI_BAT% %*
 if errorlevel 1 exit /b %ERRORLEVEL%
@@ -50,14 +50,15 @@ REM get plain target name
 for %%F in ("!-target!") do set "targetName=%%~nF"
 
 REM define log directory and log file
-set logDir=!-logDir!
+set "logDir=!-logDir!"
 if not defined -logDir (
-  set "logDir=%SWP_BRANCH_ROOT%\Build\!-configuration!\UnitTest\!targetName!\Log"
-  if not exist !logDir! (
-    echo Create !logDir!.
-    mkdir "%SWP_BRANCH_ROOT%\Build\!-configuration!\UnitTest\!targetName!\Log"
-  )
+  set "logDir=%SWP_BUILD_ROOT%\UnitTest\"
 )
+if not exist "!logDir!" (
+	echo Create !logDir!.
+	mkdir "!logDir!"
+)
+
 set logFile=!logDir!\%SWP_LOCALTIME_DATESTAMP%_!targetName!.xml
 if exist !logFile! del !logFile!
 
