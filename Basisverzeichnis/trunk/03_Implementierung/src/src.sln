@@ -1,12 +1,68 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphFramework", "GraphFramework\GraphFramework.csproj", "{6D580AFA-C172-4BFC-9C43-E79B2C44B44F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphFramework.Tests", "GraphFramework.Tests\GraphFramework.Tests.csproj", "{2706BE38-F8DC-4225-AC7C-E5344709E479}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.View", "UseCaseAnalyser\UseCaseAnalyser.View.csproj", "{BBBA981A-FFD8-4A6E-BB96-81A8B073D593}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tool", "Tool", "{AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.Model", "UseCaseAnalyser.Model\UseCaseAnalyser.Model.csproj", "{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphFramework.Visualiser", "GraphFramework.Visualiser\GraphFramework.Visualiser.csproj", "{F88D8157-F7B7-46C7-B012-E7C559CB0094}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.Model.Tests", "UseCaseAnalyser.Model.Tests\UseCaseAnalyser.Model.Tests.csproj", "{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
 		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6D580AFA-C172-4BFC-9C43-E79B2C44B44F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D580AFA-C172-4BFC-9C43-E79B2C44B44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D580AFA-C172-4BFC-9C43-E79B2C44B44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D580AFA-C172-4BFC-9C43-E79B2C44B44F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2706BE38-F8DC-4225-AC7C-E5344709E479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2706BE38-F8DC-4225-AC7C-E5344709E479}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2706BE38-F8DC-4225-AC7C-E5344709E479}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2706BE38-F8DC-4225-AC7C-E5344709E479}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBBA981A-FFD8-4A6E-BB96-81A8B073D593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBBA981A-FFD8-4A6E-BB96-81A8B073D593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBBA981A-FFD8-4A6E-BB96-81A8B073D593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBBA981A-FFD8-4A6E-BB96-81A8B073D593}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6D580AFA-C172-4BFC-9C43-E79B2C44B44F} = {8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}
+		{2706BE38-F8DC-4225-AC7C-E5344709E479} = {8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}
+		{BBBA981A-FFD8-4A6E-BB96-81A8B073D593} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
+		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
+		{F88D8157-F7B7-46C7-B012-E7C559CB0094} = {8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}
+		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
 	EndGlobalSection
 EndGlobal
