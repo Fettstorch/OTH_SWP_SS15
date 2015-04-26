@@ -1,0 +1,10 @@
+﻿<Window x:Class="GraphDrawing.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:drawingElements="clr-namespace:GraphDrawing.DrawingElements"
+        Title="MainWindow" Height="850" Width="825" PreviewMouseLeftButtonUp="UIElement_OnMouseUp"  MouseMove="MainWindow_OnMouseMove">
+    <Grid Margin="10">
+        <Canvas Name="DrawingCanvas"/>
+            
+    </Grid>
+</Window>
