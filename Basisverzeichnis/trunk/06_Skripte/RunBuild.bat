@@ -26,7 +26,7 @@ if not defined -solution.Necessity          set "-solution.Necessity="Required""
 if not defined -solution.Multiplicity       set "-solution.Multiplicity="Single""
 if not defined -solution.GuiEntryType       set "-solution.GuiEntryType="File""
 if not defined -solution.Values             set "-solution.Values="""
-if not defined -solution.GuiDefaultValues   set "-solution.GuiDefaultValues="%SWP_BRANCH_ROOT%\03_Implementierung\src\src.sln""
+if not defined -solution.GuiDefaultValues   set "-solution.GuiDefaultValues="%SWP_SRC_ROOT%/src.sln""
 
 if not defined -configuration.Usage              set "-configuration.Usage="Select configuration that should to built.""
 if not defined -configuration.Necessity          set "-configuration.Necessity="Required""
@@ -65,10 +65,10 @@ for %%F in ("!-solution!") do set "solutionName=%%~nF"
 REM define log directory and log file
 set logDir=!-logDir!
 if not defined -logDir (
-  set "logDir=%SWP_BRANCH_ROOT%\Build\!-configuration!\!solutionName!\Log"
+  set "logDir=%SWP_BUILD_ROOT%\log\!-configuration!\!solutionName!"
   if not exist !logDir! (
     echo Create !logDir!.
-    mkdir "%SWP_BRANCH_ROOT%\Build\!-configuration!\!solutionName!\Log"
+    mkdir "%SWP_BUILD_ROOT%\log\!-configuration!\!solutionName!"
   )
 )
 set logFile=!logDir!\%SWP_LOCALTIME_DATESTAMP%_!solutionName!.log
