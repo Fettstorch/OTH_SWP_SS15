@@ -90,7 +90,7 @@ namespace GraphDrawing
         //{
         //    for (int i = 0; i < source.KantenList.Count; i++)
         //    {
-        //        if (!source.KantenList[i].SourceKnotenUc.Equals(source) && !source.KantenList[i].DestKnotenUc.Equals(source.KantenList[i].SourceKnotenUc))
+        //        if (!source.KantenList[i].SourceKnotenUc.Equals(source) && source.KantenList[i].Type == KanteUc.KantenType.Proecess)
         //        {
         //            source.KantenList[i].DestKnotenUc.Offset = source.Offset + minHeight;
         //            CalcPosition(source.KantenList[i].DestKnotenUc, source.KantenList[i].DestKnotenUc.Offset);
@@ -107,10 +107,8 @@ namespace GraphDrawing
             if (kn1.Variante < kn2.Variante)
                 kn2.Offset = kn1.Offset + minHeight;
 
-            for (int i = 0; i < KnotenList.Count; i++)
-            {
-                KnotenList[i].RecalcKanten();
-            }
+            kn1.RecalcKanten();
+            kn2.RecalcKanten();
 
             return ergKanteUc;
         }
