@@ -1,0 +1,42 @@
+Arbeitspakete Prototyp Graph Visualisierer
+  26.4.2015 Zeit 14:15-14:50
+
+1. Refactoring Prototyp -> Tool
+  -> Umstieg auf GraphFramework 
+     Prio: 8 
+     Vorbedingung: [AddEdge, AddNode, setAttribute]
+  -> Code-Review / Namenskonvention überprüfen
+     Prio: 9
+     Vorbedingung: -
+     
+2. UnitTests für Prototyp
+   Prio: 5 
+   Vorbedingung: Refactoring
+   Zusatz:
+
+3. Definition wie UCs dargestellt werden sollen
+   Prio: 7 
+   Vorbedingung: -
+   Zusatz:
+   
+4. Verbesserter Algorithmus für Knotenposition
+   Prio: 7 
+   Vorbedingung: Definition UCs Darstellung
+   Zusatz:
+   
+5. Verbesserter Algorithmus für Bezierkurven
+   Prio: 4
+   Vorbedingung: Definition UCs Darstellung
+   Zusatz:
+   
+6. Schnittstellendefinition Tool -> GraphControls
+   Prio: 7 
+   Vorbedingung:
+   Zusatz:
+   
+7. OnClick-Events
+   Prio: 7 
+   Vorbedingung:
+   Zusatz:
+
+ 
