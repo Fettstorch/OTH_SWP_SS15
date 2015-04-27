@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 
-public interface INode
+namespace GraphFramework
 {
-	List<IEdge> Edges { get; set; }	// contains all Edges of this Node
+    public interface INode : IGraphElement
+    {
+        List<IEdge> Edges { get; set; }	// contains all Edges of this Node
+    }
 }
