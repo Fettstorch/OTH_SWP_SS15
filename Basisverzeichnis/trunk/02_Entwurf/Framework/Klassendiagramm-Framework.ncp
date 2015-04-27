@@ -10,7 +10,7 @@
         <Location left="207" top="75" />
         <Size width="223" height="111" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">List&lt;IEdge&gt; m_Edges</Member>
+        <Member type="Field">List&lt;IEdge&gt; mEdges</Member>
         <Member type="Property">public List&lt;IEdge&gt; Edges { get; set; }</Member>
         <Modifier>None</Modifier>
       </Entity>
@@ -20,8 +20,8 @@
         <Location left="645" top="163" />
         <Size width="217" height="145" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private INode m_Node1</Member>
-        <Member type="Field">private INode m_Node2</Member>
+        <Member type="Field">private INode mNode1</Member>
+        <Member type="Field">private INode mNode2</Member>
         <Member type="Property">public INode Node1 { get; set; }</Member>
         <Member type="Property">public INode Node2 { get; set; }</Member>
         <Modifier>None</Modifier>
@@ -32,20 +32,20 @@
         <Location left="1418" top="20" />
         <Size width="243" height="315" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private List&lt;INode&gt; m_Nodes</Member>
-        <Member type="Field">private List&lt;IEdge&gt; m_Edges</Member>
+        <Member type="Field">private List&lt;INode&gt; mNodes</Member>
+        <Member type="Field">private List&lt;IEdge&gt; mEdges</Member>
         <Member type="Property">public List&lt;INode&gt; Nodes { get; }</Member>
         <Member type="Property">public List&lt;IEdge&gt; Edges { get; }</Member>
-        <Member type="Method">public void addNode()</Member>
-        <Member type="Method">public bool removeNode()</Member>
-        <Member type="Method">public void addEdge()</Member>
-        <Member type="Method">public bool removeEdge()</Member>
-        <Member type="Method">public List&lt;IEdge&gt; search()</Member>
-        <Member type="Method">public List&lt;INode&gt; search()</Member>
-        <Member type="Method">public IEdge next()</Member>
-        <Member type="Method">public INode next()</Member>
-        <Member type="Method">public IEdge begin()</Member>
-        <Member type="Method">public INode begin()</Member>
+        <Member type="Method">public void AddNode()</Member>
+        <Member type="Method">public bool RemoveNode()</Member>
+        <Member type="Method">public void AddEdge()</Member>
+        <Member type="Method">public bool RemoveEdge()</Member>
+        <Member type="Method">public List&lt;IEdge&gt; Search()</Member>
+        <Member type="Method">public List&lt;INode&gt; Search()</Member>
+        <Member type="Method">public IEdge Next()</Member>
+        <Member type="Method">public INode Next()</Member>
+        <Member type="Method">public IEdge Begin()</Member>
+        <Member type="Method">public INode Begin()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
@@ -54,10 +54,10 @@
         <Location left="923" top="452" />
         <Size width="220" height="145" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private List&lt;IAttribute&gt; m_Attributes</Member>
+        <Member type="Field">private List&lt;IAttribute&gt; mAttributes</Member>
         <Member type="Property">public List&lt;IAttribute&gt; Attributes { get; }</Member>
-        <Member type="Method">public void addAttribute()</Member>
-        <Member type="Method">public bool removeAttribute()</Member>
+        <Member type="Method">public void AddAttribute()</Member>
+        <Member type="Method">public bool RemoveAttribute()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
@@ -66,9 +66,9 @@
         <Location left="1241" top="364" />
         <Size width="198" height="179" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private object m_Value</Member>
-        <Member type="Field">private System.Type m_Type</Member>
-        <Member type="Field">private string m_Name</Member>
+        <Member type="Field">private object mValue</Member>
+        <Member type="Field">private System.Type mType</Member>
+        <Member type="Field">private string mName</Member>
         <Member type="Property">public object Value { get; set; }</Member>
         <Member type="Property">public System.Type Type { get; set; }</Member>
         <Member type="Property">public string Name { get; set; }</Member>
@@ -82,16 +82,16 @@
         <Collapsed>False</Collapsed>
         <Member type="Property">List&lt;INode&gt; Nodes { get; }</Member>
         <Member type="Property">List&lt;IEdge&gt; Edges { get; }</Member>
-        <Member type="Method">void addNode()</Member>
-        <Member type="Method">bool removeNode()</Member>
-        <Member type="Method">void addEdge()</Member>
-        <Member type="Method">bool removeEdge()</Member>
-        <Member type="Method">List&lt;IEdge&gt; search()</Member>
-        <Member type="Method">List&lt;INode&gt; search()</Member>
-        <Member type="Method">IEdge next()</Member>
-        <Member type="Method">INode next()</Member>
-        <Member type="Method">IEdge begin()</Member>
-        <Member type="Method">INode begin()</Member>
+        <Member type="Method">void AddNode()</Member>
+        <Member type="Method">bool RemoveNode()</Member>
+        <Member type="Method">void AddEdge()</Member>
+        <Member type="Method">bool RemoveEdge()</Member>
+        <Member type="Method">List&lt;IEdge&gt; Search()</Member>
+        <Member type="Method">List&lt;INode&gt; Search()</Member>
+        <Member type="Method">IEdge Next()</Member>
+        <Member type="Method">INode Next()</Member>
+        <Member type="Method">IEdge Begin()</Member>
+        <Member type="Method">INode Begin()</Member>
       </Entity>
       <Entity type="Interface">
         <Name>IAttribute</Name>
@@ -127,8 +127,8 @@
         <Size width="223" height="112" />
         <Collapsed>False</Collapsed>
         <Member type="Property">List&lt;IAttribute&gt; Attributes { get; }</Member>
-        <Member type="Method">void addAttribute()</Member>
-        <Member type="Method">bool removeAttribute()</Member>
+        <Member type="Method">void AddAttribute()</Member>
+        <Member type="Method">bool RemoveAttribute()</Member>
       </Entity>
     </Entities>
     <Relationships>
@@ -189,8 +189,6 @@
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -239,8 +237,6 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="3" second="4">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Bidirectional</Direction>
@@ -249,8 +245,6 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="2" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -267,8 +261,6 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="1" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -285,8 +277,7 @@
         <StartMultiplicity>0..*</StartMultiplicity>
       </Relationship>
       <Relationship type="Association" first="0" second="1">
-        <Label>
-        </Label>
+        <Label>&lt;&lt;verbindet</Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -298,7 +289,7 @@
           <Y>175</Y>
         </BendPoint>
         <Direction>Bidirectional</Direction>
-        <AssociationType>Composition</AssociationType>
+        <AssociationType>Association</AssociationType>
         <StartRole>2</StartRole>
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
