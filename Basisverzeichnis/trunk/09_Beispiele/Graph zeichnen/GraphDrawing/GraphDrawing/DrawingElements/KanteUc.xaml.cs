@@ -48,15 +48,25 @@ namespace GraphDrawing.DrawingElements
             switch (Type)
             {
                 case KantenType.Proecess:
-                    if (Canvas.GetTop(SourceKnotenUc) < Canvas.GetTop(DestKnotenUc))
+                    if (Canvas.GetTop(SourceKnotenUc) + SourceKnotenUc.Height < Canvas.GetTop(DestKnotenUc))
                     {
                         StatusSourceElement = DockedStatus.Bottom;
                         StatusDestElement = DockedStatus.Top;
                     }
-                    else
+                    else if (Canvas.GetTop(DestKnotenUc) + DestKnotenUc.Height < Canvas.GetTop(SourceKnotenUc))
                     {
                         StatusSourceElement = DockedStatus.Top;
                         StatusDestElement = DockedStatus.Bottom;
+                    }
+                    else if (Canvas.GetLeft(SourceKnotenUc) + SourceKnotenUc.Width < Canvas.GetLeft(DestKnotenUc))
+                    {
+                        StatusSourceElement = DockedStatus.Rigth;
+                        StatusDestElement = DockedStatus.Left;
+                    }
+                    else if (Canvas.GetLeft(SourceKnotenUc) > Canvas.GetLeft(DestKnotenUc)+ DestKnotenUc.Width)
+                    {
+                        StatusSourceElement = DockedStatus.Left;
+                        StatusDestElement = DockedStatus.Rigth;
                     }
                     break;
                 case KantenType.Recursiv:
@@ -74,21 +84,45 @@ namespace GraphDrawing.DrawingElements
             int amountIndexStart = startElement.GetAmountOfIndexOfKante(this);
             int amountIndexEnd = endElement.GetAmountOfIndexOfKante(this);
 
-            Point startpoint,endpoint;
+            Point startpoint = new Point(0,0);
+            Point endpoint = new Point(0, 0); ;
             switch (Type)
             {
                 case KantenType.Proecess:
-                    startpoint = new Point(Canvas.GetLeft(SourceKnotenUc) + (SourceKnotenUc.Width / amountIndexStart) * indexStartElement, Canvas.GetTop(SourceKnotenUc));
-                    endpoint = new Point(Canvas.GetLeft(DestKnotenUc) + (DestKnotenUc.Width / amountIndexEnd) * indexDestElement, Canvas.GetTop(DestKnotenUc));
-                    double heightStart, heightEnd;
-                    heightStart = StatusSourceElement == DockedStatus.Bottom ? startElement.Height : 0;
-                    heightEnd = StatusDestElement == DockedStatus.Bottom ? startElement.Height : 0;
+                case KantenType.ReturnProcess:
+                    
+                    switch (StatusSourceElement)
+                    {
+                        case DockedStatus.Top:
+                        case DockedStatus.Bottom:
+                            startpoint = new Point(Canvas.GetLeft(SourceKnotenUc) + (SourceKnotenUc.Width / amountIndexStart) * indexStartElement, Canvas.GetTop(SourceKnotenUc));
+                            endpoint = new Point(Canvas.GetLeft(DestKnotenUc) + (DestKnotenUc.Width / amountIndexEnd) * indexDestElement, Canvas.GetTop(DestKnotenUc));
+                            double heightStart = StatusSourceElement == DockedStatus.Bottom ? startElement.Height : 0;
+                            double heightEnd = StatusDestElement == DockedStatus.Bottom ? endElement.Height : 0;
 
-                    pthFigure.StartPoint = new Point(startpoint.X, startpoint.Y + heightStart);
-                    bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
-                    bzSeg.Point2 = new Point(endpoint.X, startpoint.Y + heightStart);
-                    bzSeg.Point3 = new Point(endpoint.X, endpoint.Y + heightEnd); ;   
+                            pthFigure.StartPoint = new Point(startpoint.X, startpoint.Y + heightStart);
+                            bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
+                            bzSeg.Point2 = new Point(endpoint.X, startpoint.Y + heightStart);
+                            bzSeg.Point3 = new Point(endpoint.X, endpoint.Y + heightEnd); 
+                        break;
+
+                        case DockedStatus.Rigth:
+                        case DockedStatus.Left:
+                            double widthStart = StatusSourceElement == DockedStatus.Rigth ? startElement.Width : 0;
+                            double widthEnd = StatusDestElement == DockedStatus.Rigth ? endElement.Width : 0;
+                            
+                            startpoint = new Point(Canvas.GetLeft(SourceKnotenUc) + widthStart, Canvas.GetTop(SourceKnotenUc) + (SourceKnotenUc.Height / amountIndexStart) * indexStartElement);
+                            endpoint = new Point(Canvas.GetLeft(DestKnotenUc) + widthEnd, Canvas.GetTop(DestKnotenUc) + (DestKnotenUc.Height / amountIndexEnd) * indexDestElement);
+                            pthFigure.StartPoint = startpoint;
+                            double correctfactor = Type == KantenType.ReturnProcess ? 1 : 0;
+
+                            bzSeg.Point1 = new Point(startpoint.X + correctfactor * SourceKnotenUc.Width / 2, startpoint.Y);
+                            bzSeg.Point2 = new Point(startpoint.X + correctfactor * DestKnotenUc.Width / 2, endpoint.Y);
+                            bzSeg.Point3 = endpoint;
+                        break;
+                    }
                     break;
+                
                 case KantenType.Recursiv:
                     startpoint = new Point(Canvas.GetLeft(SourceKnotenUc), Canvas.GetTop(SourceKnotenUc)+(SourceKnotenUc.Height/ amountIndexStart) * indexStartElement);
                     pthFigure.StartPoint = startpoint;
@@ -96,15 +130,7 @@ namespace GraphDrawing.DrawingElements
                     bzSeg.Point2 = new Point(startpoint.X - (SourceKnotenUc.Width/2), startpoint.Y + SourceKnotenUc.Width/2);
                     bzSeg.Point3 = startpoint;
                     break;
-                case KantenType.ReturnProcess:
-                    startpoint = new Point(Canvas.GetLeft(SourceKnotenUc) + SourceKnotenUc.Width, Canvas.GetTop(SourceKnotenUc) + (SourceKnotenUc.Height / amountIndexStart) * indexStartElement);
-                    endpoint = new Point(Canvas.GetLeft(DestKnotenUc) + DestKnotenUc.Width, Canvas.GetTop(DestKnotenUc) + (DestKnotenUc.Height / amountIndexEnd) * indexDestElement);
-            
-                    pthFigure.StartPoint = startpoint;
-                    bzSeg.Point1 = new Point(startpoint.X + SourceKnotenUc.Width / 2, startpoint.Y);
-                    bzSeg.Point2 = new Point(startpoint.X + DestKnotenUc.Width / 2, endpoint.Y);
-                    bzSeg.Point3 = endpoint;   
-                    break;
+              
          
             }
             myPathSegmentCollection.Clear();
@@ -130,6 +156,7 @@ namespace GraphDrawing.DrawingElements
                     ArrowCappedLine.Stroke = new SolidColorBrush(Colors.Orange);
                 else
                     ArrowCappedLine.Stroke = new SolidColorBrush(Colors.Black);
+                RecalcBezier(SourceKnotenUc,DestKnotenUc);
             }
         }
 
