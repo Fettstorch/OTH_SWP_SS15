@@ -1,9 +1,22 @@
+using System;
+
 namespace GraphFramework
 {
     public interface IAttribute
     {
-        object Value { get; set; }		// value of Attribute
-        System.Type Type { get; set; }	// type of Value
-        string Name { get; set; }		// name to identify Attribute
+        /// <summary>
+        /// value of the attriute
+        /// </summary>
+        object Value { get; set; }
+
+        /// <summary>
+        /// type of the value
+        /// </summary>
+        Type Type { get; set; }
+
+        /// <summary>
+        /// name to identify the attribute
+        /// </summary>
+        string Name { get; set; }
     }
 }
