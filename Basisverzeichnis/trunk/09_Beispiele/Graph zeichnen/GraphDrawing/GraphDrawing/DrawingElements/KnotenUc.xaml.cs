@@ -43,8 +43,10 @@ namespace GraphDrawing.DrawingElements
             StartKnoten = false;
             Offset = 0;
             Variante=variant;
+            Selected = false;
             InitializeComponent();
             lblIndex.Content = Index =useCaseIdnex;
+
         }
 
         public void RecalcKanten()
@@ -107,6 +109,28 @@ namespace GraphDrawing.DrawingElements
             return index;
         }
 
+        public Brush ColorBrush { get; set; }
+        private bool selected;
+
+        public bool Selected
+        {
+            get { return selected; }
+            set
+            {
+                selected = value;
+                if (selected)
+                    ColorBrush = Brushes.Orange;
+                else
+                    ColorBrush = Brushes.Black;
+               // RecalcBezier(SourceKnotenUc, DestKnotenUc);
+            }
+        }
+
         public readonly List<KanteUc> KantenList = new List<KanteUc>();
+
+        private void KnotenUc_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Selected = !Selected;
+        }
     }
 }
