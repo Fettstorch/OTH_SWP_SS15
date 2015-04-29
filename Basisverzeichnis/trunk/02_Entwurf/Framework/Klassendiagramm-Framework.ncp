@@ -8,108 +8,108 @@
         <Name>Node</Name>
         <Access>Public</Access>
         <Location left="207" top="75" />
-        <Size width="223" height="111" />
+        <Size width="218" height="94" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">List&lt;IEdge&gt; mEdges</Member>
-        <Member type="Property">public List&lt;IEdge&gt; Edges { get; set; }</Member>
+        <Member type="Constructor">public Node(params IAttribute[] attributes)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>Edge</Name>
         <Access>Public</Access>
-        <Location left="645" top="163" />
-        <Size width="217" height="145" />
+        <Location left="645" top="162" />
+        <Size width="323" height="162" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private INode mNode1</Member>
         <Member type="Field">private INode mNode2</Member>
-        <Member type="Property">public INode Node1 { get; set; }</Member>
-        <Member type="Property">public INode Node2 { get; set; }</Member>
+        <Member type="Constructor">internal Edge(INode n1, INode n2, params IAttribute[] attributes)</Member>
+        <Member type="Property">public INode Node1 { get; }</Member>
+        <Member type="Property">public INode Node2 { get; }</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>Graph</Name>
         <Access>Public</Access>
-        <Location left="1418" top="20" />
-        <Size width="243" height="315" />
+        <Location left="1295" top="17" />
+        <Size width="532" height="315" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private List&lt;INode&gt; mNodes</Member>
-        <Member type="Field">private List&lt;IEdge&gt; mEdges</Member>
-        <Member type="Property">public List&lt;INode&gt; Nodes { get; }</Member>
-        <Member type="Property">public List&lt;IEdge&gt; Edges { get; }</Member>
-        <Member type="Method">public void AddNode()</Member>
-        <Member type="Method">public bool RemoveNode()</Member>
-        <Member type="Method">public void AddEdge()</Member>
-        <Member type="Method">public bool RemoveEdge()</Member>
-        <Member type="Method">public List&lt;IEdge&gt; Search()</Member>
-        <Member type="Method">public List&lt;INode&gt; Search()</Member>
-        <Member type="Method">public IEdge Next()</Member>
-        <Member type="Method">public INode Next()</Member>
-        <Member type="Method">public IEdge Begin()</Member>
-        <Member type="Method">public INode Begin()</Member>
+        <Member type="Field">private readonly List&lt;INode&gt; mNodes</Member>
+        <Member type="Field">private readonly List&lt;IEdge&gt; mEdges</Member>
+        <Member type="Constructor">public Graph(params IAttribute[] attributes)</Member>
+        <Member type="Property">public IEnumerable&lt;INode&gt; Nodes { get; }</Member>
+        <Member type="Property">public IEnumerable&lt;IEdge&gt; Edges { get; }</Member>
+        <Member type="Method">public void AddNode(INode node, params IAttribute[] attributes)</Member>
+        <Member type="Method">public void RemoveNode(INode node)</Member>
+        <Member type="Method">public void AddEdge(INode n1, INode n2, params IAttribute[] attributes)</Member>
+        <Member type="Method">public void RemoveEdge(IEdge edge)</Member>
+        <Member type="Method">public IEnumerable&lt;INode&gt; GetSingleNodes()</Member>
+        <Member type="Method">public static IGraph MergeGraph(IGraph g1, IGraph g2)</Member>
+        <Member type="Method">public static IGraph MergeGraph(IGraph g1, IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
+        <Member type="Method">public void AddGraph(IGraph g2)</Member>
+        <Member type="Method">public void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>GraphElement</Name>
         <Access>Public</Access>
-        <Location left="923" top="452" />
-        <Size width="220" height="145" />
+        <Location left="850" top="452" />
+        <Size width="259" height="162" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private List&lt;IAttribute&gt; mAttributes</Member>
-        <Member type="Property">public List&lt;IAttribute&gt; Attributes { get; }</Member>
-        <Member type="Method">public void AddAttribute()</Member>
-        <Member type="Method">public bool RemoveAttribute()</Member>
-        <Modifier>None</Modifier>
+        <Member type="Property">public IEnumerable&lt;IAttribute&gt; Attributes { get; }</Member>
+        <Member type="Method">public void AddAttribute(IAttribute attribute)</Member>
+        <Member type="Method">public void RemoveAttribute(IAttribute attribute)</Member>
+        <Member type="Method">public void RemoveAttribute(string name)</Member>
+        <Modifier>Abstract</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>Attribute</Name>
         <Access>Public</Access>
         <Location left="1241" top="364" />
-        <Size width="198" height="179" />
+        <Size width="313" height="196" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private object mValue</Member>
         <Member type="Field">private System.Type mType</Member>
         <Member type="Field">private string mName</Member>
+        <Member type="Constructor">public Attribute(object value, System.Type type, string name)</Member>
         <Member type="Property">public object Value { get; set; }</Member>
-        <Member type="Property">public System.Type Type { get; set; }</Member>
+        <Member type="Property">public System.Type Type { get; }</Member>
         <Member type="Property">public string Name { get; set; }</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Interface">
         <Name>IGraph</Name>
         <Access>Public</Access>
-        <Location left="1492" top="606" />
-        <Size width="190" height="265" />
+        <Location left="1636" top="481" />
+        <Size width="537" height="248" />
         <Collapsed>False</Collapsed>
-        <Member type="Property">List&lt;INode&gt; Nodes { get; }</Member>
-        <Member type="Property">List&lt;IEdge&gt; Edges { get; }</Member>
-        <Member type="Method">void AddNode()</Member>
-        <Member type="Method">bool RemoveNode()</Member>
-        <Member type="Method">void AddEdge()</Member>
-        <Member type="Method">bool RemoveEdge()</Member>
-        <Member type="Method">List&lt;IEdge&gt; Search()</Member>
-        <Member type="Method">List&lt;INode&gt; Search()</Member>
-        <Member type="Method">IEdge Next()</Member>
-        <Member type="Method">INode Next()</Member>
-        <Member type="Method">IEdge Begin()</Member>
-        <Member type="Method">INode Begin()</Member>
+        <Member type="Property">IEnumerable&lt;INode&gt; Nodes { get; }</Member>
+        <Member type="Property">IEnumerable&lt;IEdge&gt; Edges { get; }</Member>
+        <Member type="Method">void AddNode(INode node, params IAttribute[] attributes)</Member>
+        <Member type="Method">void RemoveNode(INode node)</Member>
+        <Member type="Method">void AddEdge(INode n1, INode n2, params IAttribute[] attributes)</Member>
+        <Member type="Method">void RemoveEdge(IEdge edge)</Member>
+        <Member type="Method">IEnumerable&lt;INode&gt; GetSingleNodes()</Member>
+        <Member type="Method">static IGraph MergeGraph(IGraph g1, IGraph g2)</Member>
+        <Member type="Method">static IGraph MergeGraph(IGraph g1, IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
+        <Member type="Method">void AddGraph(IGraph g2)</Member>
+        <Member type="Method">void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
       </Entity>
       <Entity type="Interface">
         <Name>IAttribute</Name>
         <Access>Public</Access>
-        <Location left="1241" top="620" />
+        <Location left="1241" top="618" />
         <Size width="198" height="112" />
         <Collapsed>False</Collapsed>
         <Member type="Property">object Value { get; set; }</Member>
-        <Member type="Property">System.Type Type { get; set; }</Member>
+        <Member type="Property">System.Type Type { get; }</Member>
         <Member type="Property">string Name { get; set; }</Member>
       </Entity>
       <Entity type="Interface">
         <Name>INode</Name>
         <Access>Public</Access>
         <Location left="207" top="597" />
-        <Size width="218" height="78" />
+        <Size width="218" height="61" />
         <Collapsed>False</Collapsed>
-        <Member type="Property">List&lt;IEdge&gt; Edges { get; set; }</Member>
       </Entity>
       <Entity type="Interface">
         <Name>IEdge</Name>
@@ -117,18 +117,18 @@
         <Location left="537" top="597" />
         <Size width="162" height="95" />
         <Collapsed>False</Collapsed>
-        <Member type="Property">INode Node1 { get; set; }</Member>
-        <Member type="Property">INode Node2 { get; set; }</Member>
+        <Member type="Property">INode Node1 { get; }</Member>
+        <Member type="Property">INode Node2 { get; }</Member>
       </Entity>
       <Entity type="Interface">
         <Name>IGraphElement</Name>
         <Access>Public</Access>
-        <Location left="944" top="729" />
-        <Size width="223" height="112" />
+        <Location left="880" top="732" />
+        <Size width="270" height="112" />
         <Collapsed>False</Collapsed>
-        <Member type="Property">List&lt;IAttribute&gt; Attributes { get; }</Member>
+        <Member type="Property">IEnumerable&lt;IAttribute&gt; Attributes { get; }</Member>
         <Member type="Method">void AddAttribute()</Member>
-        <Member type="Method">bool RemoveAttribute()</Member>
+        <Member type="Method">void RemoveAttribute()</Member>
       </Entity>
     </Entities>
     <Relationships>
@@ -137,7 +137,7 @@
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
           <X>1320</X>
-          <Y>562</Y>
+          <Y>560</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Realization" first="0" second="7">
@@ -152,12 +152,12 @@
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>1540</X>
-          <Y>361</Y>
+          <X>1715</X>
+          <Y>357</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>1571</X>
-          <Y>577</Y>
+          <X>1715</X>
+          <Y>452</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="8" second="9">
@@ -169,7 +169,7 @@
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>604</X>
-          <Y>250</Y>
+          <Y>249</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="7" second="9">
@@ -180,23 +180,31 @@
           <Y>737</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>918</X>
-          <Y>826</Y>
+          <X>854</X>
+          <Y>829</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="5" second="9">
-        <StartOrientation>Horizontal</StartOrientation>
+        <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1752</X>
+          <Y>754</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1182</X>
+          <Y>807</Y>
+        </BendPoint>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>1393</X>
-          <Y>84</Y>
+          <X>1270</X>
+          <Y>81</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>455</X>
+          <X>450</X>
           <Y>100</Y>
         </BendPoint>
         <Direction>Bidirectional</Direction>
@@ -208,7 +216,7 @@
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
-          <X>982</X>
+          <X>909</X>
           <Y>425</Y>
         </BendPoint>
       </Relationship>
@@ -217,10 +225,10 @@
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>367</X>
-          <Y>227</Y>
+          <Y>210</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>889</X>
+          <X>816</X>
           <Y>508</Y>
         </BendPoint>
       </Relationship>
@@ -228,11 +236,11 @@
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>1337</X>
-          <Y>239</Y>
+          <X>1211</X>
+          <Y>217</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>1098</X>
+          <X>1025</X>
           <Y>425</Y>
         </BendPoint>
       </Relationship>
@@ -248,45 +256,29 @@
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>1393</X>
-          <Y>195</Y>
+          <X>1270</X>
+          <Y>155</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>892</X>
-          <Y>211</Y>
+          <X>996</X>
+          <Y>178</Y>
         </BendPoint>
         <Direction>Bidirectional</Direction>
         <AssociationType>Association</AssociationType>
         <StartMultiplicity>1..*</StartMultiplicity>
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
-      <Relationship type="Association" first="1" second="0">
-        <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
-        <BendPoint relativeToStartShape="True">
-          <X>576</X>
-          <Y>219</Y>
-        </BendPoint>
-        <BendPoint relativeToStartShape="False">
-          <X>455</X>
-          <Y>156</Y>
-        </BendPoint>
-        <Direction>Bidirectional</Direction>
-        <AssociationType>Aggregation</AssociationType>
-        <EndRole>2</EndRole>
-        <StartMultiplicity>0..*</StartMultiplicity>
-      </Relationship>
       <Relationship type="Association" first="0" second="1">
         <Label>&lt;&lt;verbindet</Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>515</X>
-          <Y>129</Y>
+          <X>502</X>
+          <Y>149</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
           <X>620</X>
-          <Y>175</Y>
+          <Y>196</Y>
         </BendPoint>
         <Direction>Bidirectional</Direction>
         <AssociationType>Association</AssociationType>
