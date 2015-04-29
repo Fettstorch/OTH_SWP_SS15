@@ -7,57 +7,77 @@ namespace GraphFramework
         /// <summary>
         /// contains all nodes
         /// </summary>
-        List<INode> Nodes { get; }
+        IEnumerable<INode> Nodes { get; }
 
         /// <summary>
         /// contains all edges
         /// </summary>
-        List<IEdge> Edges { get; }
+        IEnumerable<IEdge> Edges { get; }
 
         /// <summary>
         /// adds the node to the node collection of the graph
         /// </summary>
-        /// <param name="newNode">reference of the node to add</param>
-        void AddNode(INode newNode);
+        /// <param name="node">reference of the node to add</param>
+        void AddNode(INode node, params IAttribute[] attributes);
 
         /// <summary>
         /// removes the node identified by its reference from the graph
         /// </summary>
-        /// <param name="nodeToBeRemoved">reference of the node to remove</param>
-        /// <returns>weather the remove was successful</returns>
-        bool RemoveNode(INode nodeToBeRemoved);
+        /// <param name="node">reference of the node to remove</param>
+        /// <returns></returns>
+        void RemoveNode(INode node);
 
         /// <summary>
         /// adds the edge to the edge collection of the graph
         /// </summary>
         /// <param name="newEdge">reference of the edge to add</param>
-        void AddEdge(IEdge newEdge);
+        void AddEdge(INode n1, INode n2, params IAttribute[] attributes);
 
         /// <summary>
         /// removes the edge identified by its reference from the graph
         /// </summary>
-        /// <param name="edgeToBeRemoved">reference of the edge to remove</param>
+        /// <param name="edge">reference of the edge to remove</param>
         /// <returns></returns>
-        bool RemoveEdge(IEdge edgeToBeRemoved);
+        void RemoveEdge(IEdge edge);
 
         /// <summary>
-        /// searches edges by attributes
+        /// returns all Nodes that are not connected by Edges
         /// </summary>
-        /// <param name="searchParameter">references of the edge attributes to search for</param>
-        /// <returns>the edges with the given attributes</returns>
-        List<IEdge> Search(params IAttribute[] searchParameter);
+        /// <returns>returns all single Nodes</returns>
+        IEnumerable<INode> GetSingleNodes();
 
         /// <summary>
-        /// gets the next edge from the edge collection
+        /// creates new Graph object from to Graphs
         /// </summary>
-        /// <returns>next edge</returns>
-        IEdge Next();
+        /// <param name="g1">first graph</param>
+        /// <param name="g2">second graph</param>
+        /// <returns>new Graph object</returns>
+        static IGraph MergeGraph(IGraph g1, IGraph g2);
 
         /// <summary>
-        /// gets the first edge from the edge collection
+        /// creates new Graph object from Graphs connected by new Edge
         /// </summary>
-        /// <returns>the first edge</returns>
-        IEdge Begin();
+        /// <param name="g1">first Graph</param>
+        /// <param name="g2">second Graph</param>
+        /// <param name="n1">first Node for new Edge</param>
+        /// <param name="n2">second Node for new Edge</param>
+        /// <param name="attributes">Attributes of new Edge</param>
+        /// <returns>new Graph object</returns>
+        static IGraph Mergeraph(IGraph g1, IGraph g2, INode n1, INode n2, params IAttribute[] attributes);
 
+        /// <summary>
+        /// adds one Graph object to this graph
+        /// </summary>
+        /// <param name="g2">Graph object that will be added to this</param>
+        void AddGraph(IGraph g2);
+
+        /// <summary>
+        /// adds one Graph object to this graph and connects it with an edge
+        /// </summary>
+        /// <param name="g2">Graph object that will be added to this</param>
+        /// <param name="n1">first Node for new Edge</param>
+        /// <param name="n2">second Node for new Edge</param>
+        /// <param name="attributes">Attributes of new Edge</param>
+        void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes);
     }
 }

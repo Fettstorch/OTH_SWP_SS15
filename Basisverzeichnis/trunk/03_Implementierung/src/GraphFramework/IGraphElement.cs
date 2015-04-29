@@ -7,26 +7,26 @@ namespace GraphFramework
         /// <summary>
         /// contains all attributes of the graphElement
         /// </summary>
-        List<IAttribute> Attributes { get; }
+        IEnumerable<IAttribute> Attributes { get; }
 
         /// <summary>
         /// adds the attribute to the attribute collection of the graphElement
         /// </summary>
-        /// <param name="newAttribute">reference of the attribute to add to the attribute collection</param>
-        void AddAttribute(IAttribute newAttribute);
+        /// <param name="attribute">reference of the attribute to add to the attribute collection</param>
+        void AddAttribute(IAttribute attribute);
         
         /// <summary>
         /// removes the attribute identified by its name
         /// </summary>
         /// <param name="name">name property of the attribute to remove</param>
         /// <returns>weather the remove was successful</returns>
-        bool RemoveAttribute(string name);
+        void RemoveAttribute(string name);
 
         /// <summary>
         /// remove the attribute identified by its reference
         /// </summary>
-        /// <param name="attributeToBeRemoved">reference of the attribute to remove</param>
+        /// <param name="attribute">reference of the attribute to remove</param>
         /// <returns>weather the remove was successful</returns>
-        bool RemoveAttribute(IAttribute attributeToBeRemoved);
+        void RemoveAttribute(IAttribute attribute);
     }
 }

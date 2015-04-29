@@ -12,7 +12,7 @@ namespace GraphFramework
         /// <summary>
         /// type of the value
         /// </summary>
-        Type Type { get; set; }
+        Type Type { get; }
 
         /// <summary>
         /// name to identify the attribute
