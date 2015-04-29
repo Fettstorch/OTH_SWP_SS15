@@ -18,6 +18,7 @@ namespace GraphFramework
         /// adds the node to the node collection of the graph
         /// </summary>
         /// <param name="node">reference of the node to add</param>
+        /// <param name="attributes">attributes to add to the node</param>
         void AddNode(INode node, params IAttribute[] attributes);
 
         /// <summary>
@@ -30,7 +31,9 @@ namespace GraphFramework
         /// <summary>
         /// adds the edge to the edge collection of the graph
         /// </summary>
-        /// <param name="newEdge">reference of the edge to add</param>
+        /// <param name="n1">first node to which the edge is connected</param>
+        /// <param name="n2">second node to which the edge is connected</param>
+        /// <param name="attributes">attributes of the edge</param>
         void AddEdge(INode n1, INode n2, params IAttribute[] attributes);
 
         /// <summary>
@@ -46,24 +49,24 @@ namespace GraphFramework
         /// <returns>returns all single Nodes</returns>
         IEnumerable<INode> GetSingleNodes();
 
-        /// <summary>
-        /// creates new Graph object from to Graphs
-        /// </summary>
-        /// <param name="g1">first graph</param>
-        /// <param name="g2">second graph</param>
-        /// <returns>new Graph object</returns>
-        static IGraph MergeGraph(IGraph g1, IGraph g2);
+        ///// <summary>
+        ///// creates new Graph object from to Graphs
+        ///// </summary>
+        ///// <param name="g1">first graph</param>
+        ///// <param name="g2">second graph</param>
+        ///// <returns>new Graph object</returns>
+        //static IGraph MergeGraph(IGraph g1, IGraph g2);
 
-        /// <summary>
-        /// creates new Graph object from Graphs connected by new Edge
-        /// </summary>
-        /// <param name="g1">first Graph</param>
-        /// <param name="g2">second Graph</param>
-        /// <param name="n1">first Node for new Edge</param>
-        /// <param name="n2">second Node for new Edge</param>
-        /// <param name="attributes">Attributes of new Edge</param>
-        /// <returns>new Graph object</returns>
-        static IGraph Mergeraph(IGraph g1, IGraph g2, INode n1, INode n2, params IAttribute[] attributes);
+        ///// <summary>
+        ///// creates new Graph object from Graphs connected by new Edge
+        ///// </summary>
+        ///// <param name="g1">first Graph</param>
+        ///// <param name="g2">second Graph</param>
+        ///// <param name="n1">first Node for new Edge</param>
+        ///// <param name="n2">second Node for new Edge</param>
+        ///// <param name="attributes">Attributes of new Edge</param>
+        ///// <returns>new Graph object</returns>
+        //static IGraph Mergeraph(IGraph g1, IGraph g2, INode n1, INode n2, params IAttribute[] attributes);
 
         /// <summary>
         /// adds one Graph object to this graph
