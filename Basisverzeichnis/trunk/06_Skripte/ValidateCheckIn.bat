@@ -52,7 +52,7 @@ echo.
 if /I "%internalErrorLevel%" EQU "0" (
 	echo ALL WENT WELL - READY FOR CHECK-IN!
 ) else (
-	echo ERROR OCCURED - PLEASE INVESTIGATE AND FIX ERROR BEFORE CHECK-IN!
+	echo ERROR OCCURRED - PLEASE INVESTIGATE AND FIX ERROR BEFORE CHECK-IN!
 )
 
 exit /b %internalErrorLevel%
