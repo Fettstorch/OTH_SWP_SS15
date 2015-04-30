@@ -49,7 +49,11 @@ echo ===== Run UseCase Tool Static Code Analysis:
 call :call_and_check_errorlevel "%SWP_SCRIPT_ROOT%\RunFxCop.bat" -target="%SWP_SRC_OUTDIR_RELEASE%\UseCaseAnalyser.Model.dll" -outDir="%SWP_BUILD_ROOT%/StaticCodeAnalysis/FxCop"
 
 echo. 
-echo ALL WENT WELL - READY FOR CHECK-IN!
+if /I "%internalErrorLevel%" EQU "0" (
+	echo ALL WENT WELL - READY FOR CHECK-IN!
+) else (
+	echo ERROR OCCURRED - PLEASE INVESTIGATE AND FIX ERROR BEFORE CHECK-IN!
+)
 
 exit /b %internalErrorLevel%
 
