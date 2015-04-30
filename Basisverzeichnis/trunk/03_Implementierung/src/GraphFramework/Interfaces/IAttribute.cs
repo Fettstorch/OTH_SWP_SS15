@@ -17,6 +17,6 @@ namespace GraphFramework.Interfaces
         /// <summary>
         /// name to identify the attribute
         /// </summary>
-        string Name { get; }
+        string Name { get; set; }
     }
 }
