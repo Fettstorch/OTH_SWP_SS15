@@ -4,7 +4,7 @@ namespace GraphFramework
 {
     public class Edge : GraphElement, IEdge
     {
-        public Edge(INode node1, INode node2)
+        internal Edge(INode node1, INode node2)
         {
             this.Node1 = node1;
             this.Node2 = node2;
