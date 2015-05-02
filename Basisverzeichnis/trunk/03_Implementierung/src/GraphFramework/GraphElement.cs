@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GraphFramework.Interfaces;
 
@@ -54,6 +55,10 @@ namespace GraphFramework
             {
                 MAttributes.Add(attribute.Name, attribute);
             }
+            else
+            {
+                throw new InvalidOperationException("the specified attribute is already a attribute of the graphelement!");
+            }
         }
 
         /// <summary>
@@ -66,6 +71,10 @@ namespace GraphFramework
             {
                 MAttributes.Remove(name);
             }
+            else
+            {
+                throw new InvalidOperationException("the defined attribute can not be found!");
+            }
         }
 
         /// <summary>
@@ -77,6 +86,10 @@ namespace GraphFramework
             if (MAttributes.ContainsValue(attribute))
             {
                 MAttributes.Remove(attribute.Name);
+            }
+            else
+            {
+                throw new InvalidOperationException("the defined attribute can not be found!");
             }
         }
     }
