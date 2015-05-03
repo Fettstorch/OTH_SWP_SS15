@@ -66,12 +66,12 @@ namespace GraphFramework
                  this._nodes.Add(n2);
              }
 
-             var edge = new Edge(n1, n2);
-             //  addattributes method would be nice in igraphelement or as extension method
-             foreach (var attribute in attributes)
-             {
-                 edge.AddAttribute(attribute);
-             }
+             var edge = new Edge(n1, n2, attributes);
+             ////  addattributes method would be nice in igraphelement or as extension method
+             //foreach (var attribute in attributes)
+             //{
+             //    edge.AddAttribute(attribute);
+             //}
 
              this._edges.Add(edge);
          }
@@ -137,7 +137,7 @@ namespace GraphFramework
                  throw new InvalidOperationException("The specified node n2 is not part of the provided graph g2!");
              }
 
-             var graph = Graph.MergeGraphs(g1, g2);
+             var graph = MergeGraphs(g1, g2);
              graph.AddEdge(n1, n2, attributes);
 
              return graph;
