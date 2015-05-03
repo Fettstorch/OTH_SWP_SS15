@@ -13,7 +13,7 @@ namespace GraphFramework
         {
             get
             {
-                return MAttributes.Values;
+                return this.MAttributes.Values;
             }
         }
 
@@ -27,7 +27,7 @@ namespace GraphFramework
         /// </summary>
         protected GraphElement()
         {
-            MAttributes = new Dictionary<string, IAttribute>();
+            this.MAttributes = new Dictionary<string, IAttribute>();
         }
 
         /// <summary>
@@ -36,11 +36,11 @@ namespace GraphFramework
         /// <param name="attributes">the attributes you want to add</param>
         protected GraphElement(params IAttribute[] attributes)
         {
-            MAttributes = new Dictionary<string, IAttribute>();
+            this.MAttributes = new Dictionary<string, IAttribute>();
 
-            foreach (var attribute in attributes)
+            foreach (IAttribute attribute in attributes)
             {
-                MAttributes.Add(attribute.Name, attribute);
+                this.MAttributes.Add(attribute.Name, attribute);
             }
         }
 
@@ -51,9 +51,9 @@ namespace GraphFramework
         public void AddAttribute(IAttribute attribute)
         {
             if (attribute == null) return;
-            if (!MAttributes.ContainsKey(attribute.Name))
+            if (!this.MAttributes.ContainsKey(attribute.Name))
             {
-                MAttributes.Add(attribute.Name, attribute);
+                this.MAttributes.Add(attribute.Name, attribute);
             }
             else
             {
@@ -67,9 +67,9 @@ namespace GraphFramework
         /// <param name="name">the name of the attribute you want to remove</param>
         public void RemoveAttribute(string name)
         {
-            if (MAttributes.ContainsKey(name))
+            if (this.MAttributes.ContainsKey(name))
             {
-                MAttributes.Remove(name);
+                this.MAttributes.Remove(name);
             }
             else
             {
@@ -83,9 +83,9 @@ namespace GraphFramework
         /// <param name="attribute"></param>
         public void RemoveAttribute(IAttribute attribute)
         {
-            if (MAttributes.ContainsValue(attribute))
+            if (this.MAttributes.ContainsValue(attribute))
             {
-                MAttributes.Remove(attribute.Name);
+                this.MAttributes.Remove(attribute.Name);
             }
             else
             {

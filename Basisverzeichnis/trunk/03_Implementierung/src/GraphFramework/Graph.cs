@@ -36,7 +36,7 @@ namespace GraphFramework
 
              //  to remove when removing attributes parameter
              //  addattributes method would be nice in igraphelement or as extension method
-             foreach (var attribute in attributes)
+             foreach (IAttribute attribute in attributes)
              {
                  node.AddAttribute(attribute);
              }
@@ -66,7 +66,7 @@ namespace GraphFramework
                  this._nodes.Add(n2);
              }
 
-             var edge = new Edge(n1, n2, attributes);
+             Edge edge = new Edge(n1, n2, attributes);
              ////  addattributes method would be nice in igraphelement or as extension method
              //foreach (var attribute in attributes)
              //{
@@ -118,7 +118,7 @@ namespace GraphFramework
 
          public static IGraph MergeGraphs(IGraph g1, IGraph g2)
          {
-             var graph = new Graph();
+             Graph graph = new Graph();
              graph.AddGraph(g1);
              graph.AddGraph(g2);
 
@@ -137,7 +137,7 @@ namespace GraphFramework
                  throw new InvalidOperationException("The specified node n2 is not part of the provided graph g2!");
              }
 
-             var graph = MergeGraphs(g1, g2);
+             IGraph graph = MergeGraphs(g1, g2);
              graph.AddEdge(n1, n2, attributes);
 
              return graph;

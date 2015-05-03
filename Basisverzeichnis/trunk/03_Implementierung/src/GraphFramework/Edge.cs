@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GraphFramework.Interfaces;
 
 namespace GraphFramework
@@ -25,8 +24,8 @@ namespace GraphFramework
         /// <param name="node2"></param>
         public Edge(INode node1, INode node2)
         {
-            Node1 = node1;
-            Node2 = node2;
+            this.Node1 = node1;
+            this.Node2 = node2;
         }
 
         /// <summary>
@@ -38,8 +37,8 @@ namespace GraphFramework
         public Edge(INode node1, INode node2, params IAttribute[] attributes)
             : base(attributes)
         {
-            Node1 = node1;
-            Node2 = node2;
+            this.Node1 = node1;
+            this.Node2 = node2;
         }
     }
 }

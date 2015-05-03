@@ -15,14 +15,14 @@ namespace GraphFramework
         {
             get
             {
-                return mValue;
+                return this._mValue;
             }
 
             set
             {
-                if (Type == value.GetType())
+                if (this.Type == value.GetType())
                 {
-                    mValue = value;
+                    this._mValue = value;
                 }
             }
         }
@@ -40,7 +40,7 @@ namespace GraphFramework
         /// <summary>
         /// the generic value of the attribute
         /// </summary>
-        private object mValue;
+        private object _mValue;
 
         /// <summary>
         /// attribute constructor
@@ -55,9 +55,9 @@ namespace GraphFramework
             }
             else
             {
-                Name = name;
-                Type = val.GetType();
-                Value = val;
+                this.Name = name;
+                this.Type = val.GetType();
+                this.Value = val;
             }
         }
     }
