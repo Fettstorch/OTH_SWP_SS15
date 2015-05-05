@@ -18,7 +18,7 @@
     <Optimize>false</Optimize>
     <OutputPath>$(SolutionDir)\Build\bin\Debug</OutputPath>
     <BaseIntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +27,7 @@
     <Optimize>true</Optimize>
     <OutputPath>$(SolutionDir)\Build\bin\Release</OutputPath>
     <BaseIntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
