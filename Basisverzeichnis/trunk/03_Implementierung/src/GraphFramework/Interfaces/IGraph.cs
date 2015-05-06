@@ -18,15 +18,14 @@ namespace GraphFramework.Interfaces
         /// adds the node to the node collection of the graph
         /// </summary>
         /// <param name="node">reference of the node to add</param>
-        /// <param name="attributes">attributes to add to the node</param>
-        void AddNode(INode node, params IAttribute[] attributes);
+        void AddNode(INode node);
 
         /// <summary>
         /// removes the node identified by its reference from the graph
         /// </summary>
         /// <param name="node">reference of the node to remove</param>
         /// <returns></returns>
-        void RemoveNode(INode node);
+        void RemoveNode(params INode[] node);
 
         /// <summary>
         /// adds the edge to the edge collection of the graph
@@ -41,7 +40,7 @@ namespace GraphFramework.Interfaces
         /// </summary>
         /// <param name="edge">reference of the edge to remove</param>
         /// <returns></returns>
-        void RemoveEdge(IEdge edge);
+        void RemoveEdge(params IEdge[] edge);
 
         /// <summary>
         /// returns all Nodes that are not connected by Edges
@@ -82,5 +81,13 @@ namespace GraphFramework.Interfaces
         /// <param name="n2">second Node for new Edge</param>
         /// <param name="attributes">Attributes of new Edge</param>
         void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes);
+
+        /// <summary>
+        /// gets the edges which are connected to the nodes n1 and n2
+        /// </summary>
+        /// <param name="n1">first node to which the edge has to be connected</param>
+        /// <param name="n2">second node to which the edge has to be connected</param>
+        /// <returns>all the edges which connect the nodes n1 and n2</returns>
+        IEnumerable<IEdge> GetEdges(INode n1, INode n2);
     }
 }

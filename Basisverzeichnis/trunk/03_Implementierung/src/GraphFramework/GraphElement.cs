@@ -23,13 +23,13 @@ namespace GraphFramework
         /// </summary>
         protected List<IAttribute> mAttributes;
 
-        /// <summary>
-        /// Standart constructor
-        /// </summary>
-        protected GraphElement()
-        {
-            mAttributes = new List<IAttribute>();
-        }
+        ///// <summary>
+        ///// Standart constructor
+        ///// </summary>
+        //protected GraphElement()
+        //{
+        //    mAttributes = new List<IAttribute>();
+        //}
 
         /// <summary>
         /// Special constructor which adds multiple attributes to the node
