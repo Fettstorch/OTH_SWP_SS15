@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\UseCaseAnalyser\Resources\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -54,6 +57,10 @@
     <ProjectReference Include="..\GraphFramework\GraphFramework.csproj">
       <Project>{6d580afa-c172-4bfc-9c43-e79b2c44b44f}</Project>
       <Name>GraphFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogManager\LogManager.csproj">
+      <Project>{7044c575-02f4-4565-b590-893754651f53}</Project>
+      <Name>LogManager</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
