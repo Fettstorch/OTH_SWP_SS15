@@ -1,4 +1,5 @@
 using GraphFramework.Interfaces;
+using System;
 
 namespace GraphFramework
 {
@@ -22,8 +23,9 @@ namespace GraphFramework
         /// </summary>
         /// <param name="node1"></param>
         /// <param name="node2"></param>
-        public Edge(INode node1, INode node2)
+        internal Edge(INode node1, INode node2)
         {
+            if (node1 == null || node2 == null) throw new Exception("One node of the edge is null. Wrong edge initialization!");
             this.Node1 = node1;
             this.Node2 = node2;
         }
@@ -37,6 +39,7 @@ namespace GraphFramework
         public Edge(INode node1, INode node2, params IAttribute[] attributes)
             : base(attributes)
         {
+            if (node1 == null || node2 == null) throw new Exception("One node of the edge is null. Wrong edge initialization!");
             this.Node1 = node1;
             this.Node2 = node2;
         }

@@ -15,14 +15,18 @@ namespace GraphFramework
         {
             get
             {
-                return this._mValue;
+                return mValue;
             }
 
             set
             {
-                if (this.Type == value.GetType())
+                if (Type == value.GetType())
                 {
-                    this._mValue = value;
+                    mValue = value;
+                }
+                else
+                {
+                    throw new Exception("You cannot define a new attribute value with a different type!");
                 }
             }
         }
@@ -40,7 +44,7 @@ namespace GraphFramework
         /// <summary>
         /// the generic value of the attribute
         /// </summary>
-        private object _mValue;
+        private object mValue;
 
         /// <summary>
         /// attribute constructor
@@ -49,15 +53,15 @@ namespace GraphFramework
         /// <param name="val">the generic value</param>
         public Attribute(string name, object val)
         {
-            if (val == null || name == "")
+            if (val == null || string.IsNullOrWhiteSpace(name))
             {
                 throw new Exception("Incorrect attribute initialisation!");
             }
             else
             {
-                this.Name = name;
-                this.Type = val.GetType();
-                this.Value = val;
+                Name = name;
+                Type = val.GetType();
+                Value = val;
             }
         }
     }

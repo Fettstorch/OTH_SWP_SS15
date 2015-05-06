@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GraphFramework.Interfaces;
+using System.Linq;
 
 namespace GraphFramework
 {
@@ -13,21 +14,21 @@ namespace GraphFramework
         {
             get
             {
-                return this.MAttributes.Values;
+                return mAttributes;
             }
         }
 
         /// <summary>
         /// The attributes of the node, sorted by their names
         /// </summary>
-        protected Dictionary<string, IAttribute> MAttributes;
+        protected List<IAttribute> mAttributes;
 
         /// <summary>
         /// Standart constructor
         /// </summary>
         protected GraphElement()
         {
-            this.MAttributes = new Dictionary<string, IAttribute>();
+            mAttributes = new List<IAttribute>();
         }
 
         /// <summary>
@@ -36,11 +37,14 @@ namespace GraphFramework
         /// <param name="attributes">the attributes you want to add</param>
         protected GraphElement(params IAttribute[] attributes)
         {
-            this.MAttributes = new Dictionary<string, IAttribute>();
+            mAttributes = new List<IAttribute>();
 
             foreach (IAttribute attribute in attributes)
             {
-                this.MAttributes.Add(attribute.Name, attribute);
+                if (!mAttributes.Any(graphelem => string.Equals(graphelem.Name, attribute.Name)))
+                {
+                    mAttributes.Add(attribute);
+                }
             }
         }
 
@@ -50,10 +54,9 @@ namespace GraphFramework
         /// <param name="attribute">the attribute you want to add</param>
         public void AddAttribute(IAttribute attribute)
         {
-            if (attribute == null) return;
-            if (!this.MAttributes.ContainsKey(attribute.Name))
+            if (!mAttributes.Any(graphelem => graphelem.Name == attribute.Name))
             {
-                this.MAttributes.Add(attribute.Name, attribute);
+                mAttributes.Add(attribute);
             }
             else
             {
@@ -67,9 +70,10 @@ namespace GraphFramework
         /// <param name="name">the name of the attribute you want to remove</param>
         public void RemoveAttribute(string name)
         {
-            if (this.MAttributes.ContainsKey(name))
+            IAttribute attr = mAttributes.Find(graphelem => string.Equals(graphelem.Name, name));
+            if (attr != null)
             {
-                this.MAttributes.Remove(name);
+                mAttributes.Remove(attr);
             }
             else
             {
@@ -83,11 +87,7 @@ namespace GraphFramework
         /// <param name="attribute"></param>
         public void RemoveAttribute(IAttribute attribute)
         {
-            if (this.MAttributes.ContainsValue(attribute))
-            {
-                this.MAttributes.Remove(attribute.Name);
-            }
-            else
+            if (!mAttributes.Remove(attribute))
             {
                 throw new InvalidOperationException("the defined attribute can not be found!");
             }
