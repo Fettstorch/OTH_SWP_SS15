@@ -7,28 +7,28 @@ namespace GraphFramework
 {
     public class Graph : GraphElement, IGraph
     {
-        private readonly List<INode> _nodes;
-        private readonly List<IEdge> _edges;
+        private readonly List<INode> mNodes;
+        private readonly List<IEdge> mEdges;
 
         public Graph(params IAttribute[] attributes) : base(attributes)
         {
-            this._nodes = new List<INode>();
-            this._edges = new List<IEdge>();
+            mNodes = new List<INode>();
+            mEdges = new List<IEdge>();
         }
 
         public IEnumerable<INode> Nodes
         {
-            get { return this._nodes; }
+            get { return mNodes; }
         }
 
         public IEnumerable<IEdge> Edges
         {
-            get { return this._edges; }
+            get { return mEdges; }
         }
 
         public void AddNode(INode node)
         {
-             if (this._nodes.Contains(node))
+             if (mNodes.Contains(node))
              {
                  throw new InvalidOperationException("The specified node is already part of the graph!");
              }
@@ -40,13 +40,13 @@ namespace GraphFramework
              //    node.AddAttribute(attribute);
              //}
 
-             this._nodes.Add(node);
+             mNodes.Add(node);
         }
 
-        public void RemoveNode(params INode[] nodes)
+        public void RemoveNode(params INode[] nodesToRemove)
         {
             //  if any node can't be removed --> exception
-            if (nodes.Any(node => !this._nodes.Remove(node)))
+            if (nodesToRemove.Any(node => !mNodes.Remove(node)))
             {
                 throw new InvalidOperationException("The specified node is not part of the graph!");
             }
@@ -55,15 +55,15 @@ namespace GraphFramework
         public void AddEdge(INode n1, INode n2, params IAttribute[] attributes)
          {
              //  add node 1 if it's not part of the graph
-             if (!this._nodes.Contains(n1))
+             if (!mNodes.Contains(n1))
              {
-                 this._nodes.Add(n1);
+                 mNodes.Add(n1);
              }
 
              //  add node 2 if it's not part of the graph
-             if (!this._nodes.Contains(n2))
+             if (!mNodes.Contains(n2))
              {
-                 this._nodes.Add(n2);
+                 mNodes.Add(n2);
              }
 
              Edge edge = new Edge(n1, n2, attributes);
@@ -73,13 +73,13 @@ namespace GraphFramework
              //    edge.AddAttribute(attribute);
              //}
 
-             this._edges.Add(edge);
+             mEdges.Add(edge);
          }
         
-        public void RemoveEdge(params IEdge[] edges)
+        public void RemoveEdge(params IEdge[] edgesToRemove)
         {
             //  if any edge can't be removed --> exception
-            if (edges.Any(edge => !this._edges.Remove(edge)))
+            if (edgesToRemove.Any(edge => !mEdges.Remove(edge)))
             {
                 throw new InvalidOperationException("The specified edge is not part of the graph!");
             }
@@ -88,20 +88,20 @@ namespace GraphFramework
         public IEnumerable<INode> GetSingleNodes()
          {
              //  list of nodes without nodes which are contained in node1 or node2 in the list of edges
-             return this._nodes.Except(this._edges.Select(e => e.Node1).Concat(this._edges.Select(e => e.Node2)));
+             return mNodes.Except(mEdges.Select(e => e.Node1).Concat(mEdges.Select(e => e.Node2)));
          }
 
         public void AddGraph(IGraph g2)
          {
-            //  no duplicates --> except my nodes / edges
-            this._nodes.AddRange(g2.Nodes.Except(this._nodes));
-            this._edges.AddRange(g2.Edges.Except(this.Edges));
+            //  no duplicates --> except my does / edges
+            mNodes.AddRange(g2.Nodes.Except(mNodes));
+            mEdges.AddRange(g2.Edges.Except(Edges));
          }
 
         public void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes)
          {
              //  check if the parameters are valid (n1 in g1, n2 in g2)
-             if (!this._nodes.Contains(n1))
+             if (!mNodes.Contains(n1))
              {
                  throw new InvalidOperationException("The specified node n1 is not part of the graph, which is calling the add method!");
              }
@@ -110,15 +110,15 @@ namespace GraphFramework
                  throw new InvalidOperationException("The specified node n2 is not part of the provided graph g2!");
              }
 
-             this.AddGraph(g2);
+             AddGraph(g2);
              //  add a new edge to connect the 2 parts of the graph
-             this.AddEdge(n1, n2, attributes);
+             AddEdge(n1, n2, attributes);
          }
 
         public IEnumerable<IEdge> GetEdges(INode n1, INode n2)
         {
             //  edges which contain n1 & n2
-            return this._edges.Where(e => (e.Node1 == n1 && e.Node2 == n2) || (e.Node1 == n2 && e.Node2 == n1));
+            return mEdges.Where(e => (e.Node1 == n1 && e.Node2 == n2) || (e.Node1 == n2 && e.Node2 == n1));
         }
 
         #region static methods
