@@ -32,7 +32,7 @@ namespace GraphFramework.Tests
             {
                 new Edge(mTestNodelist[0], mTestNodelist[1]),
                 new Edge(mTestNodelist[2], mTestNodelist[1]),
-                new Edge(mTestNodelist[1], mTestNodelist[0]), 
+                new Edge(mTestNodelist[2], mTestNodelist[0]), 
             };
             mTestMergeGraph = new Graph(new Attribute("Name", "TestMergeGraph"));
 
@@ -170,8 +170,7 @@ namespace GraphFramework.Tests
                 {
                     testGraph.RemoveEdge(testGraph.Edges.First());
                 }
-            }
-            
+            }         
         }
 
         [ExpectedException]
@@ -182,10 +181,22 @@ namespace GraphFramework.Tests
             testGraph.RemoveEdge(mTestEdgeList[0]);
         }
 
-        [Test, Ignore]
-        public void GetSingleNodes()
+        [TestCase(0)]
+        [TestCase(1)]
+        public void GetSingleNodes(int connections)
         {
-            
+            IGraph testGraph = new Graph(new IAttribute[0]);
+            foreach (INode node in mTestNodelist)
+            {
+                testGraph.AddNode(node);
+            }
+            for (int i = 0; i < connections; i++)
+            {
+                testGraph.AddEdge(mTestNodelist[i], mTestNodelist[i+1]);
+            }
+            IEnumerable<INode> singleNodes = testGraph.GetSingleNodes();
+            Assert.AreEqual(connections > 0 ? mTestNodelist.Count() - (connections + 1) : mTestNodelist.Count() - connections,
+                singleNodes.Count());
         }
 
         [Test, Ignore]
@@ -212,10 +223,22 @@ namespace GraphFramework.Tests
             
         }
 
-        [Test, Ignore]
-        public void GetEdgesTest()
+        [TestCase(0)]
+        [TestCase(2)]
+        public void GetEdgesTest(int connections)
         {
-            
+            IGraph tesGraph = mTestMergeGraph;
+            for (int i = 0; i < connections; i++)
+            {
+                tesGraph.AddEdge(mTestNodelist[0], mTestNodelist[1]);
+            }
+            IEnumerable<IEdge> edges = tesGraph.GetEdges(mTestNodelist[0], mTestNodelist[1]);
+            foreach (IEdge edge in edges)
+            {
+                Assert.AreSame(edge.Node1, mTestNodelist[0]);
+                Assert.AreSame(edge.Node2, mTestNodelist[1]);
+            }
+            Assert.AreEqual(connections+1, edges.Count());
         }
     }
 }
