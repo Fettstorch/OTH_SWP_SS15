@@ -50,6 +50,12 @@ namespace GraphFramework
             {
                 throw new InvalidOperationException("The specified node is not part of the graph!");
             }
+
+            foreach (INode node in nodesToRemove)
+            {
+                IEdge[] edgesToRemove = mEdges.Where(e => e.Node1 == node || e.Node2 == node).ToArray();
+                RemoveEdge(edgesToRemove);
+            }
         }
 
         public void AddEdge(INode n1, INode n2, params IAttribute[] attributes)
