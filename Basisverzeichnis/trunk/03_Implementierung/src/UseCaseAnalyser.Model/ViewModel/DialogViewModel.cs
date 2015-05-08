@@ -41,7 +41,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                     if (dialog.ShowDialog() != DialogResult.OK) return;
 
                     string filePath = dialog.FileName;
-                    this.UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath));
+                    this.UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath)).ToArray();
                 }));
             }
         }
