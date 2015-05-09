@@ -1,16 +1,23 @@
-﻿using GraphFramework;
+﻿using System.Collections.Generic;
+using GraphFramework;
 using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Model.Model
 {
     public class UseCaseGraph : Graph
     {
-        private IGraph[] _mScenarios;
+        private IEnumerable<IGraph> mScenarios;
 
-        public IGraph[] Scenarios
+        public UseCaseGraph(params IAttribute[] attributes)
+            : base(attributes)
+        {
+
+        }
+
+        public IEnumerable<IGraph> Scenarios
         {
             //  lazy initialization of the scenarios
-            get { return this._mScenarios ?? (this._mScenarios = ScenarioCreator.CreateScenarios(this)); }
+            get { return mScenarios ?? (mScenarios = ScenarioMatrixCreator.CreateScenarios(this)); }
         }
     }
 }

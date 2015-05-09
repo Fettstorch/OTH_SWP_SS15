@@ -6,33 +6,35 @@ namespace UseCaseAnalyser.Model.ViewModel
 {
     public class AsyncCommand : ICommand
     {
-        private readonly Action<object> _executeAction;
-        private readonly Func<object, bool> _canExecuteFunc;
-        private bool _isExecuting;
+        private static readonly TaskFactory UiTaskFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
 
-        public AsyncCommand(Action<object> executeAction) : this(executeAction, o => true){ }
+        private readonly Action<object> mExecuteAction;
+        private readonly Func<object, bool> mCanExecuteFunc;
+        private bool mIsExecuting;
+
+        public AsyncCommand(Action<object> executeAction) : this(executeAction, o => true) { }
 
         public AsyncCommand(Action<object> executeAction, Func<object, bool> canExecuteFunc)
         {
-            this._executeAction = executeAction;
-            this._canExecuteFunc = canExecuteFunc;
+            mExecuteAction = executeAction;
+            mCanExecuteFunc = canExecuteFunc;
         }
 
         public bool CanExecute(object parameter)
         {
-            bool result = !this._isExecuting && this._canExecuteFunc(parameter);
+            bool result = !mIsExecuting && mCanExecuteFunc(parameter);
             return result;
         }
 
         public void Execute(object parameter)
         {
-            if (!this.CanExecute(parameter)) return;
+            if (!CanExecute(parameter)) return;
 
-            this._isExecuting = true;
-            Task.Factory.StartNew(() =>
+            mIsExecuting = true;
+            UiTaskFactory.StartNew(() =>
             {
-                this._executeAction(parameter);
-                this._isExecuting = false;
+                mExecuteAction(parameter);
+                mIsExecuting = false;
             });
         }
 
