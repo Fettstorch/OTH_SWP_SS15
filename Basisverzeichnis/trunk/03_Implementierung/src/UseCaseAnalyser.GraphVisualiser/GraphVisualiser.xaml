@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="UseCaseAnalyser.GraphVisualiser.GraphVisualiser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="800" Width="600" PreviewMouseLeftButtonUp="GraphVisualiser_OnMouseUp"  MouseMove="GraphVisualiser_OnMouseMove">
+    <Border BorderThickness="1" BorderBrush="Black">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto" Margin="0,0,0,0" >
+
+            <Canvas Name="DrawingCanvas" Height="800" Width="600" />
+    </ScrollViewer>
+    </Border>
+</UserControl>

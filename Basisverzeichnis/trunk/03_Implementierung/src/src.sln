@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphFramework", "GraphFramework\GraphFramework.csproj", "{6D580AFA-C172-4BFC-9C43-E79B2C44B44F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphFramework.Tests", "GraphFramework.Tests\GraphFramework.Tests.csproj", "{2706BE38-F8DC-4225-AC7C-E5344709E479}"
@@ -21,7 +23,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{10B5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogManager", "LogManager\LogManager.csproj", "{7044C575-02F4-4565-B590-893754651F53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.GraphVisualiser", "UseCaseAnalyser.GraphVisualiser\UseCaseAnalyser.GraphVisualiser.csproj", "{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}"
+EndProject
 Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -43,10 +51,6 @@ Global
 		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F88D8157-F7B7-46C7-B012-E7C559CB0094}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,21 +59,21 @@ Global
 		{7044C575-02F4-4565-B590-893754651F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7044C575-02F4-4565-B590-893754651F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7044C575-02F4-4565-B590-893754651F53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2706BE38-F8DC-4225-AC7C-E5344709E479} = {8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}
 		{6D580AFA-C172-4BFC-9C43-E79B2C44B44F} = {8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}
-		{F88D8157-F7B7-46C7-B012-E7C559CB0094} = {8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}
+		{2706BE38-F8DC-4225-AC7C-E5344709E479} = {8B45ED8E-C160-4825-BEB5-C90DC6A73FE7}
 		{BBBA981A-FFD8-4A6E-BB96-81A8B073D593} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
 		{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
 		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
 		{7044C575-02F4-4565-B590-893754651F53} = {10B5420B-DCFF-479E-955F-5A018B1FD38F}
-	EndGlobalSection
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
+		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
 	EndGlobalSection
 EndGlobal

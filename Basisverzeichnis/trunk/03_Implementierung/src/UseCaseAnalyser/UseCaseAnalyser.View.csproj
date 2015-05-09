@@ -96,11 +96,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UseCaseAnalyser.GraphVisualiser\UseCaseAnalyser.GraphVisualiser.csproj">
+      <Project>{0b65e560-accc-46c9-af4c-b0171852c8b7}</Project>
+      <Name>UseCaseAnalyser.GraphVisualiser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UseCaseAnalyser.Model\UseCaseAnalyser.Model.csproj">
       <Project>{f2c3ffb2-22a0-4a2b-aea9-dfd360310630}</Project>
       <Name>UseCaseAnalyser.Model</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
