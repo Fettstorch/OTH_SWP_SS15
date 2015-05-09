@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tool", "Tool", "{AD6DB6C4-8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.Model", "UseCaseAnalyser.Model\UseCaseAnalyser.Model.csproj", "{F2C3FFB2-22A0-4A2B-AEA9-DFD360310630}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphFramework.Visualiser", "GraphFramework.Visualiser\GraphFramework.Visualiser.csproj", "{F88D8157-F7B7-46C7-B012-E7C559CB0094}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.Model.Tests", "UseCaseAnalyser.Model.Tests\UseCaseAnalyser.Model.Tests.csproj", "{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{10B5420B-DCFF-479E-955F-5A018B1FD38F}"
