@@ -1,0 +1,71 @@
+﻿<Window x:Class="UseCaseAnalyser.View.DialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:graphVisualiser="clr-namespace:UseCaseAnalyser.GraphVisualiser;assembly=UseCaseAnalyser.GraphVisualiser"
+        xmlns:viewModel="clr-namespace:UseCaseAnalyser.Model.ViewModel;assembly=UseCaseAnalyser.Model"
+        xmlns:model="clr-namespace:UseCaseAnalyser.Model.Model;assembly=UseCaseAnalyser.Model"
+        xmlns:interfaces="clr-namespace:GraphFramework.Interfaces;assembly=GraphFramework"
+        Title="DialogView" MinWidth="300" MinHeight="300">
+    <Window.DataContext>
+        <viewModel:DialogViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="0.6*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="0.4*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.7*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="0.3*" />
+        </Grid.ColumnDefinitions>
+        <GridSplitter ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Grid.Column="1" Grid.RowSpan="4" Width="5" Grid.Row="0" VerticalAlignment="Stretch"/>
+        <GridSplitter ResizeDirection="Rows" Grid.Row="2" Grid.Column="2" Height="5" HorizontalAlignment="Stretch" />
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Import word file" Command="{Binding Path=OpenWordFile}" />
+                <MenuItem Header="Export scenario matrix" Command="{Binding Path=ExportScenarioMatrix}" />
+                <Separator />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" />
+            </MenuItem>
+        </Menu>
+        
+        <graphVisualiser:GraphVisualiser Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Name="UseCaseGraphViewer" />
+
+        <TabControl Grid.Column="2" Grid.Row="1">
+            <TabItem Header="UseCases">
+                <ListBox ItemsSource="{Binding Path=UseCaseGraphs, Mode=OneWay}" SelectedItem="{Binding Path=SelectedGraph, Mode=OneWayToSource}"
+                         HorizontalContentAlignment="Stretch">
+                    <!--<ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type model:UseCaseGraph}">
+                            <TextBlock Text="{Binding}" Background="WhiteSmoke" Padding="5" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>-->
+                    <!--TO DO: HOW TO DISPLAY GRAPHS (NAME ATTRIBUTE OR STH ?!)-->
+                </ListBox>
+            </TabItem>
+            <TabItem Header="Scenarios">
+                <ListBox ItemsSource="{Binding Path=SelectedGraph.Attributes, Mode=OneWay}" SelectedItem="{Binding Path=SelectedScenario, Mode=OneWayToSource}" />
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Column="2" Grid.Row="3">
+            <TextBlock Text="Properties" FontWeight="Bold" />
+            <ItemsControl ItemsSource="{Binding Path=SelectedGraphElement, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type interfaces:IAttribute}">
+                        <Expander Header="{Binding Path=Name}" Margin="10">
+                            <TextBlock Text="{Binding Path=Value}" />
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Grid>
+</Window>

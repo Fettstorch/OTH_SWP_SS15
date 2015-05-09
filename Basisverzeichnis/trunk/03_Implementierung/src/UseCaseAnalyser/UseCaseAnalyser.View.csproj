@@ -55,7 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="View\MainWindow.xaml">
+    <Page Include="View\DialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -63,8 +63,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\MainWindow.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="View\DialogView.xaml.cs">
+      <DependentUpon>DialogView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -96,6 +96,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GraphFramework\GraphFramework.csproj">
+      <Project>{6D580AFA-C172-4BFC-9C43-E79B2C44B44F}</Project>
+      <Name>GraphFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UseCaseAnalyser.GraphVisualiser\UseCaseAnalyser.GraphVisualiser.csproj">
       <Project>{0b65e560-accc-46c9-af4c-b0171852c8b7}</Project>
       <Name>UseCaseAnalyser.GraphVisualiser</Name>
