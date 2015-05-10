@@ -14,7 +14,7 @@ namespace UseCaseAnalyer.Stubs
 
         private static UseCaseGraphStub singleReference;
 
-        public UseCaseGraphStub GetInstance()
+        public static UseCaseGraphStub GetInstance()
         {
             UseCaseGraphStub retUseCaseGraphStub;
 
