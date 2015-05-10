@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -8,15 +9,18 @@ using System.Windows.Input;
 using GraphFramework;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
+using Attribute = GraphFramework.Attribute;
 
 namespace UseCaseAnalyser.Model.ViewModel
 {
     public class DialogViewModel : INotifyPropertyChanged
     {
+        private ICommand mExportScenarioMatrix;
         private IEnumerable<UseCaseGraph> mMUseCaseGraphs;
         private ICommand mOpenWordFile;
-        private ICommand mExportScenarioMatrix;
         private UseCaseGraph mSelectedGraph;
+        private IGraph mSelectedScenario;
+        //private IGraphElement mSelectedGraphElement;
 
         public IEnumerable<UseCaseGraph> UseCaseGraphs
         {
@@ -33,12 +37,32 @@ namespace UseCaseAnalyser.Model.ViewModel
         public UseCaseGraph SelectedGraph
         {
             get { return mSelectedGraph; }
-            set { mSelectedGraph = value; OnPropertyChanged(); }
+            set
+            {
+                mSelectedGraph = value;
+                OnPropertyChanged();
+            }
         }
 
-        public IGraph SelectedScenario { get; set; }
+        public IGraph SelectedScenario
+        {
+            get { return mSelectedScenario; }
+            set
+            {
+                mSelectedScenario = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public IGraphElement SelectedGraphElement { get; set; }
+        //public IGraphElement SelectedGraphElement
+        //{
+        //    get { return mSelectedGraphElement; }
+        //    set
+        //    {
+        //        mSelectedGraphElement = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         //  commands in menu
         public ICommand OpenWordFile
@@ -48,14 +72,20 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mOpenWordFile ?? (mOpenWordFile = new AsyncCommand(o =>
                 {
-                    //  bad mvvm practice (dialogs should be done in view --> can't be tested automatically)
                     //  still handled here for easier understanding
-                    OpenFileDialog dialog = new OpenFileDialog { Filter = "Word files (.docx)|*.docx", Multiselect = false };
-                    if (dialog.ShowDialog() != DialogResult.OK) return;
+                    //OpenFileDialog dialog = new OpenFileDialog
+                    //{
+                    //    Filter = "Word files (.docx)|*.docx",
+                    //    Multiselect = false
+                    //};
+                    //if (dialog.ShowDialog() != DialogResult.OK) return;
 
-                    string filePath = dialog.FileName;
-                    UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath));
-                }));
+                    //string filePath = dialog.FileName;
+                    //UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath));
+
+                    //  TO TEST BINDING
+                    UseCaseGraphs = ImportUseCases();
+                }, o => true, OnError));
             }
         }
 
@@ -67,25 +97,53 @@ namespace UseCaseAnalyser.Model.ViewModel
                 return mExportScenarioMatrix ?? (mExportScenarioMatrix = new AsyncCommand(o =>
                 {
                     //  bad mvvm practice (dialogs should be done in view --> can't be tested automatically)
-                    SaveFileDialog dialog = new SaveFileDialog { Filter = "Excel files (.xlsx)|*.xlsx" };
+                    SaveFileDialog dialog = new SaveFileDialog {Filter = "Excel files (.xlsx)|*.xlsx"};
                     if (dialog.ShowDialog() != DialogResult.OK) return;
 
                     string filePath = dialog.FileName;
                     ScenarioMatrixExporter.ExportScenarioMatrix(SelectedGraph, new FileInfo(filePath));
-                }, o => SelectedGraph != null));
+                }, o => SelectedGraph != null, OnError));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
 
+        private void OnError(Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+
+        #region BindingTest
+
+        private int mGraphCounter;
+
+        private IEnumerable<UseCaseGraph> ImportUseCases()
+        {
+            for (int i = 0; i < new Random().Next(1, 10); i++)
+            {
+                //  CREATE SOME SAMPLE GRAPHS
+                UseCaseGraph graph = new UseCaseGraph(string.Format("graph No. {0}", ++mGraphCounter));
+                Node node = new Node(new Attribute("Identifier", 1));
+                graph.AddEdge(node, new Node(new Attribute("Identifier", 2)));
+                graph.AddEdge(node, new Node(new Attribute("Identifier", 3)));
+
+                yield return graph;
+            }
+        }
+
+        #endregion
+
         #region Property Changed event + invoker to notify gui about changes
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "False positive - attribute introduced in .NET 4.5 is similiar to overloading")]
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
+            Justification = "False positive - attribute introduced in .NET 4.5 is similiar to overloading")]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
         #endregion
     }
 }

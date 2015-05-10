@@ -35,6 +35,7 @@
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>..\UseCaseAnalyser\Resources\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />

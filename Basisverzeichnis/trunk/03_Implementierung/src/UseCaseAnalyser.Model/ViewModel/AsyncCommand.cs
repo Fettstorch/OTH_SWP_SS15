@@ -10,14 +10,16 @@ namespace UseCaseAnalyser.Model.ViewModel
 
         private readonly Action<object> mExecuteAction;
         private readonly Func<object, bool> mCanExecuteFunc;
+        private readonly Action<Exception> mOnError;
         private bool mIsExecuting;
 
-        public AsyncCommand(Action<object> executeAction) : this(executeAction, o => true) { }
+        public AsyncCommand(Action<object> executeAction) : this(executeAction, o => true, e => { }) { }
 
-        public AsyncCommand(Action<object> executeAction, Func<object, bool> canExecuteFunc)
+        public AsyncCommand(Action<object> executeAction, Func<object, bool> canExecuteFunc, Action<Exception> onError)
         {
             mExecuteAction = executeAction;
             mCanExecuteFunc = canExecuteFunc;
+            mOnError = onError;
         }
 
         public bool CanExecute(object parameter)
@@ -33,11 +35,23 @@ namespace UseCaseAnalyser.Model.ViewModel
             mIsExecuting = true;
             UiTaskFactory.StartNew(() =>
             {
-                mExecuteAction(parameter);
+                try
+                {
+                    mExecuteAction(parameter);
+                }
+                catch (Exception ex)
+                {
+                    mOnError(ex);
+                }
+
                 mIsExecuting = false;
             });
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
     }
 }

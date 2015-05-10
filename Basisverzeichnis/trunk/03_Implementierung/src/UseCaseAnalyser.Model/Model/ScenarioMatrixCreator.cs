@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using GraphFramework;
 using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Model.Model
@@ -13,7 +16,8 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
         public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
         {
-            throw new NotImplementedException();
+            //  EMPTY ENUMERABLE SO THE VIEW CAN BE TESTED WITHOUT CRASHES
+            return Enumerable.Empty<IGraph>();
         }
     }
 }
