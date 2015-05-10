@@ -40,8 +40,10 @@ namespace UseCaseAnalyser.GraphVisualiser
             AddEdge(kn2A2, kn2A3);
             AddEdge(kn2A3, kn1);
             AddEdge(kn2, kn2B1);
+            AddEdge(kn2B1,kn3);
             AddEdge(kn3, kn4);
             AddEdge(kn3, kn3A1);
+            AddEdge(kn3A1, kn3);
             //ReCalcPositionsOfElements();
         }
 
