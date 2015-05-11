@@ -65,6 +65,7 @@ namespace UseCaseAnalyser.Model.ViewModel
         //}
 
         //  commands in menu
+
         public ICommand OpenWordFile
         {
             get
@@ -76,7 +77,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                     //  still handled here for easier understanding
                     OpenFileDialog dialog = new OpenFileDialog
                     {
-                        Filter = "Word files (.docx)|*.docx",
+                        Filter = "Word files |*.docx|All files |*.*",
                         Multiselect = false
                     };
                     if (dialog.ShowDialog() != DialogResult.OK) return;

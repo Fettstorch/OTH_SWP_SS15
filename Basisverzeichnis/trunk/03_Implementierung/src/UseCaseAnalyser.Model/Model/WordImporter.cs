@@ -55,7 +55,7 @@ namespace UseCaseAnalyser.Model.Model
         {
             List<UseCaseGraph> useCaseList = new List<UseCaseGraph>();
 
-            if (!File.Exists((file.FullName)))
+            if (file.Exists)
             {
                 // To-Do: Loggers
                 // LoggingFunctions.Debug("File does not exist!"); geht net... weil internal ach ka.. 
