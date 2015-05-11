@@ -199,28 +199,76 @@ namespace GraphFramework.Tests
                 singleNodes.Count());
         }
 
-        [Test, Ignore]
+        [Test]
         public void MergeGraphTest_Simple()
         {
-            
+            IGraph testGraph = new Graph(new IAttribute[0]);
+            testGraph.AddNode(mTestNodelist[0]);
+            IGraph newGraph = Graph.MergeGraphs(testGraph, mTestMergeGraph);
+            foreach (INode node in newGraph.Nodes)
+            {
+                Assert.IsTrue(mTestMergeGraph.Nodes.Contains(node));
+            }
+            foreach (IEdge edge in newGraph.Edges)
+            {
+                Assert.IsTrue(mTestMergeGraph.Edges.Contains(edge));
+            }
+            Assert.AreEqual(mTestMergeGraph.Edges.Count(), newGraph.Edges.Count());
+            Assert.AreEqual(mTestMergeGraph.Nodes.Count(), newGraph.Nodes.Count());
         }
 
-        [Test, Ignore]
+        [Test]
         public void MergeGraphTest_WithConnectionPoint()
         {
-            
+            IGraph testGraph = new Graph(new IAttribute[0]);
+            testGraph.AddNode(new Node(new Attribute("Name", "D")));
+            IGraph newGraph = Graph.MergeGraphs(testGraph, mTestMergeGraph, testGraph.Nodes.First(), mTestMergeGraph.Nodes.First(), new IAttribute[0]);
+            foreach (INode node in mTestMergeGraph.Nodes)
+            {
+                Assert.IsTrue(newGraph.Nodes.Contains(node));
+            }
+            foreach (IEdge edge in mTestMergeGraph.Edges)
+            {
+                Assert.IsTrue(newGraph.Edges.Contains(edge));
+            }
+            Assert.AreEqual(mTestMergeGraph.Edges.Count() + 1, newGraph.Edges.Count());
+            Assert.AreEqual(mTestMergeGraph.Nodes.Count() + 1, newGraph.Nodes.Count());
         }
 
-        [Test, Ignore]
+        [Test]
         public void AddGraphTest_Simple()
         {
-            
+            IGraph testGraph = new Graph(new IAttribute[0]);
+            testGraph.AddNode(mTestNodelist[0]);
+            testGraph.AddGraph(mTestMergeGraph);
+            foreach (INode node in testGraph.Nodes)
+            {
+                Assert.IsTrue(mTestMergeGraph.Nodes.Contains(node));
+            }
+            foreach (IEdge edge in testGraph.Edges)
+            {
+                Assert.IsTrue(mTestMergeGraph.Edges.Contains(edge));
+            }
+            Assert.AreEqual(mTestMergeGraph.Edges.Count(), testGraph.Edges.Count());
+            Assert.AreEqual(mTestMergeGraph.Nodes.Count(), testGraph.Nodes.Count());
         }
 
-        [Test, Ignore]
+        [Test]
         public void AddGraphTest_WithConnectionPoint()
         {
-            
+            IGraph testGraph = new Graph(new IAttribute[0]);
+            testGraph.AddNode(new Node(new Attribute("Name", "D")));
+            testGraph.AddGraph(mTestMergeGraph, testGraph.Nodes.First(), mTestMergeGraph.Nodes.First(), new IAttribute[0]);
+            foreach (INode node in mTestMergeGraph.Nodes)
+            {
+                Assert.IsTrue(testGraph.Nodes.Contains(node));
+            }
+            foreach (IEdge edge in mTestMergeGraph.Edges)
+            {
+                Assert.IsTrue(testGraph.Edges.Contains(edge));
+            }
+            Assert.AreEqual(mTestMergeGraph.Edges.Count() + 1, testGraph.Edges.Count());
+            Assert.AreEqual(mTestMergeGraph.Nodes.Count() + 1, testGraph.Nodes.Count());
         }
 
         [TestCase(0)]
