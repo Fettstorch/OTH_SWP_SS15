@@ -55,7 +55,7 @@ namespace UseCaseAnalyser.Model.Model
         {
             List<UseCaseGraph> useCaseList = new List<UseCaseGraph>();
 
-            if (!File.Exists((file.Name)))
+            if (!File.Exists((file.FullName)))
             {
                 // To-Do: Loggers
                 // LoggingFunctions.Debug("File does not exist!"); geht net... weil internal ach ka.. 
@@ -65,7 +65,7 @@ namespace UseCaseAnalyser.Model.Model
             WordprocessingDocument doc;
             try
             {
-                doc = WordprocessingDocument.Open(file.Name, false);
+                doc = WordprocessingDocument.Open(file.FullName, false);
             }
             catch (Exception ex)
             {
@@ -259,7 +259,7 @@ namespace UseCaseAnalyser.Model.Model
                     string lastCondition = paragraphList[paragraphList.Count - 1].InnerText;
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute indexAttribute = new GraphFramework.Attribute("index", variantIndex + j + 1);
+                        IAttribute indexAttribute = new GraphFramework.Attribute("index", variantIndex + (j + 1));
                         IAttribute descAttribute = new GraphFramework.Attribute("description", paragraphList[j].InnerText);
                         INode node = new Node(indexAttribute, descAttribute);
                         useCaseGraph.AddNode(node);
