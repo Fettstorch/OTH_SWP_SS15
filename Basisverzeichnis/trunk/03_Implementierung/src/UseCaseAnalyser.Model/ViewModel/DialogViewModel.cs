@@ -72,19 +72,20 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mOpenWordFile ?? (mOpenWordFile = new AsyncCommand(o =>
                 {
+                    //  view stuff should be handled in view (not viewmodel)
                     //  still handled here for easier understanding
-                    //OpenFileDialog dialog = new OpenFileDialog
-                    //{
-                    //    Filter = "Word files (.docx)|*.docx",
-                    //    Multiselect = false
-                    //};
-                    //if (dialog.ShowDialog() != DialogResult.OK) return;
+                    OpenFileDialog dialog = new OpenFileDialog
+                    {
+                        Filter = "Word files (.docx)|*.docx",
+                        Multiselect = false
+                    };
+                    if (dialog.ShowDialog() != DialogResult.OK) return;
 
-                    //string filePath = dialog.FileName;
-                    //UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath));
+                    string filePath = dialog.FileName;
+                    UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath));
 
                     //  TO TEST BINDING
-                    UseCaseGraphs = ImportUseCases();
+                    //UseCaseGraphs = ImportUseCases();
                 }, o => true, OnError));
             }
         }
