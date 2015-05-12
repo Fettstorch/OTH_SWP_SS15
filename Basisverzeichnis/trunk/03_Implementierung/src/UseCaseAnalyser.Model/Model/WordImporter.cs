@@ -179,7 +179,7 @@ namespace UseCaseAnalyser.Model.Model
             List<TableCell> cells = row.Descendants<TableCell>().ToList();
             if (cells.Count != 2) return false;
             if (!string.Equals(cells[0].InnerText, heading)) return false;
-            result = cells[0].InnerText;
+            result = cells[1].InnerText;
             return true;
         }
 
@@ -285,7 +285,9 @@ namespace UseCaseAnalyser.Model.Model
 
                         INode searchedNode;
                         if (nodes.TryGetValue(previousVariantIndex, out searchedNode))
-                            useCaseGraph.AddEdge(searchedNode, node);                            
+                            useCaseGraph.AddEdge(searchedNode, node);
+                        if (sequenceVarNodes.TryGetValue(previousVariantIndex, out searchedNode))
+                             useCaseGraph.AddEdge(searchedNode, node);                            
                         previousVariantIndex = variantIndex + (j + 1);
                         sequenceVarNodes.Add(previousVariantIndex, node);
                     }
