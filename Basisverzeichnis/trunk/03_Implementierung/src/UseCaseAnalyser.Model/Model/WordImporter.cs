@@ -268,6 +268,7 @@ namespace UseCaseAnalyser.Model.Model
                 {
                     List<Paragraph> paragraphList = cells[1].Descendants<Paragraph>().ToList();
                     if(paragraphList.Count == 0) continue;
+                    Dictionary<string, INode> sequenceVarNodes = new Dictionary<string, INode>();
 
                     string lastCondition = paragraphList[paragraphList.Count - 1].InnerText;
                     for (int j = 0; j < paragraphList.Count - 1; j++)
@@ -281,34 +282,22 @@ namespace UseCaseAnalyser.Model.Model
 
                         if (previousVariantIndex.Equals(""))
                             previousVariantIndex = indexNumber;
-                        /*
-                        INode searchedNode = useCaseGraph.Nodes.ToList().Find(
-                            x => string.Equals(x.Attributes.ToList().Find(
-                                y => string.Equals(y.Name, "index")).Value, previousVariantIndex));
-                        // lol? .. :D
-                        */
-                        INode searchedNode;
 
+                        INode searchedNode;
                         if (nodes.TryGetValue(previousVariantIndex, out searchedNode))
                             useCaseGraph.AddEdge(searchedNode, node);                            
                         previousVariantIndex = variantIndex + (j + 1);
+                        sequenceVarNodes.Add(previousVariantIndex, node);
                     }
 
                     if (lastCondition.StartsWith(WordImporter.SequenceJump))
                     {
                         string lastConditionId = lastCondition.Replace(WordImporter.SequenceJump, "").Replace(" ", "");
-                        /*if (useCaseGraph.Nodes.ToList().Exists(x => string.Equals(x.Attributes.ToList().Find(
-                                y => string.Equals(y.Name, "index")).Value, lastConditionId))) */
                         INode searchedNode;
                         if(nodes.TryGetValue(lastConditionId, out searchedNode))
                         {
-                            /*
-                            Knoten searchKnoten = ergGraph.KnotenList.Find(knoten => knoten.Index == lastConditionId2);
-                            Knoten lastKnoten = ergGraph.KnotenList.Find(knoten => knoten.Index == previousVariantIndex);
-                            if (searchKnoten != null && lastKnoten != null)
-                                ergGraph.KantenList.Add(new Kanten(lastKnoten, searchKnoten));*/
                             INode lastNode;
-                            if (nodes.TryGetValue(previousVariantIndex, out lastNode))
+                            if (sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
                             {
                                 useCaseGraph.AddEdge(lastNode, searchedNode);
                             }
