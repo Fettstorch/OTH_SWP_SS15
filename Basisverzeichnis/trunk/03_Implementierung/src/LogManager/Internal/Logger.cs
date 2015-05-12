@@ -34,25 +34,60 @@ namespace LogManager
 
     class LogManager
     {
-        string Filename;
+        #region Fields and Members
+
         object lockObject = new object();
-        LogFileNameType FileNameType;
-        LogTarget Target;
-        string LogPath;
-        LogLevel minimumLogLevel;
+
+        public LogTarget Target { get; set; }
+
+        private LogFileNameType fileNameType;
+        public LogFileNameType FileNameType
+        {
+            get { return fileNameType; }
+            set
+            {
+                if ((value & (value - 1)) != 0) //has more than 1 flag
+                {
+                    throw new NotSupportedException("More that one flag is not allowed for FileNameType");
+                }
+                fileNameType = value;
+            }
+        }
+
+        private LogLevel minimumLogLevel;
+        public LogLevel LogLevel
+        {
+            get { return minimumLogLevel; }
+            set
+            {
+                if ((value & (value - 1)) != 0) //has more than 1 flag
+                {
+                    throw new NotSupportedException("More that one flag is not allowed for LogLevel");
+                }
+                minimumLogLevel = value;
+            }
+        }
+
+        string filename;
+        public string FileName { get { return filename; } set { filename = value; } }
+
+        string filepath;
+        public string FilePath { get { return filepath; } set { filename = filepath; } }
+
+        #endregion
 
         public LogManager()
         {
-            minimumLogLevel = LogLevel.Trace;
-            FileNameType = LogFileNameType.Date;
-            Filename = GetFileName();
-            LogPath = "Logs";
-            Target = LogTarget.Console;
+            LogLevel = LogLevel.Trace;
+            fileNameType = LogFileNameType.Date;
+            filename = GetFileName();
+            filepath = "Logs";
+            Target = LogTarget.Console | LogTarget.File;
         }
 
         public void Log(string message, LogLevel level)
         {
-            if (level < minimumLogLevel) return;
+            if (level < LogLevel) return;
 
             var time = DateTime.Now;
             string stringToLog = String.Format("{0}:{1}:{2}.{3} [{4}] {5}", time.Hour, time.Minute, time.Second, time.Millisecond, level, message);
@@ -61,9 +96,10 @@ namespace LogManager
             {
                 lock (lockObject)
                 {
-                    if (!File.Exists(Filename)) File.Create(Filename).Close();
+                    string path = Path.Combine(filepath, filename);
+                    if (!File.Exists(path)) File.Create(path).Close();
 
-                    using (var sw = File.AppendText(Filename))
+                    using (var sw = File.AppendText(path))
                     {
                         sw.WriteLine(stringToLog);
                     }
@@ -77,14 +113,14 @@ namespace LogManager
 
         private string GetFileName()
         {
-            if (FileNameType == LogFileNameType.Date)
+            if (fileNameType == LogFileNameType.Date)
             {
                 var time = DateTime.Now;
                 return String.Format("session.{0}.{1}.{2}_{3}.{4}.{5}", time.Day, time.Month, time.Year, time.Hour, time.Minute, time.Second);
             }
             else //if (FileNameType == LogFileNameType.Rolling)
             {
-                string obsoleteFile = Path.Combine(LogPath, "session.9.log");
+                string obsoleteFile = Path.Combine(filepath, "session.9.log");
                 File.Delete(obsoleteFile);
 
                 for (int i = 8; i < 0; i--)
@@ -100,11 +136,6 @@ namespace LogManager
 
                 return "session.0.log";
             }
-        }
-
-        internal void SetLogLevel(LogLevel level)
-        {
-            minimumLogLevel = level;
         }
     }
 }

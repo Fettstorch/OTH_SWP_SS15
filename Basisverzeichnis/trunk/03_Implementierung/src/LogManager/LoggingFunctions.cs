@@ -64,8 +64,27 @@ namespace LogManager
 
         public static void SetLogLevel(LogLevel level)
         {
-            logger.SetLogLevel(level);
+            logger.LogLevel = level;
         }
 
+        public static void SetFileName(string filename)
+        {
+            logger.FileName = filename;
+        }
+
+        public static void SetFilePath(string path)
+        {
+            logger.FilePath = path;
+        }
+
+        public static void SetFileName(LogFileNameType type)
+        {
+            logger.FileNameType = type;
+        }
+
+        public static void SetLogTarget(LogTarget target)
+        {
+            logger.Target = target;
+        }
     }
 }
