@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using GraphFramework.Interfaces;
+using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
@@ -14,15 +17,21 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         private bool mSelected;
         private double mYOffset;
 
-        public UseCaseNode(uint slotNumber, string useCaseIndex)
+        public UseCaseNode(uint slotNumber, INode node)
         {
             YOffset = 0;
             SlotNumber = slotNumber;
             Selected = false;
             InitializeComponent();
-            LblIndex.Content = useCaseIndex;
+            LblIndex.Content =
+                node.Attributes.First(
+                    attr =>
+                        attr.Name == WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index])
+                    .Value;
+            Node = node;
         }
 
+        public INode Node { get; private set; }
         public uint SlotNumber { get; set; }
 
         public double YOffset
@@ -95,7 +104,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             // [Fettstorch] keep more readable version of loop
             foreach (UseCaseEdge useCaseEdge in mEdges)
             {
-                if (useCaseEdge.mSourceUseCaseNode.Equals(this) && useCaseEdge.StatusSourceElement == currentDockedStatus ||
+                if (useCaseEdge.mSourceUseCaseNode.Equals(this) &&
+                    useCaseEdge.StatusSourceElement == currentDockedStatus ||
                     useCaseEdge.mDestUseCaseNode.Equals(this) && useCaseEdge.StatusDestElement == currentDockedStatus)
                 {
                     index++;

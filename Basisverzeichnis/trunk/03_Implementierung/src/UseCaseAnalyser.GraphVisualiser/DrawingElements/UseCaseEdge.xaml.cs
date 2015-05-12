@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
@@ -16,9 +17,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         #region constructors
 
-        public UseCaseEdge(UseCaseNode source, UseCaseNode dest)
+        public UseCaseEdge(UseCaseNode source, UseCaseNode dest, IEdge edge)
         {
             InitializeComponent();
+            Edge = edge;
             mSourceUseCaseNode = source;
             mDestUseCaseNode = dest;
             mSourceUseCaseNode.AddEdge(this);
@@ -34,6 +36,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         #endregion
 
+        public IEdge Edge { get; private set; }
+
         public void RecalcBezier()
         {
             switch (ProcessType)
@@ -46,7 +50,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         StatusDestElement = DockedStatus.Top;
                     }
                     //Source node under destination node
-                    else if (Canvas.GetTop(mDestUseCaseNode) + mDestUseCaseNode.Height < Canvas.GetTop(mSourceUseCaseNode))
+                    else if (Canvas.GetTop(mDestUseCaseNode) + mDestUseCaseNode.Height <
+                             Canvas.GetTop(mSourceUseCaseNode))
                     {
                         StatusSourceElement = DockedStatus.Top;
                         StatusDestElement = DockedStatus.Bottom;
@@ -113,7 +118,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     double widthEnd = StatusDestElement == DockedStatus.Right ? mDestUseCaseNode.Width : 0;
 
                     startpoint = new Point(Canvas.GetLeft(mSourceUseCaseNode) + widthStart,
-                        Canvas.GetTop(mSourceUseCaseNode) + (mSourceUseCaseNode.Height/amountIndexStart)*indexStartElement);
+                        Canvas.GetTop(mSourceUseCaseNode) +
+                        (mSourceUseCaseNode.Height/amountIndexStart)*indexStartElement);
                     pthFigure.StartPoint = startpoint;
 
                     endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) + widthEnd,

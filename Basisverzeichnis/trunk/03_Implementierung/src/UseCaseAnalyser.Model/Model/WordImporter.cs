@@ -46,6 +46,19 @@ namespace UseCaseAnalyser.Model.Model
             OpenPoints
         };
 
+        public static readonly List<string> UseCaseNodeAttributes = new List<string>()
+        {
+            "Index",
+            "Description"
+        };
+
+        public enum UseCaseNodeAttribute
+        {
+            Index = 0,
+            Description
+        };
+
+
         /// <summary>
         /// imports the specified file (.docx) to a use case graph
         /// </summary>
@@ -55,7 +68,7 @@ namespace UseCaseAnalyser.Model.Model
         {
             List<UseCaseGraph> useCaseList = new List<UseCaseGraph>();
 
-            if (file.Exists)
+            if (!file.Exists)
             {
                 // To-Do: Loggers
                 // LoggingFunctions.Debug("File does not exist!"); geht net... weil internal ach ka.. 
@@ -215,8 +228,8 @@ namespace UseCaseAnalyser.Model.Model
             INode oldNode = null;
             for (int i = 0; i < paragraphList.Count - 1; i++)
             {
-                IAttribute indexAttribute = new GraphFramework.Attribute("index", (i + 1).ToString());
-                IAttribute descAttribute = new GraphFramework.Attribute("description", paragraphList[i].InnerText);
+                IAttribute indexAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Index], (i + 1).ToString());
+                IAttribute descAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Description], paragraphList[i].InnerText);
                 INode node = new Node(indexAttribute, descAttribute);
                 useCaseGraph.AddNode(node);
                 nodes.Add(indexAttribute.Value.ToString(), node);
@@ -259,8 +272,8 @@ namespace UseCaseAnalyser.Model.Model
                     string lastCondition = paragraphList[paragraphList.Count - 1].InnerText;
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute indexAttribute = new GraphFramework.Attribute("index", variantIndex + (j + 1));
-                        IAttribute descAttribute = new GraphFramework.Attribute("description", paragraphList[j].InnerText);
+                        IAttribute indexAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Index], variantIndex + (j + 1));
+                        IAttribute descAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Description], paragraphList[j].InnerText);
                         INode node = new Node(indexAttribute, descAttribute);
                         useCaseGraph.AddNode(node);
                         
