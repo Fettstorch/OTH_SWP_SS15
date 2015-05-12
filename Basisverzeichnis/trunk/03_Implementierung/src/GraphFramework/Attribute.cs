@@ -57,12 +57,10 @@ namespace GraphFramework
             {
                 throw new Exception("Incorrect attribute initialisation!");
             }
-            else
-            {
-                Name = name;
-                Type = val.GetType();
-                Value = val;
-            }
+            
+            Name = name;
+            Type = val.GetType();
+            Value = val;
         }
     }
 }

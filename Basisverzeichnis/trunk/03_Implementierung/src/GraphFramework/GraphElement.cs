@@ -5,10 +5,14 @@ using System.Linq;
 
 namespace GraphFramework
 {
+    /// <summary>
+    /// the abstract graphelement class nearly every framework class inherits from. The class generalize the relation between classes 
+    /// that can have attributes and the attribute class
+    /// </summary>
     public abstract class GraphElement : IGraphElement
     {
         /// <summary>
-        /// Gets the node's attributes as a collection
+        /// Gets the element's attributes as a collection
         /// </summary>
         public IEnumerable<IAttribute> Attributes
         {
@@ -19,20 +23,12 @@ namespace GraphFramework
         }
 
         /// <summary>
-        /// The attributes of the node, sorted by their names
+        /// The attributes of the element, sorted by their names
         /// </summary>
         protected List<IAttribute> mAttributes;
 
-        ///// <summary>
-        ///// Standart constructor
-        ///// </summary>
-        //protected GraphElement()
-        //{
-        //    mAttributes = new List<IAttribute>();
-        //}
-
         /// <summary>
-        /// Special constructor which adds multiple attributes to the node
+        /// Special constructor which adds multiple attributes to the element
         /// </summary>
         /// <param name="attributes">the attributes you want to add</param>
         protected GraphElement(params IAttribute[] attributes)
@@ -49,7 +45,7 @@ namespace GraphFramework
         }
 
         /// <summary>
-        /// Adds an attribute to the node. If the node allready has and attribute with this name, it is not added
+        /// Adds an attribute to the node. If the element allready has and attribute with this name, it is not added
         /// </summary>
         /// <param name="attribute">the attribute you want to add</param>
         public void AddAttribute(IAttribute attribute)
@@ -65,7 +61,7 @@ namespace GraphFramework
         }
 
         /// <summary>
-        /// Removes an attribute with the defined name from the node. (if the node has an attribute with this name)
+        /// Removes an attribute with the defined name from the element. (if the element has an attribute with this name)
         /// </summary>
         /// <param name="name">the name of the attribute you want to remove</param>
         public void RemoveAttribute(string name)
@@ -82,7 +78,7 @@ namespace GraphFramework
         }
 
         /// <summary>
-        /// Removes the defined attribute if the node holds it
+        /// Removes the defined attribute if the element holds it
         /// </summary>
         /// <param name="attribute"></param>
         public void RemoveAttribute(IAttribute attribute)
@@ -93,4 +89,4 @@ namespace GraphFramework
             }
         }
     }
-}
+}s
