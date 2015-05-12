@@ -7,8 +7,8 @@ namespace GraphFramework
 {
     public class Graph : GraphElement, IGraph
     {
-        private readonly List<INode> mNodes;
         private readonly List<IEdge> mEdges;
+        private readonly List<INode> mNodes;
 
         public Graph(params IAttribute[] attributes) : base(attributes)
         {
@@ -28,19 +28,17 @@ namespace GraphFramework
 
         public void AddNode(INode node)
         {
-             if (mNodes.Contains(node))
-             {
-                 throw new InvalidOperationException("The specified node is already part of the graph!");
-             }
+            if (node == null)
+            {
+                throw new ArgumentException("The specified node to add to the graph is null!");
+            }
 
-             //  to remove when removing attributes parameter
-             //  addattributes method would be nice in igraphelement or as extension method
-             //foreach (IAttribute attribute in attributes)
-             //{
-             //    node.AddAttribute(attribute);
-             //}
+            if (mNodes.Contains(node))
+            {
+                throw new InvalidOperationException("The specified node is already part of the graph!");
+            }
 
-             mNodes.Add(node);
+            mNodes.Add(node);
         }
 
         public void RemoveNode(params INode[] nodesToRemove)
@@ -58,30 +56,19 @@ namespace GraphFramework
             }
         }
 
-        public void AddEdge(INode n1, INode n2, params IAttribute[] attributes)
-         {
-             //  add node 1 if it's not part of the graph
-             if (!mNodes.Contains(n1))
-             {
-                 mNodes.Add(n1);
-             }
+        public void AddEdge(INode node1, INode node2, params IAttribute[] attributes)
+        {
+            //  add node 1 if it's not part of the graph
+            AddNodeIfNotExists(node1);
 
-             //  add node 2 if it's not part of the graph
-             if (!mNodes.Contains(n2))
-             {
-                 mNodes.Add(n2);
-             }
+            //  add node 2 if it's not part of the graph
+            AddNodeIfNotExists(node2);
 
-             Edge edge = new Edge(n1, n2, attributes);
-             ////  addattributes method would be nice in igraphelement or as extension method
-             //foreach (var attribute in attributes)
-             //{
-             //    edge.AddAttribute(attribute);
-             //}
+            Edge edge = new Edge(node1, node2, attributes);
 
-             mEdges.Add(edge);
-         }
-        
+            mEdges.Add(edge);
+        }
+
         public void RemoveEdge(params IEdge[] edgesToRemove)
         {
             //  if any edge can't be removed --> exception
@@ -92,69 +79,97 @@ namespace GraphFramework
         }
 
         public IEnumerable<INode> GetSingleNodes()
-         {
-             //  list of nodes without nodes which are contained in node1 or node2 in the list of edges
-             return mNodes.Except(mEdges.Select(e => e.Node1).Concat(mEdges.Select(e => e.Node2)));
-         }
-
-        public void AddGraph(IGraph g2)
-         {
-            //  no duplicates --> except my does / edges
-            mNodes.AddRange(g2.Nodes.Except(mNodes));
-            mEdges.AddRange(g2.Edges.Except(Edges));
-         }
-
-        public void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes)
-         {
-             //  check if the parameters are valid (n1 in g1, n2 in g2)
-             if (!mNodes.Contains(n1))
-             {
-                 throw new InvalidOperationException("The specified node n1 is not part of the graph, which is calling the add method!");
-             }
-             if (!g2.Nodes.Contains(n2))
-             {
-                 throw new InvalidOperationException("The specified node n2 is not part of the provided graph g2!");
-             }
-
-             AddGraph(g2);
-             //  add a new edge to connect the 2 parts of the graph
-             AddEdge(n1, n2, attributes);
-         }
-
-        public IEnumerable<IEdge> GetEdges(INode n1, INode n2)
         {
-            //  edges which contain n1 & n2
-            return mEdges.Where(e => (e.Node1 == n1 && e.Node2 == n2) || (e.Node1 == n2 && e.Node2 == n1));
+            //  list of nodes without nodes which are contained in node1 or node2 in the list of edges
+            return mNodes.Except(mEdges.Select(e => e.Node1).Concat(mEdges.Select(e => e.Node2)));
+        }
+
+        public void AddGraph(IGraph graphToAdd)
+        {
+            //  to avoid duplicates --> except my nodes / edges
+            mNodes.AddRange(graphToAdd.Nodes.Except(mNodes));
+            mEdges.AddRange(graphToAdd.Edges.Except(Edges));
+        }
+
+        public void AddGraph(IGraph graphToAdd, INode thisGraphConnectionNode, INode graphToAddConnectionNode,
+            params IAttribute[] attributes)
+        {
+            //  check if the parameters are valid (thisGraphConnectionNode is part of graph1, graphToAddConnectionNode is part of graphToAdd)
+            if (!mNodes.Contains(thisGraphConnectionNode))
+            {
+                throw new InvalidOperationException(
+                    "The specified node node1 is not part of the graph, which is calling the add method!");
+            }
+            if (!graphToAdd.Nodes.Contains(graphToAddConnectionNode))
+            {
+                throw new InvalidOperationException(
+                    "The specified node node2 is not part of the provided graph graphToAdd!");
+            }
+
+            AddGraph(graphToAdd);
+            //  add a new edge to connect the 2 parts of the graph
+            AddEdge(thisGraphConnectionNode, graphToAddConnectionNode, attributes);
+        }
+
+        public IEnumerable<IEdge> GetEdges(INode node1, INode node2)
+        {
+            //  edges which contain node1 & node2
+            return mEdges.Where(e => (e.Node1 == node1 && e.Node2 == node2) || (e.Node1 == node2 && e.Node2 == node1));
+        }
+
+        private void AddNodeIfNotExists(INode node)
+        {
+            if (!mNodes.Contains(node))
+            {
+                mNodes.Add(node);
+            }
         }
 
         #region static methods
 
-        public static IGraph MergeGraphs(IGraph g1, IGraph g2)
-         {
-             Graph graph = new Graph();
-             graph.AddGraph(g1);
-             graph.AddGraph(g2);
+        /// <summary>
+        ///     merges the two graphs to one new
+        /// </summary>
+        /// <param name="graph1">first graph</param>
+        /// <param name="graph2">second graph</param>
+        /// <returns>the new graph, which contains the given two</returns>
+        public static IGraph MergeGraphs(IGraph graph1, IGraph graph2)
+        {
+            Graph graph = new Graph();
+            graph.AddGraph(graph1);
+            graph.AddGraph(graph2);
 
-             return graph;
-         }
+            return graph;
+        }
 
-        public static IGraph MergeGraphs(IGraph g1, IGraph g2, INode n1, INode n2, params IAttribute[] attributes)
-         {
-             //  check if the parameters are valid (n1 in g1, n2 in g2)
-             if (!g1.Nodes.Contains(n1))
-             {
-                 throw new InvalidOperationException("The specified node n1 is not part of the provided graph g1!");
-             }
-             if (!g2.Nodes.Contains(n2))
-             {
-                 throw new InvalidOperationException("The specified node n2 is not part of the provided graph g2!");
-             }
+        /// <summary>
+        ///     merges the two graphs to one new and connects the two given nodes
+        /// </summary>
+        /// <param name="graph1">first graph</param>
+        /// <param name="graph2">second graph</param>
+        /// <param name="graphOneConnectionNode">node in graph one to connect with node in graph two</param>
+        /// <param name="graphTwoConnectionNode">node in graph two to connect with node in graph one</param>
+        /// <param name="attributes">attributes to add to the edge between graphOneConnectionNode and graphTwoConnectionNode</param>
+        /// <returns>the new graph, which contains the given two and a edge between the given nodes</returns>
+        public static IGraph MergeGraphs(IGraph graph1, IGraph graph2, INode graphOneConnectionNode,
+            INode graphTwoConnectionNode, params IAttribute[] attributes)
+        {
+            //  check if the parameters are valid (node1 in graph1, node2 in graphToAdd)
+            if (!graph1.Nodes.Contains(graphOneConnectionNode))
+            {
+                throw new InvalidOperationException("The specified node node1 is not part of the provided graph graph1!");
+            }
+            if (!graph2.Nodes.Contains(graphTwoConnectionNode))
+            {
+                throw new InvalidOperationException(
+                    "The specified node node2 is not part of the provided graph graphToAdd!");
+            }
 
-             IGraph graph = MergeGraphs(g1, g2);
-             graph.AddEdge(n1, n2, attributes);
+            IGraph graph = MergeGraphs(graph1, graph2);
+            graph.AddEdge(graphOneConnectionNode, graphTwoConnectionNode, attributes);
 
-             return graph;
-         }
+            return graph;
+        }
 
         #endregion
     }
