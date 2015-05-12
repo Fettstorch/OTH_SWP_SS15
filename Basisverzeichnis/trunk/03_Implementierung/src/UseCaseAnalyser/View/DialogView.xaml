@@ -16,9 +16,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="0.6*" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="0.4*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="0.6*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.7*" />
@@ -64,17 +64,29 @@
             </TabItem>
         </TabControl>
 
-        <StackPanel Grid.Column="2" Grid.Row="3">
-            <TextBlock Text="Properties" FontWeight="Bold" />
-            <ItemsControl ItemsSource="{Binding ElementName=GraphVisualizer, Path=GraphElement.Attributes, Mode=OneWay}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type interfaces:IAttribute}">
-                        <Expander Header="{Binding Path=Name}" Margin="10">
-                            <TextBlock Text="{Binding Path=Value}" />
-                        </Expander>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+        <TabControl Grid.Column="2" Grid.Row="3">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Properties of  " FontWeight="Bold" />
+                        <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphToScenarioStringConverter}}" />
+                    </StackPanel>
+                </TabItem.Header>
+            <!--<TextBlock Text="Properties" FontWeight="Bold" />-->
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement.Attributes, 
+                    Mode=OneWay}" HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type interfaces:IAttribute}">
+                            <!--<Border Padding="5" BorderThickness="3">-->
+                                <Expander Header="{Binding Path=Name}" Padding="5" Margin="3" HorizontalContentAlignment="Left" BorderThickness="1" 
+                                          BorderBrush="Black">
+                                    <TextBlock Text="{Binding Path=Value}" TextWrapping="Wrap" Margin="10,10,0,0"/>
+                                </Expander>
+                            <!--</Border>-->
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

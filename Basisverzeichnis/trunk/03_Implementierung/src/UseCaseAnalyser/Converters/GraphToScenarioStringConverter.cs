@@ -22,7 +22,7 @@ namespace UseCaseAnalyser.Converters
             }
 
             IAttribute nameAttribute = scenarioGraph.Attributes.FirstOrDefault(a => a.Name == "Name");
-            return nameAttribute == null ? null : nameAttribute.Value;
+            return string.Format("{0}: {1}", value.GetType().Name, nameAttribute == null ? "<no name>" : nameAttribute.Value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

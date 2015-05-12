@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using GraphFramework;
@@ -84,9 +85,6 @@ namespace UseCaseAnalyser.Model.ViewModel
 
                     string filePath = dialog.FileName;
                     UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath));
-
-                    //  TO TEST BINDING
-                    //UseCaseGraphs = ImportUseCases();
                 }, o => true, OnError));
             }
         }
@@ -111,28 +109,9 @@ namespace UseCaseAnalyser.Model.ViewModel
 
         private void OnError(Exception ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(string.Format("An error occured:{0}{1}", Environment.NewLine, ex.Message),
+                ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-        #region BindingTest
-
-        private int mGraphCounter;
-
-        private IEnumerable<UseCaseGraph> ImportUseCases()
-        {
-            for (int i = 0; i < new Random().Next(1, 10); i++)
-            {
-                //  CREATE SOME SAMPLE GRAPHS
-                UseCaseGraph graph = new UseCaseGraph(string.Format("graph No. {0}", ++mGraphCounter));
-                Node node = new Node(new Attribute("Identifier", 1));
-                graph.AddEdge(node, new Node(new Attribute("Identifier", 2)));
-                graph.AddEdge(node, new Node(new Attribute("Identifier", 3)));
-
-                yield return graph;
-            }
-        }
-
-        #endregion
 
         #region Property Changed event + invoker to notify gui about changes
 
