@@ -24,7 +24,7 @@ namespace LogManager
         File = 2,
     }
 
-    public enum LogFileNameType
+    public enum LogfileNameType
     {
         Date,
         Rolling
@@ -40,8 +40,8 @@ namespace LogManager
 
         public LogTarget Target { get; set; }
 
-        private LogFileNameType fileNameType;
-        public LogFileNameType FileNameType
+        private LogfileNameType fileNameType;
+        public LogfileNameType FileNameType
         {
             get { return fileNameType; }
             set
@@ -79,7 +79,7 @@ namespace LogManager
         public LogManager()
         {
             LogLevel = LogLevel.Trace;
-            fileNameType = LogFileNameType.Date;
+            fileNameType = LogfileNameType.Date;
             filename = GetFileName();
             filepath = "Logs";
             Target = LogTarget.Console | LogTarget.File;
@@ -113,7 +113,7 @@ namespace LogManager
 
         private string GetFileName()
         {
-            if (fileNameType == LogFileNameType.Date)
+            if (fileNameType == LogfileNameType.Date)
             {
                 var time = DateTime.Now;
                 return String.Format("session.{0}.{1}.{2}_{3}.{4}.{5}", time.Day, time.Month, time.Year, time.Hour, time.Minute, time.Second);

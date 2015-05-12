@@ -6,40 +6,74 @@ using System.Collections;
 
 namespace LogManager
 {
+    /// <summary>
+    /// This is the public static access class for logging.
+    /// You can log Arrays, Lists and Dictionarys and other objects.
+    /// The objects will be logged with their .ToString() functions.
+    /// See README.txt for more details and implementation.
+    /// </summary>
     public static class LoggingFunctions
     {
         private static LogManager logger;
 
+        /// <summary>
+        /// Initializes the <see cref="LoggingFunctions"/> class.
+        /// </summary>
         static LoggingFunctions()
         {
             logger = new LogManager();
         }
 
+        /// <summary>
+        /// Writes the object as Trace to the log.
+        /// </summary>
+        /// <param name="toLog">Object to log.</param>
         public static void Trace(object toLog)
         {
             Log(toLog, LogLevel.Trace);
         }
 
+        /// <summary>
+        /// Writes the object as Debug to the log.
+        /// </summary>
+        /// <param name="toLog">Object to log.</param>
         public static void Debug(object toLog)
         {
             Log(toLog, LogLevel.Debug);
         }
 
+        /// <summary>
+        /// Writes the object as Error to the log.
+        /// </summary>
+        /// <param name="toLog">Object to log.</param>
         public static void Error(object toLog)
         {
             Log(toLog, LogLevel.Error);
         }
 
+        /// <summary>
+        /// Writes the object as Exception to the log.
+        /// </summary>
+        /// <param name="toLog">Object to log.</param>
         public static void Exception(object toLog)
         {
             Log(toLog, LogLevel.Exception);
         }
 
+        /// <summary>
+        /// Writes the object as Status to the log.
+        /// </summary>
+        /// <param name="toLog">Object to log.</param>
         public static void Status(object toLog)
         {
             Log(toLog, LogLevel.Status);
         }
 
+        /// <summary>
+        /// Writes the object with a defined LogLevel to the log.
+        /// </summary>
+        /// <param name="toLog">Object to log.</param>
+        /// <param name="level">The LogLevel.</param>
         public static void Log(object toLog, LogLevel level)
         {
             if (toLog == null) return;
@@ -62,26 +96,50 @@ namespace LogManager
             logger.Log(message, level);    
         }
 
+        /// <summary>
+        /// Sets the minimum LogLevel.
+        /// Everything passed to Log(...) with a LogLevel below will be ignored.
+        /// </summary>
+        /// <param name="level">The LogLevel.</param>
         public static void SetLogLevel(LogLevel level)
         {
             logger.LogLevel = level;
         }
 
+        /// <summary>
+        /// Sets the name of the LogFile.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
         public static void SetFileName(string filename)
         {
             logger.FileName = filename;
         }
 
+        /// <summary>
+        /// Sets the path of the LogFile.
+        /// Can be a relative or absolute path.
+        /// </summary>
+        /// <param name="path">The path.</param>
         public static void SetFilePath(string path)
         {
             logger.FilePath = path;
         }
 
-        public static void SetFileName(LogFileNameType type)
+        /// <summary>
+        /// Sets the type of the logfile name.
+        /// Can be LogfileNameType.Date or LogfileNameType.Rolling
+        /// </summary>
+        /// <param name="type">The logfile name type.</param>
+        public static void SetLogfileNameType(LogfileNameType type)
         {
             logger.FileNameType = type;
         }
 
+        /// <summary>
+        /// Sets the Logtarget.
+        /// Can be LogTarget.Console and/or LogTarget.File
+        /// </summary>
+        /// <param name="target">The logging target.</param>
         public static void SetLogTarget(LogTarget target)
         {
             logger.Target = target;
