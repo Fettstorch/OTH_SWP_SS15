@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace LogManager
 {
-    static class LoggingFunctions
+    public static class LoggingFunctions
     {
         private static LogManager logger;
 
