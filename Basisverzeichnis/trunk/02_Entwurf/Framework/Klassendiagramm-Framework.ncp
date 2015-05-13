@@ -30,7 +30,7 @@
         <Name>Graph</Name>
         <Access>Public</Access>
         <Location left="1295" top="17" />
-        <Size width="532" height="315" />
+        <Size width="532" height="332" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private readonly List&lt;INode&gt; mNodes</Member>
         <Member type="Field">private readonly List&lt;IEdge&gt; mEdges</Member>
@@ -44,6 +44,7 @@
         <Member type="Method">public IEnumerable&lt;INode&gt; GetSingleNodes()</Member>
         <Member type="Method">public void AddGraph(IGraph g2)</Member>
         <Member type="Method">public void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
+        <Member type="Method">public IEnumerable&lt;IEdge&gt; GetEdges(INode n1, INode n2)</Member>
         <Member type="Method">public static IGraph MergeGraph(IGraph g1, IGraph g2)</Member>
         <Member type="Method">public static IGraph MergeGraph(IGraph g1, IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
         <Modifier>None</Modifier>
@@ -152,7 +153,7 @@
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>1715</X>
-          <Y>357</Y>
+          <Y>374</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
           <X>1714</X>
@@ -196,8 +197,6 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -246,8 +245,6 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="3" second="4">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Bidirectional</Direction>
@@ -256,8 +253,6 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="2" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
