@@ -72,8 +72,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     }
                     break;
                 case EdgeProcessType.BackwardEdge:
-                    StatusSourceElement = DockedStatus.Right;
-                    StatusDestElement = DockedStatus.Right;
+                    if (Canvas.GetLeft(mSourceUseCaseNode) + mDestUseCaseNode.Width < Canvas.GetLeft(mDestUseCaseNode))
+                    {
+                        StatusSourceElement = DockedStatus.Right;
+                        StatusDestElement = DockedStatus.Left;
+
+                    }
+                    else
+                    {
+                        StatusSourceElement = DockedStatus.Right;
+                        StatusDestElement = DockedStatus.Right;
+                    }
+
                     break;
             }
             int indexStartElement = mSourceUseCaseNode.GetEdgeIndex(this);
@@ -124,10 +134,39 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
                     endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) + widthEnd,
                         Canvas.GetTop(mDestUseCaseNode) + (mDestUseCaseNode.Height/amountIndexEnd)*indexDestElement);
-                    double correctfactor = ProcessType == EdgeProcessType.BackwardEdge ? 1 : 0;
+                   
+                    double middlePos = (endpoint.X - startpoint.X)/ 2;
+                    
+                    //middlePos = middlePos < 0 ? middlePos * -1 : middlePos;
+                    if (ProcessType == EdgeProcessType.BackwardEdge)
+                    {
+                        double resultEndPosY;
 
-                    bzSeg.Point1 = new Point(startpoint.X + correctfactor*mSourceUseCaseNode.Width/2, startpoint.Y);
-                    bzSeg.Point2 = new Point(startpoint.X + correctfactor*mDestUseCaseNode.Width/2, endpoint.Y);
+                        if (StatusDestElement == DockedStatus.Right &&
+                            startpoint.Y - mSourceUseCaseNode.Height / 2 < endpoint.Y + mDestUseCaseNode.Height / 2)
+                        {
+                            if (startpoint.Y > endpoint.Y)
+                                resultEndPosY = startpoint.Y - 1.5 * mSourceUseCaseNode.Height;
+                            else
+                                resultEndPosY = startpoint.Y + 1.5 * mSourceUseCaseNode.Height;
+                        }
+                        else
+                        {
+                            resultEndPosY = endpoint.Y;
+                         }
+
+                        bzSeg.Point1 = new Point(startpoint.X + (mSourceUseCaseNode.Width / 2), startpoint.Y);
+                        bzSeg.Point2 = new Point(startpoint.X + (mDestUseCaseNode.Width / 2), resultEndPosY);
+
+                    }
+                    else
+                    {
+                       
+                        bzSeg.Point1 = new Point(startpoint.X + middlePos , startpoint.Y);
+                        bzSeg.Point2 = new Point(startpoint.X + middlePos , endpoint.Y);
+                   
+                    }
+
                     bzSeg.Point3 = endpoint;
 
 
@@ -143,6 +182,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             pthGeometry.Figures = pthFigureCollection;
 
             LinePath = pthGeometry;
+
+
+
         }
 
         private void UseCaseEdge_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

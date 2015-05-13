@@ -63,6 +63,24 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             foreach (UseCaseEdge ucEdge in mEdges)
             {
                 ucEdge.RecalcBezier();
+                if (ucEdge.mDestUseCaseNode != this)
+                    ucEdge.mDestUseCaseNode.RenderEdgesExceptNode(this);
+                else
+                    ucEdge.mSourceUseCaseNode.RenderEdgesExceptNode(this);
+            }
+        }
+        public void RenderEdgesExceptNode(UseCaseNode notRenderNode)
+        {
+            foreach (UseCaseEdge ucEdge in mEdges)
+            {
+                if (ucEdge.mSourceUseCaseNode == notRenderNode || ucEdge.mDestUseCaseNode == notRenderNode)
+                    continue;
+
+                ucEdge.RecalcBezier();
+                //if (ucEdge.mDestUseCaseNode != this)
+                //    ucEdge.mDestUseCaseNode.RenderEdges();
+                //else
+                //    ucEdge.mSourceUseCaseNode.RenderEdges();
             }
         }
 
