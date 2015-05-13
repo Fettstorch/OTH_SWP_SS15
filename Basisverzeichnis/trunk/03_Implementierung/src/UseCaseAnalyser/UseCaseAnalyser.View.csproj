@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\AttributeToBoolConverter.cs" />
     <Compile Include="Converters\GraphToScenarioStringConverter.cs" />
     <Compile Include="View\DummyGraphVisualizer.xaml.cs">
       <DependentUpon>DummyGraphVisualizer.xaml</DependentUpon>
