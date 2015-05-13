@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GraphFramework.Interfaces;
 using NUnit.Framework;
 
@@ -20,7 +16,8 @@ namespace GraphFramework.Tests
             testNode2 = new Node(new IAttribute[0]);
         }
 
-        [TestCase()]
+        [Test, Description("This is a test to check the dconstruction of an object. " +
+                           "Expected is that two nodes and the attributes are correctly set afterwards. \r\n\r\n")]
         public void ConstructorTest()
         {
             IEdge testEdge = new Edge(testNode1, testNode2, new IAttribute[0]);
@@ -29,10 +26,12 @@ namespace GraphFramework.Tests
             Assert.IsEmpty(testEdge.Attributes);
         }
 
-        [ExpectedException]
-        [TestCase(false, true, true)]
-        [TestCase(true, false, true)]
-        [TestCase(true, true, false)]
+        [TestCase(false, true, true, TestName = "Node1Null", ExpectedException = typeof(ArgumentNullException), 
+            Description = "This is a test to check if the case that parameter n1 is null is handled.\r\nExpected: ArgumentNullException.\r\n\r\n")]
+        [TestCase(true, false, true, TestName = "Node2Null", ExpectedException = typeof(ArgumentNullException),
+            Description = "This is a test to check if the case that parameter n2 is null is handled.\r\nExpected: ArgumentNullException.\r\n\r\n")]
+        [TestCase(true, true, false, TestName = "AttributesNull", ExpectedException = typeof(ArgumentNullException),
+            Description = "This is a test to check if the case that parameter attributes is null is handled.\r\nExpected: ArgumentNullException.\r\n\r\n")]
         public void ConstructorExceptionTest(bool setNode1, bool setNode2, bool setAttributes)
         {
             IEdge testEdge = new Edge(setNode1 ? testNode1 : null,
