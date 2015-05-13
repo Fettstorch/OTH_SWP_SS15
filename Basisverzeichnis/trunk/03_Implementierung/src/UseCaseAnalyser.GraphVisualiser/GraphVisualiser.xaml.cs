@@ -235,6 +235,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             if (firstNode == null || secondNode == null)
                 return null;
             UseCaseEdge useCaseEdge = new UseCaseEdge(firstNode, secondNode, edge);
+            useCaseEdge.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             DrawingCanvas.Children.Add(useCaseEdge);
             if (firstNode.SlotNumber < secondNode.SlotNumber)
                 secondNode.YOffset = firstNode.YOffset + ElementHeight;
@@ -252,7 +253,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             {
                 if (element is ISelectableObject)
                 {
-                    ((ISelectableObject) element).ChangeSelection();
+                    ((ISelectableObject) element).Select();
                     GraphElement = ((ISelectableObject) element).CurrentElement;
 
                     foreach (UIElement child in DrawingCanvas.Children)
@@ -260,22 +261,14 @@ namespace UseCaseAnalyser.GraphVisualiser
                         if (child is ISelectableObject && (ISelectableObject)child != (ISelectableObject)element)
                             ((ISelectableObject)child).Unselect();
                     }
-                }                
-    
-                mSelectedElement = element;
-                mOffsetElementPosition = Mouse.GetPosition(DrawingCanvas);
-                Point elementPoint = new Point(Canvas.GetLeft(mSelectedElement), Canvas.GetTop(mSelectedElement));
-                mOffsetElementPosition.X -= elementPoint.X;
-                mOffsetElementPosition.Y -= elementPoint.Y;
-            }
-            else
-            {
-                foreach (UIElement child in DrawingCanvas.Children)
-                {
-                    if (child is ISelectableObject)
-                        ((ISelectableObject)child).Unselect();
+                               
+                    mSelectedElement = element;
+                    mOffsetElementPosition = Mouse.GetPosition(DrawingCanvas);
+                    Point elementPoint = new Point(Canvas.GetLeft(mSelectedElement), Canvas.GetTop(mSelectedElement));
+                    mOffsetElementPosition.X -= elementPoint.X;
+                    mOffsetElementPosition.Y -= elementPoint.Y;
                 }
-                GraphElement = UseCase;
+
             }
         }
 
@@ -283,15 +276,14 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             if (mSelectedElement != null)
             {
-                foreach (UseCaseNode useCaseNode in DrawingCanvas.Children)
+                foreach (FrameworkElement element in DrawingCanvas.Children)
                 {
-                    if (!useCaseNode.Equals(mSelectedElement))
+                    if (!element.Equals(mSelectedElement))
                         continue;
-
                     //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
                     //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
-
-                    useCaseNode.RenderEdges();
+                    if(element is UseCaseNode)
+                        ((UseCaseNode)element).RenderEdges();
                     mSelectedElement = null;
                     break;
                 }
@@ -327,5 +319,14 @@ namespace UseCaseAnalyser.GraphVisualiser
             typeof (IGraphElement), typeof (GraphVisualiser));
 
 
+        private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            foreach (UIElement child in DrawingCanvas.Children)
+            {
+                if (child is ISelectableObject)
+                    ((ISelectableObject)child).Unselect();
+            }
+            GraphElement = UseCase;
+        }
     }
 }

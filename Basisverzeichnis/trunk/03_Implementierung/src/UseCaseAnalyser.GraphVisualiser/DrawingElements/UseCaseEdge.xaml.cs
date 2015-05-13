@@ -13,8 +13,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     {
         public readonly UseCaseNode mDestUseCaseNode;
         public readonly UseCaseNode mSourceUseCaseNode;
-        private bool mSelected;
-
+      
         #region constructors
 
         public UseCaseEdge(UseCaseNode source, UseCaseNode dest, IEdge edge)
@@ -28,7 +27,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             ProcessType = source.YOffset < dest.YOffset ? EdgeProcessType.ForwardEdge : EdgeProcessType.BackwardEdge;
 
             Stroke = mDrawingBrush = new SolidColorBrush(Colors.Black);
-            StrokeThickness = 1;
+            StrokeThickness = 1.5;
             EndCap = Geometry.Parse("M0,0 L6,-6 L6,6 z");
 
             RecalcBezier();
@@ -166,10 +165,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         bzSeg.Point2 = new Point(startpoint.X + middlePos , endpoint.Y);
                    
                     }
-
                     bzSeg.Point3 = endpoint;
-
-
                     break;
             }
 
@@ -190,8 +186,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         
         public void SetDrawingBrush(Brush newBrush)
         {
-            mDrawingBrush = newBrush;
+            Stroke = mDrawingBrush = newBrush;
+            RecalcBezier();
         }
+
         #region DockedStatus enum
 
         public enum DockedStatus
@@ -232,12 +230,14 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         {
             Selected = true;
             Stroke = Brushes.Orange;
+            RecalcBezier();
         }
 
         public void Unselect()
         {
             Selected = false;
             Stroke = mDrawingBrush;
+            RecalcBezier();
         }
 
 

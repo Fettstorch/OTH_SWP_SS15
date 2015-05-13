@@ -15,7 +15,6 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     public partial class UseCaseNode : ISelectableObject
     {
         public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
-        private bool mSelected;
         private double mYOffset;
 
         public UseCaseNode(uint slotNumber, INode node)
@@ -125,9 +124,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
 
         private Brush mDrawingBrush;
+
         public void SetDrawingBrush(Brush newBrush)
         {
-            mDrawingBrush = newBrush;
+            NodeBorder.BorderBrush = mDrawingBrush = newBrush;
         }
 
 
