@@ -50,7 +50,7 @@ namespace GraphFramework
         /// <param name="attribute">the attribute you want to add</param>
         public void AddAttribute(IAttribute attribute)
         {
-            if (!mAttributes.Any(graphelem => graphelem.Name == attribute.Name))
+            if (!mAttributes.Any(graphelem => string.Equals(graphelem.Name, attribute.Name)))
             {
                 mAttributes.Add(attribute);
             }
