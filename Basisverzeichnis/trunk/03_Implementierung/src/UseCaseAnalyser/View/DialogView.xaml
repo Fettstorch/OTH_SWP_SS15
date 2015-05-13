@@ -14,6 +14,7 @@
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="Padding" Value="3" />
         </Style>
+        <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -78,7 +79,7 @@
                     Mode=OneWay}" HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">
-                                <Expander Header="{Binding Path=Name}" Padding="5" HorizontalContentAlignment="Left" BorderThickness="1" 
+                                <Expander IsEnabled="{Binding Converter={StaticResource AttributeToBoolConverter}}" Header="{Binding Path=Name}" Padding="5" HorizontalContentAlignment="Left" BorderThickness="1" 
                                           BorderBrush="Black">
                                     <TextBlock Text="{Binding Path=Value}" TextWrapping="Wrap" Margin="10,5,0,0"/>
                                 </Expander>
