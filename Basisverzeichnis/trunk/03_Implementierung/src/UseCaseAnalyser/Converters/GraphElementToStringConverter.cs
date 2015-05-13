@@ -9,19 +9,19 @@ using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Converters
 {
-    public class GraphToScenarioStringConverter : IValueConverter
+    public class GraphElementToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null) return null;
 
-            IGraph scenarioGraph = value as IGraph;
-            if (scenarioGraph == null)
+            IGraphElement graphElement = value as IGraphElement;
+            if (graphElement == null)
             {
                 throw new NotSupportedException();
             }
 
-            IAttribute nameAttribute = scenarioGraph.Attributes.FirstOrDefault(a => a.Name == "Name");
+            IAttribute nameAttribute = graphElement.Attributes.FirstOrDefault(a => a.Name == "Name");
             return string.Format("{0}: {1}", value.GetType().Name, nameAttribute == null ? "<no name>" : nameAttribute.Value);
         }
 

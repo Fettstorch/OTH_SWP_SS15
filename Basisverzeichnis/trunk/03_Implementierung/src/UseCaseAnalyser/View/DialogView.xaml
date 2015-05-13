@@ -10,7 +10,7 @@
         <viewModel:DialogViewModel />
     </Window.DataContext>
     <Window.Resources>
-        <converters:GraphToScenarioStringConverter x:Key="GraphToScenarioStringConverter" />
+        <converters:GraphElementToStringConverter x:Key="GraphElementToStringConverter" />
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="Padding" Value="3" />
         </Style>
@@ -60,7 +60,7 @@
                     Mode=OneWayToSource}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IGraph}">
-                            <TextBlock Text="{Binding Converter={StaticResource GraphToScenarioStringConverter}}" />
+                            <TextBlock Text="{Binding Converter={StaticResource GraphElementToStringConverter}}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -72,7 +72,7 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Properties of  " FontWeight="Bold" />
-                        <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphToScenarioStringConverter}}" />
+                        <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphElementToStringConverter}}" />
                     </StackPanel>
                 </TabItem.Header>
                 <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement.Attributes, 
