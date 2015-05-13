@@ -9,7 +9,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     /// <summary>
     ///     Interaction logic for UseCaseEdge.xaml
     /// </summary>
-    public partial class UseCaseEdge : CappedLine
+    public partial class UseCaseEdge : ISelectableObject
     {
         public readonly UseCaseNode mDestUseCaseNode;
         public readonly UseCaseNode mSourceUseCaseNode;
@@ -27,7 +27,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             mDestUseCaseNode.AddEdge(this);
             ProcessType = source.YOffset < dest.YOffset ? EdgeProcessType.ForwardEdge : EdgeProcessType.BackwardEdge;
 
-            Stroke = new SolidColorBrush(Colors.Black);
+            Stroke = mDrawingBrush = new SolidColorBrush(Colors.Black);
             StrokeThickness = 1;
             EndCap = Geometry.Parse("M0,0 L6,-6 L6,6 z");
 
@@ -187,11 +187,11 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         }
 
-        private void UseCaseEdge_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        
+        public void SetDrawingBrush(Brush newBrush)
         {
-            Selected = !Selected;
+            mDrawingBrush = newBrush;
         }
-
         #region DockedStatus enum
 
         public enum DockedStatus
@@ -216,23 +216,46 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         #region Properties
 
-        public bool Selected
-        {
-            get { return mSelected; }
-            set
-            {
-                mSelected = value;
-                Stroke = mSelected
-                    ? new SolidColorBrush(Colors.Orange)
-                    : new SolidColorBrush(Colors.Black);
-                RecalcBezier();
-            }
-        }
-
+    
+        public bool Selected { get; set; }
+        
         internal DockedStatus StatusSourceElement { get; set; }
         internal DockedStatus StatusDestElement { get; set; }
         internal EdgeProcessType ProcessType { get; set; }
-
+        
+        private Brush mDrawingBrush;
+       
         #endregion
+     
+
+        public void Select()
+        {
+            Selected = true;
+            Stroke = Brushes.Orange;
+        }
+
+        public void Unselect()
+        {
+            Selected = false;
+            Stroke = mDrawingBrush;
+        }
+
+
+        public void ChangeSelection()
+        {
+            if(Selected)
+                Unselect();
+            else
+                Select();
+        }
+
+
+        public IGraphElement CurrentElement
+        {
+            get
+            {
+                return Edge;
+            }
+        }
     }
 }

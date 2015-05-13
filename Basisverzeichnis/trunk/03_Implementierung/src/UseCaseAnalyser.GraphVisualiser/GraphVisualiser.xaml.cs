@@ -250,11 +250,32 @@ namespace UseCaseAnalyser.GraphVisualiser
             FrameworkElement element = sender as FrameworkElement;
             if (element != null)
             {
+                if (element is ISelectableObject)
+                {
+                    ((ISelectableObject) element).ChangeSelection();
+                    GraphElement = ((ISelectableObject) element).CurrentElement;
+
+                    foreach (UIElement child in DrawingCanvas.Children)
+                    {
+                        if (child is ISelectableObject && (ISelectableObject)child != (ISelectableObject)element)
+                            ((ISelectableObject)child).Unselect();
+                    }
+                }                
+    
                 mSelectedElement = element;
                 mOffsetElementPosition = Mouse.GetPosition(DrawingCanvas);
                 Point elementPoint = new Point(Canvas.GetLeft(mSelectedElement), Canvas.GetTop(mSelectedElement));
                 mOffsetElementPosition.X -= elementPoint.X;
                 mOffsetElementPosition.Y -= elementPoint.Y;
+            }
+            else
+            {
+                foreach (UIElement child in DrawingCanvas.Children)
+                {
+                    if (child is ISelectableObject)
+                        ((ISelectableObject)child).Unselect();
+                }
+                GraphElement = UseCase;
             }
         }
 
@@ -304,5 +325,7 @@ namespace UseCaseAnalyser.GraphVisualiser
 
         public static readonly DependencyProperty GraphElementProperty = DependencyProperty.Register("GraphElement",
             typeof (IGraphElement), typeof (GraphVisualiser));
+
+
     }
 }

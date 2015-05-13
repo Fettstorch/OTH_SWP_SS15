@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using GraphFramework;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
 
@@ -11,7 +12,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     /// <summary>
     ///     Interaction logic for UseCaseNode.xaml
     /// </summary>
-    public partial class UseCaseNode : UserControl
+    public partial class UseCaseNode : ISelectableObject
     {
         public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
         private bool mSelected;
@@ -23,13 +24,13 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             SlotNumber = slotNumber;
             Selected = false;
             InitializeComponent();
-            LblIndex.Content =
-                node.Attributes.First(
-                    attr =>
-                        attr.Name == WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index])
-                    .Value;
+            LblIndex.Content = node.Attributes.First(attr => 
+                attr.Name == WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index]).Value;
             Node = node;
+            mDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
         }
+
+       
 
         public INode Node { get; private set; }
         public uint SlotNumber { get; set; }
@@ -45,19 +46,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             }
         }
 
-        public Brush ColorBrush { get; set; }
-
-        public bool Selected
-        {
-            get { return mSelected; }
-            set
-            {
-                mSelected = value;
-                ColorBrush = mSelected ? Brushes.Orange : Brushes.Black;
-                // RecalcBezier(SourceUseCaseNode, DestUseCaseNode);
-            }
-        }
-
+        
+        public bool Selected { get; set; }
+        
         public void RenderEdges()
         {
             foreach (UseCaseEdge ucEdge in mEdges)
@@ -132,9 +123,38 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             return index;
         }
 
-        private void UseCaseNode_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+
+        private Brush mDrawingBrush;
+        public void SetDrawingBrush(Brush newBrush)
         {
-            Selected = !Selected;
+            mDrawingBrush = newBrush;
+        }
+
+
+        public void Select()
+        {
+            Selected = true;
+            NodeBorder.BorderBrush = Brushes.Orange ;
+        }
+
+        public void Unselect()
+        {
+            Selected = false;
+            NodeBorder.BorderBrush = mDrawingBrush;
+        }
+        public void ChangeSelection()
+        {
+            if (Selected)
+                Unselect();
+            else
+                Select();
+        }
+        public IGraphElement CurrentElement
+        {
+            get
+            {
+                return Node;
+            }
         }
     }
 }

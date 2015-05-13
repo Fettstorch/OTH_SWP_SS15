@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DrawingElements\CappedLine.cs" />
+    <Compile Include="DrawingElements\ISelectableObject.cs" />
     <Compile Include="DrawingElements\UseCaseEdge.xaml.cs">
       <DependentUpon>UseCaseEdge.xaml</DependentUpon>
     </Compile>

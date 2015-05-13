@@ -4,5 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:drawingElements="clr-namespace:UseCaseAnalyser.GraphVisualiser.DrawingElements"
-             mc:Ignorable="d" PreviewMouseLeftButtonDown="UseCaseEdge_OnPreviewMouseLeftButtonDown">
+             mc:Ignorable="d">
 </drawingElements:CappedLine>
