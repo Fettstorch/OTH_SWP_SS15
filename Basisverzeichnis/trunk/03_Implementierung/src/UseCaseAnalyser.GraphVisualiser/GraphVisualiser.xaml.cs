@@ -170,6 +170,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             UseCaseNode useCaseNode = new UseCaseNode(slotNumber, node);
             useCaseNode.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             DrawingCanvas.Children.Add(useCaseNode);
+            Panel.SetZIndex(useCaseNode, 10);
 
 
             if (referenceUseCaseNode != null)
@@ -200,7 +201,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             mNodes.Add(useCaseNode);
             Canvas.SetTop(useCaseNode, useCaseNode.YOffset);
             Canvas.SetLeft(useCaseNode, ElementWidth*(slotNumber - 1) + 40);
-
+            
             if (DrawingCanvas.Width < (ElementWidth)*(slotNumber) + 40)
                 DrawingCanvas.Width = (ElementWidth)*(slotNumber) + 40;
             if (DrawingCanvas.Height < (useCaseNode.YOffset + ElementHeight))
@@ -236,7 +237,10 @@ namespace UseCaseAnalyser.GraphVisualiser
                 return null;
             UseCaseEdge useCaseEdge = new UseCaseEdge(firstNode, secondNode, edge);
             useCaseEdge.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
+            Panel.SetZIndex(useCaseEdge, 1);
+
             DrawingCanvas.Children.Add(useCaseEdge);
+            
             if (firstNode.SlotNumber < secondNode.SlotNumber)
                 secondNode.YOffset = firstNode.YOffset + ElementHeight;
 
