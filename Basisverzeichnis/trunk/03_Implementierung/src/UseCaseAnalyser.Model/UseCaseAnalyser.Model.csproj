@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Report.cs" />
     <Compile Include="Model\ScenarioMatrixCreator.cs" />
     <Compile Include="Model\ScenarioMatrixExporter.cs" />
     <Compile Include="Model\UseCaseGraph.cs" />

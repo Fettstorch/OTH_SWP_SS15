@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using LogManager;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using GraphFramework;
 using GraphFramework.Interfaces;
+using Attribute = GraphFramework.Attribute;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
 
 namespace UseCaseAnalyser.Model.Model
 {
+    /// <summary>
+    /// Imports use case graphs from a word document
+    /// </summary>
     public static class WordImporter
     {
+
         private const string SequenceJump = "Rückkehr nach:";
 
         private static readonly List<string> ImportStepNames = new List<string>()
@@ -48,15 +51,22 @@ namespace UseCaseAnalyser.Model.Model
         public static readonly List<string> UseCaseNodeAttributes = new List<string>()
         {
             "Index",
+            "Normal Index",
+            "Variant Index",
+            "Variant Sequnce Index",
             "Description"
         };
 
         public enum UseCaseNodeAttribute
         {
             Index = 0,
+            NormalIndex,
+            VariantIndex,
+            VarSeqIndex,
             Description
         };
 
+        private static Report wordImporteReport;
 
         /// <summary>
         /// imports the specified file (.docx) to a use case graph
@@ -65,15 +75,24 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns>list of the use case graphs generated from the file</returns>
         public static List<UseCaseGraph> ImportUseCases(FileInfo file)
         {
+            Report temp;
+            return WordImporter.ImportUseCases(file, out temp);
+        }
+        
+        public static List<UseCaseGraph> ImportUseCases(FileInfo file, out Report report)
+        {
+            // Initialize
             List<UseCaseGraph> useCaseList = new List<UseCaseGraph>();
+            WordImporter.wordImporteReport = report = new Report();
 
+            // Check if the file exists
             if (!file.Exists)
             {
-                // To-Do: Loggers
-                // LoggingFunctions.Debug("File does not exist!"); geht net... weil internal ach ka.. 
+                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("ERROR", "File not found!", Report.Entrytype.ERROR));
                 return useCaseList;
             }
             
+            // Try to open the document
             WordprocessingDocument doc;
             try
             {
@@ -81,11 +100,11 @@ namespace UseCaseAnalyser.Model.Model
             }
             catch (Exception ex)
             {
-                // To-Do: Logger
-                MessageBox.Show(ex.Message);
+                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("ERROR", ex.Message, Report.Entrytype.ERROR));
                 return useCaseList;
             }
 
+            // Fetch all tables in the document
             IEnumerable<Table> tables = doc.MainDocumentPart.Document.Descendants<Table>();
             int numberOfUseCases = 0;
             foreach (Table table in tables)
@@ -102,12 +121,20 @@ namespace UseCaseAnalyser.Model.Model
 
             if (numberOfUseCases == 0)
             {
-                // Es konnten keine Use Cases gefunden werden. To-Do: Warnung, Logger, etc!
+                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING", "No use cases found", Report.Entrytype.WARNING));
             }
+
+            WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("LOG", numberOfUseCases + " Use Cases successfully imported!", Report.Entrytype.LOG));
 
             return useCaseList; 
         }
 
+        /// <summary>
+        /// Tries to read in a use case table
+        /// </summary>
+        /// <param name="tableRows"></param>
+        /// <param name="useCaseGraph"></param>
+        /// <returns>False when a error occurs</returns>
         private static bool TryReadInUseCase(IEnumerable<TableRow> tableRows, out UseCaseGraph useCaseGraph)
         {
             useCaseGraph = new UseCaseGraph();
@@ -116,10 +143,12 @@ namespace UseCaseAnalyser.Model.Model
             if (rows.Count == 0 || rows[0] == null) return false;
             List<TableCell> cellsOfFirstRow = rows[0].Descendants<TableCell>().ToList();
 
+            string useCaseName;
             if (cellsOfFirstRow.Count == 1)
             {
                 // Get name field of the use case
-                IAttribute nameAttribute = new GraphFramework.Attribute(ImportStepNames[0], cellsOfFirstRow[0].InnerText);
+                useCaseName = cellsOfFirstRow[0].InnerText;
+                IAttribute nameAttribute = new Attribute(ImportStepNames[0], useCaseName);
                 useCaseGraph.AddAttribute((nameAttribute));
             }
             else
@@ -128,7 +157,7 @@ namespace UseCaseAnalyser.Model.Model
                 return false;
             }
 
-            string id, prio = null, desc = null, precon = null, postcon = null, spec = null, open = null;
+            string id, prio, desc, precon, postcon, spec, open;
 
             if (TryGetHorizontalContent(rows[1], out id, ImportStepNames[(int)ImportStep.Id]) &&
                 TryGetHorizontalContent(rows[2], out prio, ImportStepNames[(int)ImportStep.Priority]) &&
@@ -138,13 +167,13 @@ namespace UseCaseAnalyser.Model.Model
                 TryGetVerticalContent(rows, rows.Count-4, out spec, ImportStepNames[(int)ImportStep.SpecialRequirements]) &&
                 TryGetVerticalContent(rows, rows.Count-2, out open, ImportStepNames[(int)ImportStep.OpenPoints]))
             {
-                IAttribute idAttribute = new GraphFramework.Attribute(ImportStepNames[(int)ImportStep.Id], id);
-                IAttribute prioAttribute = new GraphFramework.Attribute(ImportStepNames[(int)ImportStep.Priority], prio);
-                IAttribute descAttribute = new GraphFramework.Attribute(ImportStepNames[(int)ImportStep.Description], desc);
-                IAttribute preconAttribute = new GraphFramework.Attribute(ImportStepNames[(int)ImportStep.PreCondition], precon);
-                IAttribute posconAttribute = new GraphFramework.Attribute(ImportStepNames[(int)ImportStep.PostCondition], postcon);
-                IAttribute specAttribute = new GraphFramework.Attribute(ImportStepNames[(int)ImportStep.SpecialRequirements], spec);
-                IAttribute openAttribute = new GraphFramework.Attribute(ImportStepNames[(int)ImportStep.OpenPoints], open);
+                IAttribute idAttribute = new Attribute(ImportStepNames[(int)ImportStep.Id], id);
+                IAttribute prioAttribute = new Attribute(ImportStepNames[(int)ImportStep.Priority], prio);
+                IAttribute descAttribute = new Attribute(ImportStepNames[(int)ImportStep.Description], desc);
+                IAttribute preconAttribute = new Attribute(ImportStepNames[(int)ImportStep.PreCondition], precon);
+                IAttribute posconAttribute = new Attribute(ImportStepNames[(int)ImportStep.PostCondition], postcon);
+                IAttribute specAttribute = new Attribute(ImportStepNames[(int)ImportStep.SpecialRequirements], spec);
+                IAttribute openAttribute = new Attribute(ImportStepNames[(int)ImportStep.OpenPoints], open);
                 useCaseGraph.AddAttribute(idAttribute);
                 useCaseGraph.AddAttribute(prioAttribute);
                 useCaseGraph.AddAttribute(descAttribute);
@@ -154,12 +183,13 @@ namespace UseCaseAnalyser.Model.Model
                 useCaseGraph.AddAttribute(openAttribute);
 
                 // Get normal routine and sequence variants
-                Dictionary<string, INode> nodes;
-                if (TryGetNormalRoutine(useCaseGraph, rows, 9, ImportStepNames[(int) ImportStep.NormalRoutine], out nodes) &&
-                    TryGetSequenceVariants(useCaseGraph, rows, 11, WordImporter.ImportStepNames[(int)WordImporter.ImportStep.SequenceVariation], ref nodes))
-                    return true;
+                if(!TryGetNormalRoutineAndSeqVars(useCaseGraph, rows, 9))
+                {
+                    WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("ERROR", "Use Case '" + useCaseName + "': format is invalid", Report.Entrytype.ERROR, useCaseName));
+                    return false;
+                }
 
-                return false;
+                return true;
             }            
 
             return false;
@@ -190,7 +220,7 @@ namespace UseCaseAnalyser.Model.Model
         /// <param name="result">the cell content</param>
         /// <param name="heading">the heading</param>
         /// <returns></returns>
-        private static bool TryGetVerticalContent(List<TableRow> rows, int actRowIndex, out string result, string heading)
+        private static bool TryGetVerticalContent(IReadOnlyList<TableRow> rows, int actRowIndex, out string result, string heading)
         {
             result = null;
             if (rows == null) return false;
@@ -204,31 +234,41 @@ namespace UseCaseAnalyser.Model.Model
             return true;
         }
 
-        private static bool TryGetNormalRoutine(UseCaseGraph useCaseGraph, List<TableRow> rows, int actRowIndex,
-            string heading)
+        /// <summary>
+        /// Tries to get the normal routine (Normaler Ablauf) of the use case
+        /// </summary>
+        /// <param name="useCaseGraph"></param>
+        /// <param name="rows"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns>true when the use case could be successfully parsed</returns>
+        private static bool TryGetNormalRoutineAndSeqVars(UseCaseGraph useCaseGraph, IReadOnlyList<TableRow> rows, int rowIndex)
         {
-            Dictionary<string, INode> temp;
-            return WordImporter.TryGetNormalRoutine(useCaseGraph, rows, actRowIndex, heading, out temp);
-        }
-
-        private static bool TryGetNormalRoutine(UseCaseGraph useCaseGraph, List<TableRow> rows, int actRowIndex,
-            string heading, out Dictionary<string, INode> nodes)
-        {
-            nodes = new Dictionary<string, INode>();
+            // Defensive programming
             if (rows == null) return false;
-            if (actRowIndex < 0) return false;
-            List<TableCell> cells = rows[actRowIndex].Descendants<TableCell>().ToList();
+            if (rowIndex < 0) return false;
             if (useCaseGraph == null) return false;
-            if (cells.Count != 1|| actRowIndex + 1 >= rows.Count) return false;
-            if (!string.Equals(cells[0].InnerText, heading)) return false;
-            cells = rows[actRowIndex + 1].Descendants<TableCell>().ToList();
+
+            // Initializing
+            Dictionary<string, INode> nodes = new Dictionary<string, INode>();            
+            List<TableCell> cells = rows[rowIndex].Descendants<TableCell>().ToList();
+            string variantIndex = "", previousVariantIndex = "";
+            Regex rgx = new Regex("[^0-9]");
+            
+            // Check the heading ("Normaler Ablauf")
+            if (cells.Count != 1|| rowIndex + 1 >= rows.Count) return false;
+            if (!string.Equals(cells[0].InnerText, ImportStepNames[(int)ImportStep.NormalRoutine])) 
+                return false;
+
+            // Try to get the normal use case routine
+            cells = rows[rowIndex + 1].Descendants<TableCell>().ToList();
             if (cells.Count != 2) return false;
             List<Paragraph> paragraphList = cells[1].Descendants<Paragraph>().ToList();
             INode oldNode = null;
-            for (int i = 0; i < paragraphList.Count - 1; i++)
+            if (paragraphList.Count < 1) return false; // no normal routine found
+            for (int i = 0; i < paragraphList.Count - 1; i++) // last paragraph is the end tag: "Ende"
             {
-                IAttribute indexAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Index], (i + 1).ToString());
-                IAttribute descAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Description], paragraphList[i].InnerText);
+                IAttribute indexAttribute = new Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Index], (i + 1).ToString());
+                IAttribute descAttribute = new Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Description], paragraphList[i].InnerText);                
                 INode node = new Node(indexAttribute, descAttribute);
                 useCaseGraph.AddNode(node);
                 nodes.Add(indexAttribute.Value.ToString(), node);
@@ -237,46 +277,39 @@ namespace UseCaseAnalyser.Model.Model
                 oldNode = node;
             }
 
-            return true;
-        }
+            // Try to get the sequence variants
+            rowIndex += 2;
+            cells = rows[rowIndex].Descendants<TableCell>().ToList();
 
-        private static bool TryGetSequenceVariants(UseCaseGraph useCaseGraph, List<TableRow> rows, int actRowIndex,
-            string heading, ref Dictionary<string, INode> nodes)
-        {
-            if (rows == null) return false;
-            if (actRowIndex < 0) return false;
-            List<TableCell> cells = rows[actRowIndex].Descendants<TableCell>().ToList();
-            if (useCaseGraph == null) return false;
-            if (cells.Count != 1 || actRowIndex + 1 >= rows.Count) return false;
-            if (!string.Equals(cells[0].InnerText, heading)) return false;
+            if (cells.Count != 1 || rowIndex + 1 >= rows.Count) return false;
+            if (!string.Equals(cells[0].InnerText, WordImporter.ImportStepNames[(int)ImportStep.SequenceVariation]))
+                return false; // invalid format
 
-            string variantIndex = "", previousVariantIndex = "", variantName="";
-            Regex rgx = new Regex("[^0-9]");
-
-            for (int i = actRowIndex+1; i < rows.Count - 4; i++)
+            for (int i = rowIndex + 1; i < rows.Count - 4; i++)
             {
                 cells = rows[i].Descendants<TableCell>().ToList();
-                if (cells.Count != 2) return false;
+                if (cells.Count != 2) return false; // invalid format
                 if (!cells[0].InnerText.Equals(""))
                 {
-                    variantIndex = cells[0].InnerText;
+                    variantIndex = cells[0].InnerText; 
                     previousVariantIndex = "";
-                    if (cells.Count > 1) variantName = cells[1].InnerText;
                 }
                 else
                 {
-                    List<Paragraph> paragraphList = cells[1].Descendants<Paragraph>().ToList();
-                    if(paragraphList.Count == 0) continue;
+                    paragraphList = cells[1].Descendants<Paragraph>().ToList();
+                    if (paragraphList.Count == 0) continue; // Sequence variant is invalid, because it has no nodes
+                    
                     Dictionary<string, INode> sequenceVarNodes = new Dictionary<string, INode>();
-
                     string lastCondition = paragraphList[paragraphList.Count - 1].InnerText;
+                    // Get all sequence nodes:
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute indexAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Index], variantIndex + (j + 1));
-                        IAttribute descAttribute = new GraphFramework.Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Description], paragraphList[j].InnerText);
+                        IAttribute indexAttribute = new Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Index], variantIndex + (j + 1)); // obsulete
+
+                        IAttribute descAttribute = new Attribute(UseCaseNodeAttributes[(int)UseCaseNodeAttribute.Description], paragraphList[j].InnerText);
                         INode node = new Node(indexAttribute, descAttribute);
                         useCaseGraph.AddNode(node);
-                        
+
                         string indexNumber = rgx.Replace(variantIndex, "");
 
                         if (previousVariantIndex.Equals(""))
@@ -286,29 +319,25 @@ namespace UseCaseAnalyser.Model.Model
                         if (nodes.TryGetValue(previousVariantIndex, out searchedNode))
                             useCaseGraph.AddEdge(searchedNode, node);
                         if (sequenceVarNodes.TryGetValue(previousVariantIndex, out searchedNode))
-                             useCaseGraph.AddEdge(searchedNode, node);                            
+                            useCaseGraph.AddEdge(searchedNode, node);
                         previousVariantIndex = variantIndex + (j + 1);
                         sequenceVarNodes.Add(previousVariantIndex, node);
                     }
 
-                    if (lastCondition.StartsWith(WordImporter.SequenceJump))
+                    if (!lastCondition.StartsWith(WordImporter.SequenceJump)) continue;
+                    string lastConditionId = lastCondition.Replace(WordImporter.SequenceJump, "").Replace(" ", "");
+                    INode indexNode;
+                    if (!nodes.TryGetValue(lastConditionId, out indexNode)) continue;
+                    INode lastNode;
+                    if (sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
                     {
-                        string lastConditionId = lastCondition.Replace(WordImporter.SequenceJump, "").Replace(" ", "");
-                        INode searchedNode;
-                        if(nodes.TryGetValue(lastConditionId, out searchedNode))
-                        {
-                            INode lastNode;
-                            if (sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
-                            {
-                                useCaseGraph.AddEdge(lastNode, searchedNode);
-                            }
-                        }
+                        // make a edge between the normal routine node and the first node of the sequence variant
+                        useCaseGraph.AddEdge(lastNode, indexNode); 
                     }
-
                 }
             }
 
             return true;
-        }
+        }       
     }
 }
