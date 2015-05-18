@@ -91,7 +91,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 //get node's attribute named "Index"
                 IAttribute ucNodeAttribut =
                     ucNode.Attributes.First(
-                        a => a.Name == WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index]);
+                        a => a.Name == WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]);
 
                 //parse Index value
                 List<string> results = IndexParser(ucNodeAttribut.Value.ToString());
@@ -111,8 +111,8 @@ namespace UseCaseAnalyser.GraphVisualiser
                                     node.Attributes.Any(
                                         attr =>
                                             attr.Name.Equals(
-                                                WordImporter.UseCaseNodeAttributes[
-                                                    (int) WordImporter.UseCaseNodeAttribute.Index]) &&
+                                                WordImporter.UseCaseNodeAttributeNames[
+                                                    (int) WordImporter.UseCaseNodeAttributes.Index]) &&
                                             ((string) attr.Value).Equals(results[0]))));
                         break;
                     default:
@@ -133,21 +133,21 @@ namespace UseCaseAnalyser.GraphVisualiser
                         ucNode.Node.Attributes.First(
                             attr =>
                                 attr.Name ==
-                                WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index]);
+                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]);
 
                     if (firstNode == null &&
                         ucNodeIndexAttr.Value ==
                         ucEdge.Node1.Attributes.First(
                             attr =>
                                 attr.Name ==
-                                WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index]).Value)
+                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value)
                         firstNode = ucNode;
                     if (secondNode == null &&
                         ucNodeIndexAttr.Value ==
                         ucEdge.Node2.Attributes.First(
                             attr =>
                                 attr.Name ==
-                                WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index]).Value)
+                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value)
                         secondNode = ucNode;
                 }
 
@@ -178,12 +178,12 @@ namespace UseCaseAnalyser.GraphVisualiser
                 //ToDo: Investigate why reference compare does not work.
                 //referencenode=null = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
                 UseCaseNode referencenode = mNodes.Single(n => n.Node.Attributes.Single(a => a.Name == WordImporter.
-                    UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index])
+                    UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index])
                     .Value.Equals(referenceUseCaseNode.Attributes.
                         Single(
                             a =>
                                 a.Name ==
-                                WordImporter.UseCaseNodeAttributes[(int) WordImporter.UseCaseNodeAttribute.Index]).Value));
+                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value));
 
 
                 useCaseNode.YOffset = referencenode.YOffset;
