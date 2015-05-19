@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GraphFramework;
-using GraphFramework.Interfaces;
+﻿using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
-    public interface ISelectableObject
+    internal interface ISelectableObject
     {
         bool Selected { get; set; }
         void Select();

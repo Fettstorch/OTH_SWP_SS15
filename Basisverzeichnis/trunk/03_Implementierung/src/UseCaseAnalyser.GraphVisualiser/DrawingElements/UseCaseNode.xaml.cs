@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using GraphFramework;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
 
@@ -12,7 +10,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     /// <summary>
     ///     Interaction logic for UseCaseNode.xaml
     /// </summary>
-    public partial class UseCaseNode : ISelectableObject
+    internal partial class UseCaseNode : ISelectableObject
     {
         public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
         private double mYOffset;

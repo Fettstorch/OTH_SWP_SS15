@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using GraphFramework.Interfaces;
 
@@ -9,7 +8,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     /// <summary>
     ///     Interaction logic for UseCaseEdge.xaml
     /// </summary>
-    public partial class UseCaseEdge : ISelectableObject
+    internal partial class UseCaseEdge : ISelectableObject
     {
         public readonly UseCaseNode mDestUseCaseNode;
         public readonly UseCaseNode mSourceUseCaseNode;

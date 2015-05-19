@@ -23,18 +23,27 @@ namespace UseCaseAnalyser.GraphVisualiser
         private Point mOffsetElementPosition;
         private FrameworkElement mSelectedElement;
 
+        /// <summary>
+        /// Binding configuration for a dependecy property which is  setting UseCaseGraph to display
+        /// </summary>
         public static readonly DependencyProperty UseCaseProperty = DependencyProperty.Register("UseCase",
         typeof(UseCaseGraph), typeof(GraphVisualiser), new PropertyMetadata(UseCase_PropertyChanged));
 
+        /// <summary>
+        /// Binding configuration for a dependecy property which is setting a scenario graph (which will be highlighted by GraphVisualiser)
+        /// </summary>
         public static readonly DependencyProperty ScenarioProperty = DependencyProperty.Register("Scenario",
             typeof(IGraph), typeof(GraphVisualiser), new PropertyMetadata(Scenario_PropertyChanged));
 
+        /// <summary>
+        /// Binding configuration for a dependecy property which is setting the currently selected IGraphElement (INode/IEdge/IGraph) in GraphVisualiser
+        /// </summary>
         public static readonly DependencyProperty GraphElementProperty = DependencyProperty.Register("GraphElement",
             typeof(IGraphElement), typeof(GraphVisualiser));
 
 
         /// <summary>
-        /// Current selected Scenario
+        /// Dependency property for currently selected scenario graph
         /// </summary>
         public IGraph Scenario
         {
@@ -43,7 +52,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         /// <summary>
-        /// Current selected GraphElement
+        /// Dependency property for currently selected IGraphElement
         /// </summary>
         public IGraphElement GraphElement
         {
@@ -52,7 +61,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         /// <summary>
-        /// Current displayed UseCase
+        /// Dependency property for use case graph that should be visualised
         /// </summary>
         public UseCaseGraph UseCase
         {
@@ -91,7 +100,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         #endregion
         
         /// <summary>
-        ///     GraphVisualiser default constructor
+        /// GraphVisualiser default constructor
         /// </summary>
         public GraphVisualiser()
         {

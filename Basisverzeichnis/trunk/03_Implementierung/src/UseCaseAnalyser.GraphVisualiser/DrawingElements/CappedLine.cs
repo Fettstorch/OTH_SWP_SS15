@@ -7,7 +7,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
     //http://blogs.msdn.com/b/mrochon/archive/2011/01/10/custom-line-caps-in-wpf.aspx
 
-    public class CappedLine : FrameworkElement
+    internal class CappedLine : FrameworkElement
     {
         public Brush Stroke
         {
