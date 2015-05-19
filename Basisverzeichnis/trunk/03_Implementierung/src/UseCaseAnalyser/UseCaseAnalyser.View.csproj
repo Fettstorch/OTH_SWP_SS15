@@ -58,9 +58,6 @@
     </ApplicationDefinition>
     <Compile Include="Converters\AttributeToBoolConverter.cs" />
     <Compile Include="Converters\GraphElementToStringConverter.cs" />
-    <Compile Include="View\DummyGraphVisualizer.xaml.cs">
-      <DependentUpon>DummyGraphVisualizer.xaml</DependentUpon>
-    </Compile>
     <Page Include="View\DialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -73,10 +70,6 @@
       <DependentUpon>DialogView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\DummyGraphVisualizer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

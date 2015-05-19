@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows.Input;
 using GraphFramework;
 using GraphFramework.Interfaces;
@@ -16,12 +15,20 @@ namespace UseCaseAnalyser.Model.ViewModel
 {
     public class DialogViewModel : INotifyPropertyChanged
     {
+        private readonly IDialogView mView;
         private ICommand mExportScenarioMatrix;
         private IEnumerable<UseCaseGraph> mMUseCaseGraphs;
         private ICommand mOpenWordFile;
         private UseCaseGraph mSelectedGraph;
         private IGraph mSelectedScenario;
         //private IGraphElement mSelectedGraphElement;
+
+        public DialogViewModel(){ }
+
+        public DialogViewModel(IDialogView view)
+        {
+            mView = view;
+        }
 
         public IEnumerable<UseCaseGraph> UseCaseGraphs
         {
@@ -74,17 +81,10 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mOpenWordFile ?? (mOpenWordFile = new AsyncCommand(o =>
                 {
-                    //  view stuff should be handled in view (not viewmodel)
-                    //  still handled here for easier understanding
-                    OpenFileDialog dialog = new OpenFileDialog
-                    {
-                        Filter = "Word files |*.docx|All files |*.*",
-                        Multiselect = false
-                    };
-                    if (dialog.ShowDialog() != DialogResult.OK) return;
+                    FileInfo file = mView.OpenFileDialog("Word files |*.docx|All files |*.*", FileDialogType.Open);
+                    if (file == null) return;
 
-                    string filePath = dialog.FileName;
-                    UseCaseGraphs = WordImporter.ImportUseCases(new FileInfo(filePath));
+                    UseCaseGraphs = WordImporter.ImportUseCases(file);
                 }, o => true, OnError));
             }
         }
@@ -96,12 +96,9 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mExportScenarioMatrix ?? (mExportScenarioMatrix = new AsyncCommand(o =>
                 {
-                    //  bad mvvm practice (dialogs should be done in view --> can't be tested automatically)
-                    SaveFileDialog dialog = new SaveFileDialog {Filter = "Excel files (.xlsx)|*.xlsx"};
-                    if (dialog.ShowDialog() != DialogResult.OK) return;
+                    FileInfo file = mView.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save);
 
-                    string filePath = dialog.FileName;
-                    ScenarioMatrixExporter.ExportScenarioMatrix(SelectedGraph, new FileInfo(filePath));
+                    ScenarioMatrixExporter.ExportScenarioMatrix(SelectedGraph, file);
                 }, o => SelectedGraph != null, OnError));
                 //  condtion to run the command (a graph has to be selected)
             }
@@ -109,8 +106,7 @@ namespace UseCaseAnalyser.Model.ViewModel
 
         private void OnError(Exception ex)
         {
-            MessageBox.Show(string.Format("An error occured:{0}{1}", Environment.NewLine, ex.Message),
-                ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            mView.OpenMessageBox(ex.GetType().Name, string.Format("An error occured:{0}{1}", Environment.NewLine, ex.Message), MessageType.Error);
         }
 
         #region Property Changed event + invoker to notify gui about changes

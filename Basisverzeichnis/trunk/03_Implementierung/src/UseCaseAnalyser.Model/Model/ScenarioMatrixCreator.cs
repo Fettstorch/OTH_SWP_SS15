@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using GraphFramework;
 using GraphFramework.Interfaces;
 
@@ -24,6 +23,8 @@ namespace UseCaseAnalyser.Model.Model
                     }
                 }
             }
+
+            return null;
         }
 
         private static IEnumerable<INode> FindEndNodes(IGraph graph)

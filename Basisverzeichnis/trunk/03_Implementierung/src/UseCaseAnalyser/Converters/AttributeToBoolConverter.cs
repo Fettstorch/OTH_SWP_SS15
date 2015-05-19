@@ -10,12 +10,14 @@ namespace UseCaseAnalyser.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is IAttribute) || ((IAttribute)value).Type != typeof(string))
+            IAttribute attribute = value as IAttribute;
+
+            if (attribute == null)
             {
                 return null;
             }
 
-            string attributeValue = (string) ((IAttribute) value).Value;
+            string attributeValue = attribute.Type == typeof(string) ? (string) attribute.Value : attribute.Value.ToString();
             return !string.IsNullOrWhiteSpace(attributeValue);
         }
 

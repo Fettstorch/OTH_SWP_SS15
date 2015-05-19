@@ -6,9 +6,6 @@
         xmlns:interfaces="clr-namespace:GraphFramework.Interfaces;assembly=GraphFramework"
         xmlns:converters="clr-namespace:UseCaseAnalyser.Converters"
         Title="DialogView" MinWidth="300" MinHeight="300">
-    <Window.DataContext>
-        <viewModel:DialogViewModel />
-    </Window.DataContext>
     <Window.Resources>
         <converters:GraphElementToStringConverter x:Key="GraphElementToStringConverter" />
         <Style TargetType="{x:Type ListBoxItem}">
@@ -79,7 +76,7 @@
                     Mode=OneWay}" HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">
-                                <Expander IsEnabled="{Binding Converter={StaticResource AttributeToBoolConverter}}" Header="{Binding Path=Name}" Padding="5" HorizontalContentAlignment="Left" BorderThickness="1" 
+                                <Expander IsExpanded="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" IsEnabled="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" Header="{Binding Path=Name}" Padding="5" HorizontalContentAlignment="Left" BorderThickness="1" 
                                           BorderBrush="Black">
                                     <TextBlock Text="{Binding Path=Value}" TextWrapping="Wrap" Margin="10,5,0,0"/>
                                 </Expander>
