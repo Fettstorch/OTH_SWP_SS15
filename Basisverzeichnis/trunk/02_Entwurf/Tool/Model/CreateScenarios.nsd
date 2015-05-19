@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root text="&#34;CreateScenarios (Startknoten s, Teilszenario v, Endknoten e)&#34;" comment="&#34;&#34;" color="ffffff" type="program" style="nice">
+	<children>
+		<instruction text="&#34;Setze s als aktuellen Knoten a&#34;" comment="" color="ffffff" rotated="0"></instruction>
+		<instruction text="&#34;Markiere a als besucht&#34;" comment="" color="ffffff" rotated="0"></instruction>
+		<instruction text="&#34;v = a&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+		<alternative text="&#34;Wenn von a nicht mehrfach besuchte Knoten erreicht werden können&#34;" comment="" color="ffffff">
+			<qTrue>
+				<for text="&#34;Für jeden von a erreichbaren Knoten k&#34;" comment="" color="ffff80">
+					<qFor>
+						<alternative text="&#34;Wenn k besucht&#34;" comment="" color="ffffff">
+							<qTrue>
+								<alternative text="&#34;Wenn k mehrfach besucht&#34;" comment="" color="ffffff">
+									<qTrue>
+										<instruction text="&#34;continue&#34;" comment="" color="ffffff" rotated="0"></instruction>
+									</qTrue>
+									<qFalse>
+										<instruction text="&#34;Markiere k als mehrfach besucht&#34;" comment="" color="ffffff" rotated="0"></instruction>
+									</qFalse>
+								</alternative>
+							</qTrue>
+							<qFalse>
+								<instruction text="&#34;Markiere k als besucht&#34;" comment="" color="ffffff" rotated="0"></instruction>
+							</qFalse>
+						</alternative>
+						<instruction text="&#34;v += k&#34;" comment="" color="ffffff" rotated="0"></instruction>
+						<alternative text="&#34;Wenn k == e&#34;" comment="" color="ffffff">
+							<qTrue>
+								<instruction text="&#34;Speicher v als gültiges Szenario&#34;" comment="" color="80ff80" rotated="0"></instruction>
+							</qTrue>
+							<qFalse>
+							</qFalse>
+						</alternative>
+						<instruction text="&#34;CreateScenario(k, v, e)&#34;" comment="" color="ffffff" rotated="0"></instruction>
+					</qFor>
+				</for>
+			</qTrue>
+			<qFalse>
+				<alternative text="&#34;Wenn k == e&#34;" comment="" color="0080ff">
+					<qTrue>
+						<instruction text="&#34;Speicher v als gültiges Szenario&#34;" comment="" color="80ff80" rotated="0"></instruction>
+					</qTrue>
+					<qFalse>
+						<instruction text="&#34;Fehler&#34;" comment="" color="ff8080" rotated="0"></instruction>
+					</qFalse>
+				</alternative>
+			</qFalse>
+		</alternative>
+	</children>
+</root>
