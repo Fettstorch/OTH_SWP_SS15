@@ -20,6 +20,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         private const double ElementWidth = 80;
         private const double ElementHeight = 65;
         private readonly List<UseCaseNode> mNodes = new List<UseCaseNode>();
+        private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>(); 
         private Point mOffsetElementPosition;
         private FrameworkElement mSelectedElement;
 
@@ -66,7 +67,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         public UseCaseGraph UseCase
         {
             get { return GetValue(UseCaseProperty) as UseCaseGraph; }
-            set { SetValue(UseCaseProperty, value); }
+            set { SetValue(UseCaseProperty, value);}
         }
 
         private static void Scenario_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -83,6 +84,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             GraphVisualiser visualizer = (GraphVisualiser)d;
             visualizer.Clear();
+
             try
             {
                 //  REDRAW (NEW GRAPH)
@@ -95,6 +97,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
 
             visualizer.GraphElement = (IGraphElement)e.NewValue;
+            
         }
 
         #endregion
@@ -109,6 +112,14 @@ namespace UseCaseAnalyser.GraphVisualiser
         
         private void Clear()
         {
+            //Save old Position in Dictionary
+            foreach (UseCaseNode node in mNodes)
+            {
+                if (mNodePosDict.ContainsKey(node.Node))
+                {
+                    mNodePosDict[node.Node] = new Point(Canvas.GetLeft(node), Canvas.GetTop(node));
+                }
+            }
             mNodes.Clear();
             DrawingCanvas.Children.Clear();
         }
@@ -198,7 +209,6 @@ namespace UseCaseAnalyser.GraphVisualiser
                 useCaseNode.YOffset = referencenode.YOffset;
             }
 
-
             foreach (UseCaseNode ucNode in mNodes)
             {
                 if (ucNode.SlotNumber == slotNumber && ucNode.YOffset > useCaseNode.YOffset)
@@ -207,10 +217,25 @@ namespace UseCaseAnalyser.GraphVisualiser
             if (mNodes.Count > 0)
                 useCaseNode.YOffset += ElementHeight;
 
+           
             mNodes.Add(useCaseNode);
-            Canvas.SetTop(useCaseNode, useCaseNode.YOffset);
-            Canvas.SetLeft(useCaseNode, ElementWidth*(slotNumber - 1) + 40);
-            
+            double leftPos = ElementWidth*(slotNumber - 1) + 40;
+            double topPos = useCaseNode.YOffset;
+  
+            // If node will be loaded the first time standard value will be used
+            // If the node is already in the Dictionary the old value will be loaded
+            if (!mNodePosDict.ContainsKey(node))
+            {
+                mNodePosDict.Add(node,new Point(leftPos,topPos));
+                Canvas.SetTop(useCaseNode, topPos);
+                Canvas.SetLeft(useCaseNode, leftPos);
+            }
+            else
+            {
+                Canvas.SetTop(useCaseNode, mNodePosDict[node].Y);
+                Canvas.SetLeft(useCaseNode, mNodePosDict[node].X);
+            }
+
             if (DrawingCanvas.Width < (ElementWidth)*(slotNumber) + 40)
                 DrawingCanvas.Width = (ElementWidth)*(slotNumber) + 40;
             if (DrawingCanvas.Height < (useCaseNode.YOffset + ElementHeight))
