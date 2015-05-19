@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogManager", "LogManager\Lo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.GraphVisualiser", "UseCaseAnalyser.GraphVisualiser\UseCaseAnalyser.GraphVisualiser.csproj", "{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyer.Stubs", "UseCaseAnalyer.Stubs\UseCaseAnalyer.Stubs.csproj", "{08881A98-EC02-4206-9AE6-25F12CBEA577}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.Stubs", "UseCaseAnalyser.Stubs\UseCaseAnalyser.Stubs.csproj", "{08881A98-EC02-4206-9AE6-25F12CBEA577}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
