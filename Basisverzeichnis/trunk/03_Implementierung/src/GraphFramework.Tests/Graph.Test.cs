@@ -439,10 +439,8 @@ namespace GraphFramework.Tests
         public void AddGraphTest_WithConnectionPoint_GraphNullException()
         {
             IGraph testGraph = new Graph(new IAttribute[0]);
-            IGraph nullGraph = new Graph(); //for first initialization to suppress compiler warnings
-            nullGraph = null;
             testGraph.AddNode(new Node(new Attribute("Name", "D")));
-            testGraph.AddGraph(nullGraph, testGraph.Nodes.First(), nullGraph.Nodes.First(), new IAttribute[0]);
+            testGraph.AddGraph(null, testGraph.Nodes.First(), null, new IAttribute[0]);
         }
 
         [TestCase(true, false, false, TestName = "FirstNodeIsNull", ExpectedException = typeof(ArgumentNullException),
@@ -510,7 +508,9 @@ namespace GraphFramework.Tests
             testGraph.AddNode(mTestNodelist[0]);
             testGraph.AddNode(mTestNodelist[1]);
             testGraph.AddEdge(mTestNodelist[0], mTestNodelist[1]);
-            IEnumerable<IEdge> edges = testGraph.GetEdges(mTestNodelist[0], mTestNodelist[1]);
+            IEnumerable<IEdge> edges = 
+                testGraph.GetEdges(firstNodeNull ? null : mTestNodelist[0], 
+                secondNodeNull ? null : mTestNodelist[1]);
         }
     }
 }
