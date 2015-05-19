@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GraphFramework.Interfaces;
-using UseCaseAnalyer.Stubs;
 using UseCaseAnalyser.GraphVisualiser.DrawingElements;
 using UseCaseAnalyser.Model.Model;
 
@@ -128,7 +127,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                         //calculate row by converting character to int (only first char is converted at the moment)
                         //furthermore first entry in list marks reference node (node where variant sequences branches
                         AddNode((uint) (char.ToUpper(results[1][0]) - 63), ucNode,
-                            UseCaseGraphStub.GetInstance().mDummy1[0].Nodes.FirstOrDefault(
+                            UseCase.Nodes.FirstOrDefault(
                                 node =>
                                     node.Attributes.Any(
                                         attr =>
@@ -186,14 +185,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             
             if (referenceUseCaseNode != null)
             {
-                //ToDo: Investigate why reference compare does not work.
-                //referencenode=null = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
-                UseCaseNode referencenode = mNodes.Single(n => n.Node.Attributes.Single(a => a.Name == WordImporter.
-                    UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index])
-                    .Value.Equals(referenceUseCaseNode.Attributes.
-                        Single(a => a.Name == WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value));
-
-
+                UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
                 useCaseNode.YOffset = referencenode.YOffset;
             }
 
