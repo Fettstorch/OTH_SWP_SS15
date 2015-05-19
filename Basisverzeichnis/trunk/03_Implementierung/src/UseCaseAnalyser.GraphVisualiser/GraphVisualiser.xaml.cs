@@ -15,34 +15,46 @@ namespace UseCaseAnalyser.GraphVisualiser
     /// <summary>
     ///     Interaction logic for GraphVisualiser.xaml
     /// </summary>
-    public partial class GraphVisualiser : UserControl
+    public partial class GraphVisualiser
     {
+        #region properties
         private const double ElementWidth = 80;
         private const double ElementHeight = 65;
         private readonly List<UseCaseNode> mNodes = new List<UseCaseNode>();
         private Point mOffsetElementPosition;
         private FrameworkElement mSelectedElement;
 
-        /// <summary>
-        ///     GraphVisualiser default constructor
-        /// </summary>
-        public GraphVisualiser()
-        {
-            InitializeComponent();
-        }
+        public static readonly DependencyProperty UseCaseProperty = DependencyProperty.Register("UseCase",
+        typeof(UseCaseGraph), typeof(GraphVisualiser), new PropertyMetadata(UseCase_PropertyChanged));
 
+        public static readonly DependencyProperty ScenarioProperty = DependencyProperty.Register("Scenario",
+            typeof(IGraph), typeof(GraphVisualiser), new PropertyMetadata(Scenario_PropertyChanged));
+
+        public static readonly DependencyProperty GraphElementProperty = DependencyProperty.Register("GraphElement",
+            typeof(IGraphElement), typeof(GraphVisualiser));
+
+
+        /// <summary>
+        /// Current selected Scenario
+        /// </summary>
         public IGraph Scenario
         {
             get { return GetValue(ScenarioProperty) as IGraph; }
             set { SetValue(ScenarioProperty, value); }
         }
 
+        /// <summary>
+        /// Current selected GraphElement
+        /// </summary>
         public IGraphElement GraphElement
         {
             get { return GetValue(GraphElementProperty) as IGraphElement; }
             set { SetValue(GraphElementProperty, value); }
         }
 
+        /// <summary>
+        /// Current displayed UseCase
+        /// </summary>
         public UseCaseGraph UseCase
         {
             get { return GetValue(UseCaseProperty) as UseCaseGraph; }
@@ -54,14 +66,14 @@ namespace UseCaseAnalyser.GraphVisualiser
             //  MARK THE NODES WITHIN THE SCENARIO
 
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
-            GraphVisualiser visualizer = (GraphVisualiser) d;
+            GraphVisualiser visualizer = (GraphVisualiser)d;
         }
 
         private static void UseCase_PropertyChanged(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
-            GraphVisualiser visualizer = (GraphVisualiser) d;
+            GraphVisualiser visualizer = (GraphVisualiser)d;
             visualizer.Clear();
             try
             {
@@ -74,16 +86,26 @@ namespace UseCaseAnalyser.GraphVisualiser
                 //Todo Log
             }
 
-            visualizer.GraphElement = (IGraphElement) e.NewValue;
+            visualizer.GraphElement = (IGraphElement)e.NewValue;
         }
 
-        public void Clear()
+        #endregion
+        
+        /// <summary>
+        ///     GraphVisualiser default constructor
+        /// </summary>
+        public GraphVisualiser()
+        {
+            InitializeComponent();
+        }
+        
+        private void Clear()
         {
             mNodes.Clear();
             DrawingCanvas.Children.Clear();
         }
 
-        public void VisualiseNodes()
+        private void VisualiseNodes()
         {
             //first add all nodes contained in UseCaseGraph to visualiser
             foreach (INode ucNode in UseCase.Nodes)
@@ -121,7 +143,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
-        public void VisualiseEdges()
+        private void VisualiseEdges()
         {
             foreach (IEdge ucEdge in UseCase.Edges)
             {
@@ -130,24 +152,14 @@ namespace UseCaseAnalyser.GraphVisualiser
                 foreach (UseCaseNode ucNode in mNodes)
                 {
                     IAttribute ucNodeIndexAttr =
-                        ucNode.Node.Attributes.First(
-                            attr =>
-                                attr.Name ==
-                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]);
+                        ucNode.Node.Attributes.First(attr =>attr.Name == WordImporter.UseCaseNodeAttributeNames[(int)WordImporter.UseCaseNodeAttributes.Index]);
 
                     if (firstNode == null &&
-                        ucNodeIndexAttr.Value ==
-                        ucEdge.Node1.Attributes.First(
-                            attr =>
-                                attr.Name ==
-                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value)
+                        ucNodeIndexAttr.Value == ucEdge.Node1.Attributes.First( 
+                        attr =>attr.Name == WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value)
                         firstNode = ucNode;
-                    if (secondNode == null &&
-                        ucNodeIndexAttr.Value ==
-                        ucEdge.Node2.Attributes.First(
-                            attr =>
-                                attr.Name ==
-                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value)
+                    if (secondNode == null && ucNodeIndexAttr.Value ==
+                        ucEdge.Node2.Attributes.First( attr => attr.Name == WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value)
                         secondNode = ucNode;
                 }
 
@@ -165,14 +177,13 @@ namespace UseCaseAnalyser.GraphVisualiser
             return regex.Split(index).Where(s => s != String.Empty).ToList();
         }
 
-        public UseCaseNode AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)
+        private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)
         {
             UseCaseNode useCaseNode = new UseCaseNode(slotNumber, node);
             useCaseNode.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             DrawingCanvas.Children.Add(useCaseNode);
             Panel.SetZIndex(useCaseNode, 10);
-
-
+            
             if (referenceUseCaseNode != null)
             {
                 //ToDo: Investigate why reference compare does not work.
@@ -180,10 +191,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 UseCaseNode referencenode = mNodes.Single(n => n.Node.Attributes.Single(a => a.Name == WordImporter.
                     UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index])
                     .Value.Equals(referenceUseCaseNode.Attributes.
-                        Single(
-                            a =>
-                                a.Name ==
-                                WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value));
+                        Single(a => a.Name == WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value));
 
 
                 useCaseNode.YOffset = referencenode.YOffset;
@@ -207,7 +215,23 @@ namespace UseCaseAnalyser.GraphVisualiser
             if (DrawingCanvas.Height < (useCaseNode.YOffset + ElementHeight))
                 DrawingCanvas.Height = useCaseNode.YOffset + ElementHeight;
 
-            return useCaseNode;
+        }
+
+        private void AddEdge(UseCaseNode firstNode, UseCaseNode secondNode, IEdge edge)
+        {
+            if (firstNode == null || secondNode == null)
+                return;
+            UseCaseEdge useCaseEdge = new UseCaseEdge(firstNode, secondNode, edge);
+            useCaseEdge.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
+            Panel.SetZIndex(useCaseEdge, 1);
+
+            DrawingCanvas.Children.Add(useCaseEdge);
+
+            if (firstNode.SlotNumber < secondNode.SlotNumber)
+                secondNode.YOffset = firstNode.YOffset + ElementHeight;
+
+            firstNode.RenderEdges();
+            secondNode.RenderEdges();
         }
 
         //public void ReCalcPositionsOfElements()
@@ -231,23 +255,18 @@ namespace UseCaseAnalyser.GraphVisualiser
         //    }
         //}
 
-        public UseCaseEdge AddEdge(UseCaseNode firstNode, UseCaseNode secondNode, IEdge edge)
+        
+     
+
+        #region events
+        private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (firstNode == null || secondNode == null)
-                return null;
-            UseCaseEdge useCaseEdge = new UseCaseEdge(firstNode, secondNode, edge);
-            useCaseEdge.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
-            Panel.SetZIndex(useCaseEdge, 1);
-
-            DrawingCanvas.Children.Add(useCaseEdge);
-            
-            if (firstNode.SlotNumber < secondNode.SlotNumber)
-                secondNode.YOffset = firstNode.YOffset + ElementHeight;
-
-            firstNode.RenderEdges();
-            secondNode.RenderEdges();
-
-            return useCaseEdge;
+            foreach (UIElement child in DrawingCanvas.Children)
+            {
+                if (child is ISelectableObject)
+                    ((ISelectableObject)child).Unselect();
+            }
+            GraphElement = UseCase;
         }
 
         private void GraphVisualiser_OnMouseDown(object sender, MouseButtonEventArgs e)
@@ -257,15 +276,15 @@ namespace UseCaseAnalyser.GraphVisualiser
             {
                 if (element is ISelectableObject)
                 {
-                    ((ISelectableObject) element).Select();
-                    GraphElement = ((ISelectableObject) element).CurrentElement;
+                    ((ISelectableObject)element).Select();
+                    GraphElement = ((ISelectableObject)element).CurrentElement;
 
                     foreach (UIElement child in DrawingCanvas.Children)
                     {
                         if (child is ISelectableObject && (ISelectableObject)child != (ISelectableObject)element)
                             ((ISelectableObject)child).Unselect();
                     }
-                               
+
                     mSelectedElement = element;
                     mOffsetElementPosition = Mouse.GetPosition(DrawingCanvas);
                     Point elementPoint = new Point(Canvas.GetLeft(mSelectedElement), Canvas.GetTop(mSelectedElement));
@@ -273,24 +292,6 @@ namespace UseCaseAnalyser.GraphVisualiser
                     mOffsetElementPosition.Y -= elementPoint.Y;
                 }
 
-            }
-        }
-
-        private void GraphVisualiser_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (mSelectedElement != null)
-            {
-                foreach (FrameworkElement element in DrawingCanvas.Children)
-                {
-                    if (!element.Equals(mSelectedElement))
-                        continue;
-                    //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
-                    //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
-                    if(element is UseCaseNode)
-                        ((UseCaseNode)element).RenderEdges();
-                    mSelectedElement = null;
-                    break;
-                }
             }
         }
 
@@ -313,24 +314,25 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
-        public static readonly DependencyProperty UseCaseProperty = DependencyProperty.Register("UseCase",
-            typeof (UseCaseGraph), typeof (GraphVisualiser), new PropertyMetadata(UseCase_PropertyChanged));
-
-        public static readonly DependencyProperty ScenarioProperty = DependencyProperty.Register("Scenario",
-            typeof (IGraph), typeof (GraphVisualiser), new PropertyMetadata(Scenario_PropertyChanged));
-
-        public static readonly DependencyProperty GraphElementProperty = DependencyProperty.Register("GraphElement",
-            typeof (IGraphElement), typeof (GraphVisualiser));
-
-
-        private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void GraphVisualiser_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            foreach (UIElement child in DrawingCanvas.Children)
+            if (mSelectedElement != null)
             {
-                if (child is ISelectableObject)
-                    ((ISelectableObject)child).Unselect();
+                foreach (FrameworkElement element in DrawingCanvas.Children)
+                {
+                    if (!element.Equals(mSelectedElement))
+                        continue;
+                    //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
+                    //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
+                    UseCaseNode node = element as UseCaseNode;
+                    if (node != null)
+                        node.RenderEdges();
+                    mSelectedElement = null;
+                    break;
+                }
             }
-            GraphElement = UseCase;
         }
+        #endregion
+       
     }
 }
