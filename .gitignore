@@ -17,6 +17,10 @@ build/
 bld/
 [Oo]bj/
 
+# Doxygen intermediate files
+latex/
+html/
+
 # Roslyn cache directories
 *.ide/
 
