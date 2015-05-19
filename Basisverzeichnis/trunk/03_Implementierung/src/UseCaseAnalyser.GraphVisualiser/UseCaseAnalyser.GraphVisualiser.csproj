@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\Build\bin\Release\UseCaseAnalyser.GraphVisualiser.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -81,7 +82,7 @@
       <Project>{7044c575-02f4-4565-b590-893754651f53}</Project>
       <Name>LogManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UseCaseAnalyer.Stubs\UseCaseAnalyer.Stubs.csproj">
+    <ProjectReference Include="..\UseCaseAnalyser.Stubs\UseCaseAnalyser.Stubs.csproj">
       <Project>{08881a98-ec02-4206-9ae6-25f12cbea577}</Project>
       <Name>UseCaseAnalyer.Stubs</Name>
     </ProjectReference>
