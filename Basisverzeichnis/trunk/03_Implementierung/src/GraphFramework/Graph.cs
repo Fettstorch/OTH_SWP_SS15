@@ -16,16 +16,26 @@ namespace GraphFramework
             mEdges = new List<IEdge>();
         }
 
+        /// <summary>
+        /// contains all nodes
+        /// </summary>
         public IEnumerable<INode> Nodes
         {
             get { return mNodes; }
         }
 
+        /// <summary>
+        /// contains all edges
+        /// </summary>
         public IEnumerable<IEdge> Edges
         {
             get { return mEdges; }
         }
 
+        /// <summary>
+        /// adds the node to the node collection of the graph
+        /// </summary>
+        /// <param name="node">reference of the node to add</param>
         public void AddNode(INode node)
         {
             CheckForNull(node, "node");
@@ -37,6 +47,10 @@ namespace GraphFramework
             mNodes.Add(node);
         }
 
+        /// <summary>
+        /// removes the nodes identified by its reference from the graph
+        /// </summary>
+        /// <param name="nodesToRemove">reference of the nodes to remove</param>
         public void RemoveNode(params INode[] nodesToRemove)
         {
             CheckForNull(nodesToRemove, "nodesToRemove");
@@ -53,6 +67,12 @@ namespace GraphFramework
             }
         }
 
+        /// <summary>
+        /// adds the edge to the edge collection of the graph
+        /// </summary>
+        /// <param name="node1">first node to which the edge is connected</param>
+        /// <param name="node2">second node to which the edge is connected</param>
+        /// <param name="attributes">attributes of the edge</param>
         public void AddEdge(INode node1, INode node2, params IAttribute[] attributes)
         {
             CheckForNull(node1, "node1");
@@ -69,6 +89,10 @@ namespace GraphFramework
             mEdges.Add(edge);
         }
 
+        /// <summary>
+        /// removes the edge identified by its reference from the graph
+        /// </summary>
+        /// <param name="edgesToRemove">reference of the edges to remove</param>
         public void RemoveEdge(params IEdge[] edgesToRemove)
         {
             CheckForNull(edgesToRemove, "edgesToRemove");
@@ -79,12 +103,20 @@ namespace GraphFramework
             }
         }
 
+        /// <summary>
+        /// returns all Nodes that are not connected by Edges
+        /// </summary>
+        /// <returns>returns all single Nodes</returns>
         public IEnumerable<INode> GetSingleNodes()
         {
             //  list of nodes without nodes which are contained in node1 or node2 in the list of edges
             return mNodes.Except(mEdges.Select(e => e.Node1).Concat(mEdges.Select(e => e.Node2)));
         }
 
+        /// <summary>
+        /// adds one Graph object to this graph
+        /// </summary>
+        /// <param name="graphToAdd">Graph object that will be added to this</param>
         public void AddGraph(IGraph graphToAdd)
         {
             CheckForNull(graphToAdd, "graphToAdd");
@@ -93,6 +125,13 @@ namespace GraphFramework
             mEdges.AddRange(graphToAdd.Edges.Except(Edges));
         }
 
+        /// <summary>
+        /// adds one Graph object to this graph and connects it with an edge
+        /// </summary>
+        /// <param name="graphToAdd">Graph object that will be added to this</param>
+        /// <param name="thisGraphConnectionNode">first Node for new Edge. Contained in graph 1.</param>
+        /// <param name="graphToAddConnectionNode">second Node for new Edge. Contained in graph 2.</param>
+        /// <param name="attributes">Attributes of new Edge</param>
         public void AddGraph(IGraph graphToAdd, INode thisGraphConnectionNode, INode graphToAddConnectionNode,
             params IAttribute[] attributes)
         {
@@ -117,6 +156,12 @@ namespace GraphFramework
             AddEdge(thisGraphConnectionNode, graphToAddConnectionNode, attributes);
         }
 
+        /// <summary>
+        /// gets the edges which are connected to the nodes node1 and node2
+        /// </summary>
+        /// <param name="node1">first node to which the edge has to be connected</param>
+        /// <param name="node2">second node to which the edge has to be connected</param>
+        /// <returns>all the edges which connect the nodes node1 and node2</returns>
         public IEnumerable<IEdge> GetEdges(INode node1, INode node2)
         {
             CheckForNull(node1, "node1");
