@@ -36,6 +36,7 @@
                 <MenuItem Header="Exit" />
             </MenuItem>
             <MenuItem Header="Help">
+                <MenuItem Header="Open Logfile" Command="{Binding Path=OpenLogfile}" />
                 <MenuItem Header="About" />
             </MenuItem>
         </Menu>

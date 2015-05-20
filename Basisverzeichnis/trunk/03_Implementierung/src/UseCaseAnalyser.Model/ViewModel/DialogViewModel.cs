@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -19,11 +20,12 @@ namespace UseCaseAnalyser.Model.ViewModel
         private ICommand mExportScenarioMatrix;
         private IEnumerable<UseCaseGraph> mMUseCaseGraphs;
         private ICommand mOpenWordFile;
+        private ICommand mOpenLogfile;
         private UseCaseGraph mSelectedGraph;
         private IGraph mSelectedScenario;
         //private IGraphElement mSelectedGraphElement;
 
-        public DialogViewModel(){ }
+        public DialogViewModel() { }
 
         public DialogViewModel(IDialogView view)
         {
@@ -101,6 +103,20 @@ namespace UseCaseAnalyser.Model.ViewModel
                     ScenarioMatrixExporter.ExportScenarioMatrix(SelectedGraph, file);
                 }, o => SelectedGraph != null, OnError));
                 //  condtion to run the command (a graph has to be selected)
+            }
+        }
+
+        public ICommand OpenLogfile
+        {
+            get
+            {
+                var logfile = Path.Combine(LogManager.LoggingFunctions.FilePath, LogManager.LoggingFunctions.FileName);
+                //  lazy initialization
+                return mOpenLogfile ?? (mOpenLogfile = new AsyncCommand(o =>
+                {
+                    Process.Start(logfile);
+                }, o => File.Exists(logfile), OnError));
+                //  condtion to run the command (always true)
             }
         }
 
