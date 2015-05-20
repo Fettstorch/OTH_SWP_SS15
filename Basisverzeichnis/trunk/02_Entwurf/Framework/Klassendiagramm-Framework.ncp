@@ -17,10 +17,8 @@
         <Name>Edge</Name>
         <Access>Public</Access>
         <Location left="645" top="162" />
-        <Size width="323" height="162" />
+        <Size width="323" height="128" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private INode mNode1</Member>
-        <Member type="Field">private INode mNode2</Member>
         <Member type="Constructor">internal Edge(INode n1, INode n2, params IAttribute[] attributes)</Member>
         <Member type="Property">public INode Node1 { get; }</Member>
         <Member type="Property">public INode Node2 { get; }</Member>
@@ -38,9 +36,9 @@
         <Member type="Property">public IEnumerable&lt;INode&gt; Nodes { get; }</Member>
         <Member type="Property">public IEnumerable&lt;IEdge&gt; Edges { get; }</Member>
         <Member type="Method">public void AddNode(INode node)</Member>
-        <Member type="Method">public void RemoveNodes(params INode[] nodes)</Member>
+        <Member type="Method">public void RemoveNode(params INode[] nodes)</Member>
         <Member type="Method">public void AddEdge(INode n1, INode n2, params IAttribute[] attributes)</Member>
-        <Member type="Method">public void RemoveEdges(params IEdge[] edges)</Member>
+        <Member type="Method">public void RemoveEdge(params IEdge[] edges)</Member>
         <Member type="Method">public IEnumerable&lt;INode&gt; GetSingleNodes()</Member>
         <Member type="Method">public void AddGraph(IGraph g2)</Member>
         <Member type="Method">public void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
@@ -66,8 +64,8 @@
       <Entity type="Class">
         <Name>Attribute</Name>
         <Access>Public</Access>
-        <Location left="1241" top="364" />
-        <Size width="313" height="196" />
+        <Location left="1241" top="388" />
+        <Size width="313" height="162" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private object mValue</Member>
         <Member type="Constructor">public Attribute(string name, object value)</Member>
@@ -79,15 +77,15 @@
       <Entity type="Interface">
         <Name>IGraph</Name>
         <Access>Public</Access>
-        <Location left="1635" top="481" />
-        <Size width="445" height="248" />
+        <Location left="1633" top="481" />
+        <Size width="445" height="231" />
         <Collapsed>False</Collapsed>
         <Member type="Property">IEnumerable&lt;INode&gt; Nodes { get; }</Member>
         <Member type="Property">IEnumerable&lt;IEdge&gt; Edges { get; }</Member>
         <Member type="Method">void AddNode(INode node)</Member>
-        <Member type="Method">void RemoveNodes(params INode[] nodes)</Member>
+        <Member type="Method">void RemoveNode(params INode[] nodes)</Member>
         <Member type="Method">void AddEdge(INode n1, INode n2, params IAttribute[] attributes)</Member>
-        <Member type="Method">void RemoveEdges(params IEdge[] edge)</Member>
+        <Member type="Method">void RemoveEdge(params IEdge[] edges)</Member>
         <Member type="Method">IEnumerable&lt;INode&gt; GetSingleNodes()</Member>
         <Member type="Method">void AddGraph(IGraph g2)</Member>
         <Member type="Method">void AddGraph(IGraph g2, INode n1, INode n2, params IAttribute[] attributes)</Member>
@@ -101,7 +99,7 @@
         <Collapsed>False</Collapsed>
         <Member type="Property">object Value { get; set; }</Member>
         <Member type="Property">Type Type { get; }</Member>
-        <Member type="Property">string Name { get; set; }</Member>
+        <Member type="Property">string Name { get; }</Member>
       </Entity>
       <Entity type="Interface">
         <Name>INode</Name>
@@ -156,7 +154,7 @@
           <Y>374</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>1714</X>
+          <X>1712</X>
           <Y>452</Y>
         </BendPoint>
       </Relationship>
@@ -188,8 +186,8 @@
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>1751</X>
-          <Y>754</Y>
+          <X>1749</X>
+          <Y>737</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
           <X>1182</X>
@@ -197,6 +195,8 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -245,6 +245,8 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="3" second="4">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Bidirectional</Direction>
@@ -253,6 +255,8 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="2" second="1">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
