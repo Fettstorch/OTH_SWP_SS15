@@ -253,9 +253,6 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             DrawingCanvas.Children.Add(useCaseEdge);
 
-            if (firstNode.SlotNumber < secondNode.SlotNumber)
-                secondNode.YOffset = firstNode.YOffset + ElementHeight;
-
             firstNode.RenderEdges();
             secondNode.RenderEdges();
         }
