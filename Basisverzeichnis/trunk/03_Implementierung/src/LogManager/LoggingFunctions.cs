@@ -97,10 +97,10 @@ namespace LogManager
         }
 
         /// <summary>
-        /// Sets the minimum LogLevel.
+        /// Gets or sets the minimum LogLevel.
         /// Everything passed to Log(...) with a LogLevel below will be ignored.
         /// </summary>
-        /// <param name="level">The LogLevel.</param>
+        /// <param name="level">The LogLevel. Everything, passed to the Log(...) function, below the specified Loglevel will be ignored.</param>
         public static LogLevel SetLogLevel
         {
             get { return logger.LogLevel; }
@@ -108,7 +108,7 @@ namespace LogManager
         }
 
         /// <summary>
-        /// Sets the name of the LogFile.
+        /// Gets or sets the name of the LogFile.
         /// </summary>
         /// <param name="filename">The filename.</param>
         public static string FileName
