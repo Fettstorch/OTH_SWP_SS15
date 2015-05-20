@@ -207,7 +207,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                         secondNode = ucNode;
                 }
 
-                if (firstNode == null && secondNode == null)
+                if (firstNode == null || secondNode == null)
                     throw new InvalidOperationException("Edge could not be added, because at least one node does not exist in GraphVisualiser.");
 
                 AddEdge(firstNode, secondNode, ucEdge);
@@ -235,50 +235,53 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <param name="referenceUseCaseNode">Used if node is a variant node. Corrensponding reference node is normal node where the variant was branched. Used to determine Y-Offset.</param>
         private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)
         {
-            UseCaseNode useCaseNode = new UseCaseNode(slotNumber, node);
+            UseCaseNode useCaseNode = new UseCaseNode(node);
             useCaseNode.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             DrawingCanvas.Children.Add(useCaseNode);
             Panel.SetZIndex(useCaseNode, 10);
 
-            double leftPos = ElementWidth * (slotNumber - 1) + 40;
-            double topPos = 0;
 
-
-            if (referenceUseCaseNode != null)
-            {
-                UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
-                topPos = Canvas.GetTop(referencenode);
-            }
-
-            foreach (UseCaseNode ucNode in mNodes)
-            {
-                if (ucNode.SlotNumber == slotNumber && Canvas.GetTop(ucNode) > topPos)
-                    topPos = Canvas.GetTop(ucNode);
-            }
-            if (mNodes.Count > 0)
-                topPos += ElementHeight;
-
-           
-            mNodes.Add(useCaseNode);
-  
-            // If node will be loaded the first time standard value will be used
             // If the node is already in the Dictionary the old value will be loaded
-            if (!mNodePosDict.ContainsKey(node))
-            {
-                mNodePosDict.Add(node,new Point(leftPos,topPos));
-                Canvas.SetTop(useCaseNode, topPos);
-                Canvas.SetLeft(useCaseNode, leftPos);
-            }
-            else
+            // otherwise default value will be calculated
+            if (mNodePosDict.ContainsKey(node))
             {
                 Canvas.SetTop(useCaseNode, mNodePosDict[node].Y);
                 Canvas.SetLeft(useCaseNode, mNodePosDict[node].X);
             }
+            else
+            {
+                double leftPos = ElementWidth * (slotNumber - 1) + 40;
+                double topPos = 0;
 
-            if (DrawingCanvas.Width < (ElementWidth)*(slotNumber) + 40)
-                DrawingCanvas.Width = (ElementWidth)*(slotNumber) + 40;
-            if (DrawingCanvas.Height < (topPos + ElementHeight))
-                DrawingCanvas.Height = topPos + ElementHeight;
+                if (referenceUseCaseNode != null)
+                {
+                    UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
+                    topPos = Canvas.GetTop(referencenode);
+                }
+
+                foreach (UseCaseNode ucNode in mNodes)
+                {
+                    if (Math.Abs(Canvas.GetLeft(ucNode) - leftPos) < 0.1f && Canvas.GetTop(ucNode) > topPos)
+                        topPos = Canvas.GetTop(ucNode);
+                }
+
+                //add element height for all elements except first (otherwise margin would be too large)
+                if (mNodes.Count > 0)
+                    topPos += ElementHeight;
+
+                    mNodePosDict.Add(node,new Point(leftPos,topPos));
+                    Canvas.SetTop(useCaseNode, topPos);
+                    Canvas.SetLeft(useCaseNode, leftPos);
+            }
+
+            //add node to graph visualiser usecase node list
+            mNodes.Add(useCaseNode);
+
+            //resize canvas size (for scrollviewer)
+            if (DrawingCanvas.Width < Canvas.GetLeft(useCaseNode) + ElementWidth)
+                DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
+            if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
+                DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
 
         }
 

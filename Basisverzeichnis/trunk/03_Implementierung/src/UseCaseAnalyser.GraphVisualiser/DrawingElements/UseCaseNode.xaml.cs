@@ -14,9 +14,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     {
         public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
 
-        public UseCaseNode(uint slotNumber, INode node)
+        public UseCaseNode(INode node)
         {
-            SlotNumber = slotNumber;
             Selected = false;
             InitializeComponent();
             LblIndex.Content = node.Attributes.First(attr =>
@@ -25,13 +24,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             mDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
         }
 
-       
+
 
         public INode Node { get; private set; }
-        public uint SlotNumber { get; set; }
-        
+
         public bool Selected { get; set; }
-        
+
         public void RenderEdges()
         {
             foreach (UseCaseEdge ucEdge in mEdges)
@@ -118,7 +116,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public void Select()
         {
             Selected = true;
-            NodeBorder.BorderBrush = Brushes.Orange ;
+            NodeBorder.BorderBrush = Brushes.Orange;
         }
 
         public void Unselect()
