@@ -96,6 +96,7 @@ namespace LogManager
             {
                 lock (lockObject)
                 {
+                    Directory.CreateDirectory(filepath);
                     string path = Path.Combine(filepath, filename);
                     if (!File.Exists(path)) File.Create(path).Close();
 
@@ -116,17 +117,17 @@ namespace LogManager
             if (fileNameType == LogfileNameType.Date)
             {
                 var time = DateTime.Now;
-                return String.Format("session.{0}.{1}.{2}_{3}.{4}.{5}", time.Day, time.Month, time.Year, time.Hour, time.Minute, time.Second);
+                return String.Format("session.{0}.{1}.{2}_{3}.{4}.{5}.log.txt", time.Day, time.Month, time.Year, time.Hour, time.Minute, time.Second);
             }
             else //if (FileNameType == LogFileNameType.Rolling)
             {
-                string obsoleteFile = Path.Combine(filepath, "session.9.log");
+                string obsoleteFile = Path.Combine(filepath, "session.9.log.txt");
                 File.Delete(obsoleteFile);
 
                 for (int i = 8; i < 0; i--)
                 {
-                    string oldFilename = String.Format("session.{0}.log", i);
-                    string newFilename = String.Format("session.{0}.log", i + 1);
+                    string oldFilename = String.Format("session.{0}.log.txt", i);
+                    string newFilename = String.Format("session.{0}.log.txt", i + 1);
 
                     if (File.Exists(oldFilename))
                     {
@@ -134,7 +135,7 @@ namespace LogManager
                     }
                 }
 
-                return "session.0.log";
+                return "session.0.log.txt";
             }
         }
     }

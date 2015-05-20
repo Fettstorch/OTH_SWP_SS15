@@ -101,48 +101,53 @@ namespace LogManager
         /// Everything passed to Log(...) with a LogLevel below will be ignored.
         /// </summary>
         /// <param name="level">The LogLevel.</param>
-        public static void SetLogLevel(LogLevel level)
+        public static LogLevel SetLogLevel
         {
-            logger.LogLevel = level;
+            get { return logger.LogLevel; }
+            set { logger.LogLevel = value; }
         }
 
         /// <summary>
         /// Sets the name of the LogFile.
         /// </summary>
         /// <param name="filename">The filename.</param>
-        public static void SetFileName(string filename)
+        public static string FileName
         {
-            logger.FileName = filename;
+            get { return logger.FileName; }
+            set { logger.FileName = value; }
         }
 
         /// <summary>
-        /// Sets the path of the LogFile.
+        /// Gets or sets the path of the LogFile.
         /// Can be a relative or absolute path.
         /// </summary>
-        /// <param name="path">The path.</param>
-        public static void SetFilePath(string path)
+        /// <param name="path">Can be a relative or absolute path.</param>
+        public static string FilePath
         {
-            logger.FilePath = path;
+            get { return logger.FilePath; }
+            set { logger.FilePath = value; }
         }
 
         /// <summary>
-        /// Sets the type of the logfile name.
+        /// Gets or sets the type of the logfile name.
         /// Can be LogfileNameType.Date or LogfileNameType.Rolling
         /// </summary>
-        /// <param name="type">The logfile name type.</param>
-        public static void SetLogfileNameType(LogfileNameType type)
+        /// <param name="type">The logfile name type. Can be LogfileNameType.Date or LogfileNameType.Rolling.</param>
+        public static LogfileNameType LogfileNameType
         {
-            logger.FileNameType = type;
+            get { return logger.FileNameType; }
+            set { logger.FileNameType = value; }
         }
 
         /// <summary>
-        /// Sets the Logtarget.
+        /// Gets or sets the Logtarget.
         /// Can be LogTarget.Console and/or LogTarget.File
         /// </summary>
-        /// <param name="target">The logging target.</param>
-        public static void SetLogTarget(LogTarget target)
+        /// <param name="target">The logging target. Can be LogTarget.Console and/or LogTarget.File.</param>
+        public static LogTarget LogTarget
         {
-            logger.Target = target;
+            get { return logger.Target; }
+            set { logger.Target = value;}
         }
     }
 }
