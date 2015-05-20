@@ -7,6 +7,35 @@ namespace UseCaseAnalyser.Model.Model
 {
     public class UseCaseGraph : Graph
     {
+        public static readonly string[] UseCaseNodeAttributeNames = 
+        {
+            "Index",
+            "Normal Index",
+            "Variant Index",
+            "Variant Sequnce Step",
+            "Description",
+            "NodeType"
+        };
+
+        public enum UseCaseNodeAttributes
+        {
+            Index = 0,
+            NormalIndex,
+            VariantIndex,
+            VarSeqStep,
+            Description,
+            NodeType
+        }
+
+        public enum NodeTypeAttribute
+        {
+            StartNode,
+            JumpNode,
+            NormalNode,
+            VariantNode,
+            EndNode
+        }
+
         private IEnumerable<IGraph> mScenarios;
 
         /// <summary>
@@ -14,9 +43,7 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         /// <param name="attributes">attributes to add to the use case graph</param>
         public UseCaseGraph(params IAttribute[] attributes)
-            : base(attributes)
-        {
-        }
+            : base(attributes) { }
 
         /// <summary>
         /// scenarios of the use case graph

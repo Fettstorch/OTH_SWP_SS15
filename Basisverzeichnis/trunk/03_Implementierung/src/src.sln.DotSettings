@@ -148,10 +148,16 @@
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=7B27810B9F3FE1479E8242BDAF3A58A6/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=7B27810B9F3FE1479E8242BDAF3A58A6/AbsolutePath/@EntryValue">C:\Users\Pascal\Documents\GitHub\OTH_SWP_SS15\Basisverzeichnis\trunk\03_Implementierung\src\src.sln.DotSettings</s:String>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=7B27810B9F3FE1479E8242BDAF3A58A6/RelativePath/@EntryValue"></s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=80D57DCC2129BD45A222199EC8B7C651/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=80D57DCC2129BD45A222199EC8B7C651/AbsolutePath/@EntryValue">D:\Entwicklung\OTH_SWP_SS15\Basisverzeichnis\trunk\03_Implementierung\src\src.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=80D57DCC2129BD45A222199EC8B7C651/RelativePath/@EntryValue"></s:String>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=AE6C4C88668CD04F83381663F6EF10F3/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=AE6C4C88668CD04F83381663F6EF10F3/AbsolutePath/@EntryValue">C:\Users\Luke\Documents\GitHub\OTH_SWP_SS15\Basisverzeichnis\trunk\03_Implementierung\src\src.sln.DotSettings</s:String>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File7B27810B9F3FE1479E8242BDAF3A58A6/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File7B27810B9F3FE1479E8242BDAF3A58A6/IsOn/@EntryValue">False</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File7B27810B9F3FE1479E8242BDAF3A58A6/RelativePriority/@EntryValue">1</s:Double>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File80D57DCC2129BD45A222199EC8B7C651/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File80D57DCC2129BD45A222199EC8B7C651/RelativePriority/@EntryValue">3</s:Double>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileAE6C4C88668CD04F83381663F6EF10F3/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileAE6C4C88668CD04F83381663F6EF10F3/IsOn/@EntryValue">False</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileAE6C4C88668CD04F83381663F6EF10F3/RelativePriority/@EntryValue">2</s:Double></wpf:ResourceDictionary>
