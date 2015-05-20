@@ -69,7 +69,12 @@ namespace UseCaseAnalyser.GraphVisualiser
             get { return GetValue(UseCaseProperty) as UseCaseGraph; }
             set { SetValue(UseCaseProperty, value);}
         }
-
+        /// <summary>
+        /// Property changed evented handler for Scenerio property.
+        /// If Scenario property is modified GraphVisualiser will highlight them within the view.
+        /// </summary>
+        /// <param name="d">Dependency object that was changed</param>
+        /// <param name="e">Event args containing information about the changes of the Scenario property</param>
         private static void Scenario_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //  MARK THE NODES WITHIN THE SCENARIO
@@ -78,8 +83,15 @@ namespace UseCaseAnalyser.GraphVisualiser
             GraphVisualiser visualizer = (GraphVisualiser)d;
         }
 
-        private static void UseCase_PropertyChanged(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
+        /// <summary>
+        /// Property changed evented handler for UseCase property.
+        /// If UseCase property is modified GraphVisualiser will visualise the new UseCaseGraph. 
+        /// Furthermore if this UseCaseGraph was already displayed the cached positions are used instead of 
+        /// calculating them again from scretch.
+        /// </summary>
+        /// <param name="d">Dependency object that was changed</param>
+        /// <param name="e">Event args containing information about the changes of the UseCase property</param>
+        private static void UseCase_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             GraphVisualiser visualizer = (GraphVisualiser)d;
@@ -110,6 +122,10 @@ namespace UseCaseAnalyser.GraphVisualiser
             InitializeComponent();
         }
         
+        /// <summary>
+        /// Creates cache entries (current position) for all INode objects within the UseCaseNodes.
+        /// Furthermore clear Canvas and mNodes list.
+        /// </summary>
         private void Clear()
         {
             //Save old Position in Dictionary
@@ -124,6 +140,10 @@ namespace UseCaseAnalyser.GraphVisualiser
             DrawingCanvas.Children.Clear();
         }
 
+        /// <summary>
+        /// Visualise all nodes in dependency property UseCaseGraph by using Index attributes to calculate their corresponding
+        /// default slotNumber (node's X-Offset). If Index is corrupted an InvalidOperationException will be thrown.
+        /// </summary>
         private void VisualiseNodes()
         {
             //first add all nodes contained in UseCaseGraph to visualiser
@@ -135,6 +155,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                         a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]);
 
                 //parse Index value
+                // Todo Use NodeAttributes NormalIndex, VariantIndex, VarSeqStep instead of IndexParser()
                 List<string> results = IndexParser(ucNodeAttribut.Value.ToString());
                 switch (results.Count)
                 {
@@ -162,6 +183,10 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
+        /// <summary>
+        /// Visualise all edges by using Indices of start and end node to find corresponding UseCaseNodes.
+        /// If UseCaseNodes are not contained in mNodes an InvalidOperationException will be thrown.
+        /// </summary>
         private void VisualiseEdges()
         {
             foreach (IEdge ucEdge in UseCase.Edges)
@@ -189,6 +214,12 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
+        /// <summary>
+        /// Parse index by using a regex to split it in either one (NormalNodes) or three (VariantNodes) values.
+        /// These values will be used for determine default position.
+        /// </summary>
+        /// <param name="index">Index string extracted by WordImporter containg NormalIndex, (VariantIndex and VarSeqStep) concatenated.</param>
+        /// <returns>List values containing either one value (NormalIndex) for NormalNodes or three values (NormalIndex,VariantIndex,VarSeqStep) for VariantNodes)</returns>
         private List<string> IndexParser(string index)
         {
             Regex regex = new Regex(@"([0-9]+)([A-z]+)([0-9]+)");
@@ -196,6 +227,12 @@ namespace UseCaseAnalyser.GraphVisualiser
             return regex.Split(index).Where(s => s != String.Empty).ToList();
         }
 
+        /// <summary>
+        /// Adds a node to GraphVisualiser canvas and node list. Furthermore adjusts default position of this node if no cached value is given.
+        /// </summary>
+        /// <param name="slotNumber">Used to determine X-Offset for node (column).</param>
+        /// <param name="node">INode object that should be wrapped within a UseCaseNode.</param>
+        /// <param name="referenceUseCaseNode">Used if node is a variant node. Corrensponding reference node is normal node where the variant was branched. Used to determine Y-Offset.</param>
         private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)
         {
             UseCaseNode useCaseNode = new UseCaseNode(slotNumber, node);
@@ -243,18 +280,24 @@ namespace UseCaseAnalyser.GraphVisualiser
 
         }
 
-        private void AddEdge(UseCaseNode firstNode, UseCaseNode secondNode, IEdge edge)
+        /// <summary>
+        /// Adds an edge to Canvas and triggers start and ending node to render their edges.
+        /// </summary>
+        /// <param name="startNode">Node where edge starts.</param>
+        /// <param name="endingNode">Node where edge ends.</param>
+        /// <param name="edge">IEdge which will be wrapped within an UseCaseEdge.</param>
+        private void AddEdge(UseCaseNode startNode, UseCaseNode endingNode, IEdge edge)
         {
-            if (firstNode == null || secondNode == null)
+            if (startNode == null || endingNode == null)
                 return;
-            UseCaseEdge useCaseEdge = new UseCaseEdge(firstNode, secondNode, edge);
+            UseCaseEdge useCaseEdge = new UseCaseEdge(startNode, endingNode, edge);
             useCaseEdge.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             Panel.SetZIndex(useCaseEdge, 1);
 
             DrawingCanvas.Children.Add(useCaseEdge);
 
-            firstNode.RenderEdges();
-            secondNode.RenderEdges();
+            startNode.RenderEdges();
+            endingNode.RenderEdges();
         }
 
         //public void ReCalcPositionsOfElements()
@@ -282,6 +325,14 @@ namespace UseCaseAnalyser.GraphVisualiser
      
 
         #region events
+        
+        //Todo Is there another way to implement this behaviour? If a node is clicked currently this event will first Unselect the node and set UseCase as GraphElement and afterwards these values are overwritten by GraphVisualiser_OnMouseDown event.
+
+        /// <summary>
+        /// Event handler for canvas. Unselect all selectable elements in canvas and set dependency property GraphElement to UseCase.
+        /// </summary>
+        /// <param name="sender">Sender of Background_OnPreviewMouseLeftButtonDown event.</param>
+        /// <param name="e">Background_OnPreviewMouseLeftButtonDown mouse button event arguments.</param>
         private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             foreach (UIElement child in DrawingCanvas.Children)
@@ -292,6 +343,11 @@ namespace UseCaseAnalyser.GraphVisualiser
             GraphElement = UseCase;
         }
 
+        /// <summary>
+        /// Event handler for Graphvisualiser. Determines if a selectable UseCaseNode/Egde was pressed and updates GraphElement.
+        /// </summary>
+        /// <param name="sender">Sender of GraphVisualiser_OnMouseDown event.</param>
+        /// <param name="e">GraphVisualiser_OnMouseDown mouse button event arguments.</param>
         private void GraphVisualiser_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             FrameworkElement element = sender as FrameworkElement;
@@ -318,6 +374,11 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
+        /// <summary>
+        /// Event handler for Graphvisualiser. Handles dragging state.
+        /// </summary>
+        /// <param name="sender">Sender of GraphVisualiser_OnMouseMove event.</param>
+        /// <param name="e">GraphVisualiser_OnMouseMove mouse button event arguments.</param>
         private void GraphVisualiser_OnMouseMove(object sender, MouseEventArgs e)
         {
             if (mSelectedElement != null)
@@ -337,6 +398,11 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
+        /// <summary>
+        /// Event handler for Graphvisualiser. Resets dragging state.
+        /// </summary>
+        /// <param name="sender">Sender of GraphVisualiser_OnMouseUp event.</param>
+        /// <param name="e">GraphVisualiser_OnMouseUp mouse button event arguments.</param>
         private void GraphVisualiser_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (mSelectedElement != null)
