@@ -2,20 +2,25 @@ using System;
 
 namespace GraphFramework.Interfaces
 {
+    /// <summary>
+    /// An interface for classes that contain a value that has a name.
+    /// Objects of classes that implement this interface can be added
+    /// to objects of classes that implement the interface IGraphElement.
+    /// </summary>
     public interface IAttribute
     {
         /// <summary>
-        /// value of the attriute
+        /// Value of the IAttribute.
         /// </summary>
         object Value { get; set; }
 
         /// <summary>
-        /// type of the value
+        /// Type of the property Value of the IAttribute.
         /// </summary>
         Type Type { get; }
 
         /// <summary>
-        /// name to identify the attribute
+        /// Name to identify the IAttribute.
         /// </summary>
         string Name { get; }
     }

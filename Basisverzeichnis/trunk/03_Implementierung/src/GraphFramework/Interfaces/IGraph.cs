@@ -2,74 +2,81 @@ using System.Collections.Generic;
 
 namespace GraphFramework.Interfaces
 {
+    /// <summary>
+    /// Classes that implement this interface are 
+    /// a representation of a set of objects that implement 
+    /// the interfaces INode and IEdge and the relations 
+    /// between them. It is able to
+    /// perform actions on this objects. 
+    /// </summary>
     public interface IGraph : IGraphElement
     {
         /// <summary>
-        /// contains all nodes
+        /// Contains all INode objects that are part of the IGraph.
         /// </summary>
         IEnumerable<INode> Nodes { get; }
 
         /// <summary>
-        /// contains all edges
+        /// Contains all IEdge objects that are part of the IGraph.
         /// </summary>
         IEnumerable<IEdge> Edges { get; }
 
         /// <summary>
-        /// adds the node to the node collection of the graph
+        /// Adds the INode to property Nodes of the IGraph.
         /// </summary>
-        /// <param name="node">reference of the node to add</param>
+        /// <param name="node">reference of the INode to add</param>
         void AddNode(INode node);
 
         /// <summary>
-        /// removes the node identified by its reference from the graph
+        /// Removes the INode from the property Nodes of the IGraph.
         /// </summary>
-        /// <param name="nodesToRemove">reference of the nodes to remove</param>
+        /// <param name="nodesToRemove">reference of the INode objects to remove</param>
         /// <returns></returns>
         void RemoveNode(params INode[] nodesToRemove);
 
         /// <summary>
-        /// adds the edge to the edge collection of the graph
+        /// Adds the IEdge to the property Edges of the IGraph.
         /// </summary>
-        /// <param name="node1">first node to which the edge is connected</param>
-        /// <param name="node2">second node to which the edge is connected</param>
-        /// <param name="attributes">attributes of the edge</param>
+        /// <param name="node1">first INode to which the IEdge is connected</param>
+        /// <param name="node2">second INode to which the IEdge is connected</param>
+        /// <param name="attributes">IAttribute objects of the IEdge</param>
         void AddEdge(INode node1, INode node2, params IAttribute[] attributes);
 
         /// <summary>
-        /// removes the edge identified by its reference from the graph
+        /// Removes the IEdge from the property Edges of the IGraph.
         /// </summary>
-        /// <param name="edgesToRemove">reference of the edges to remove</param>
+        /// <param name="edgesToRemove">reference of the IEdge objects to remove</param>
         /// <returns></returns>
         void RemoveEdge(params IEdge[] edgesToRemove);
 
         /// <summary>
-        /// returns all Nodes that are not connected by Edges
+        /// Returns all INode objects of this IGraph that are not connected by any IEdges.
         /// </summary>
-        /// <returns>returns all single Nodes</returns>
+        /// <returns>returns all single INode objects</returns>
         IEnumerable<INode> GetSingleNodes();
 
 
         /// <summary>
-        /// adds one Graph object to this graph
+        /// Adds one IGraph object to this IGraph.
         /// </summary>
-        /// <param name="graphToAdd">Graph object that will be added to this</param>
+        /// <param name="graphToAdd">IGraph object that will be added to this</param>
         void AddGraph(IGraph graphToAdd);
 
         /// <summary>
-        /// adds one Graph object to this graph and connects it with an edge
+        /// Adds one IGraph object to this IGraph and connects it with an IEdge.
         /// </summary>
-        /// <param name="graphToAdd">Graph object that will be added to this</param>
-        /// <param name="thisGraphConnectionNode">first Node for new Edge</param>
-        /// <param name="graphToAddConnectionNode">second Node for new Edge</param>
-        /// <param name="attributes">Attributes of new Edge</param>
+        /// <param name="graphToAdd">IGraph object that will be added to this</param>
+        /// <param name="thisGraphConnectionNode">first INode for new IEdge</param>
+        /// <param name="graphToAddConnectionNode">second INode for new IEdge</param>
+        /// <param name="attributes">IAttribute objects of new IEdge</param>
         void AddGraph(IGraph graphToAdd, INode thisGraphConnectionNode, INode graphToAddConnectionNode, params IAttribute[] attributes);
 
         /// <summary>
-        /// gets the edges which are connected to the nodes node1 and node2
+        /// Gets the IEdge objects which are connected to the INode obejcts node1 and node2.
         /// </summary>
-        /// <param name="node1">first node to which the edge has to be connected</param>
-        /// <param name="node2">second node to which the edge has to be connected</param>
-        /// <returns>all the edges which connect the nodes node1 and node2</returns>
+        /// <param name="node1">first INode to which the IEdge has to be connected</param>
+        /// <param name="node2">second INode to which the IEdge has to be connected</param>
+        /// <returns>all the IEdge objects which connect the INode objects node1 and node2</returns>
         IEnumerable<IEdge> GetEdges(INode node1, INode node2);
     }
 }
