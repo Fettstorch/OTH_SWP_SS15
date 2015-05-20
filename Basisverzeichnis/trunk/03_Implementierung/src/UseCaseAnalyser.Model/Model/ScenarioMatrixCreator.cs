@@ -15,9 +15,9 @@ namespace UseCaseAnalyser.Model.Model
                 foreach (IAttribute attribute in node.Attributes)
                 {
                     if (!attribute.Name.Equals(
-                        WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.NodeType]))
+                        UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType]))
                         continue;
-                    if (attribute.Value.Equals(WordImporter.NodeTypeAttribute.StartNode))
+                    if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode))
                     {
                         return node;
                     }
@@ -35,9 +35,9 @@ namespace UseCaseAnalyser.Model.Model
                 foreach (IAttribute attribute in node.Attributes)
                 {
                     if (!attribute.Name.Equals(
-                        WordImporter.UseCaseNodeAttributeNames[(int)WordImporter.UseCaseNodeAttributes.NodeType]))
+                        UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType]))
                         continue;
-                    if (attribute.Value.Equals(WordImporter.NodeTypeAttribute.EndNode))
+                    if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.EndNode))
                     {
                         endNodes.Add(node);
                     }

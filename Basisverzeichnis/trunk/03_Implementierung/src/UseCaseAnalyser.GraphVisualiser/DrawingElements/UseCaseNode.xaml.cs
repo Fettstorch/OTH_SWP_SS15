@@ -21,8 +21,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             SlotNumber = slotNumber;
             Selected = false;
             InitializeComponent();
-            LblIndex.Content = node.Attributes.First(attr => 
-                attr.Name == WordImporter.UseCaseNodeAttributeNames[(int) WordImporter.UseCaseNodeAttributes.Index]).Value;
+            LblIndex.Content = node.Attributes.First(attr =>
+                attr.Name == UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index]).Value;
             Node = node;
             mDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
         }
