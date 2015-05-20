@@ -31,7 +31,6 @@ namespace GraphFramework.Interfaces
         /// Removes the INode from the property Nodes of the IGraph.
         /// </summary>
         /// <param name="nodesToRemove">reference of the INode objects to remove</param>
-        /// <returns></returns>
         void RemoveNode(params INode[] nodesToRemove);
 
         /// <summary>
@@ -46,7 +45,6 @@ namespace GraphFramework.Interfaces
         /// Removes the IEdge from the property Edges of the IGraph.
         /// </summary>
         /// <param name="edgesToRemove">reference of the IEdge objects to remove</param>
-        /// <returns></returns>
         void RemoveEdge(params IEdge[] edgesToRemove);
 
         /// <summary>
