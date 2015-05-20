@@ -239,25 +239,27 @@ namespace UseCaseAnalyser.GraphVisualiser
             useCaseNode.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             DrawingCanvas.Children.Add(useCaseNode);
             Panel.SetZIndex(useCaseNode, 10);
-            
+
+            double leftPos = ElementWidth * (slotNumber - 1) + 40;
+            double topPos = 0;
+
+
             if (referenceUseCaseNode != null)
             {
                 UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
-                useCaseNode.YOffset = referencenode.YOffset;
+                topPos = Canvas.GetTop(referencenode);
             }
 
             foreach (UseCaseNode ucNode in mNodes)
             {
-                if (ucNode.SlotNumber == slotNumber && ucNode.YOffset > useCaseNode.YOffset)
-                    useCaseNode.YOffset = ucNode.YOffset;
+                if (ucNode.SlotNumber == slotNumber && Canvas.GetTop(ucNode) > topPos)
+                    topPos = Canvas.GetTop(ucNode);
             }
             if (mNodes.Count > 0)
-                useCaseNode.YOffset += ElementHeight;
+                topPos += ElementHeight;
 
            
             mNodes.Add(useCaseNode);
-            double leftPos = ElementWidth*(slotNumber - 1) + 40;
-            double topPos = useCaseNode.YOffset;
   
             // If node will be loaded the first time standard value will be used
             // If the node is already in the Dictionary the old value will be loaded
@@ -275,8 +277,8 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             if (DrawingCanvas.Width < (ElementWidth)*(slotNumber) + 40)
                 DrawingCanvas.Width = (ElementWidth)*(slotNumber) + 40;
-            if (DrawingCanvas.Height < (useCaseNode.YOffset + ElementHeight))
-                DrawingCanvas.Height = useCaseNode.YOffset + ElementHeight;
+            if (DrawingCanvas.Height < (topPos + ElementHeight))
+                DrawingCanvas.Height = topPos + ElementHeight;
 
         }
 

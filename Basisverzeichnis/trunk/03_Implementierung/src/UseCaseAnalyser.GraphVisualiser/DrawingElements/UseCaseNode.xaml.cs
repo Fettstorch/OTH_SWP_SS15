@@ -13,11 +13,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     internal partial class UseCaseNode : ISelectableObject
     {
         public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
-        private double mYOffset;
 
         public UseCaseNode(uint slotNumber, INode node)
         {
-            YOffset = 0;
             SlotNumber = slotNumber;
             Selected = false;
             InitializeComponent();
@@ -31,18 +29,6 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         public INode Node { get; private set; }
         public uint SlotNumber { get; set; }
-
-        public double YOffset
-        {
-            get { return mYOffset; }
-            set
-            {
-                mYOffset = value;
-                Canvas.SetTop(this, YOffset);
-                RenderEdges();
-            }
-        }
-
         
         public bool Selected { get; set; }
         

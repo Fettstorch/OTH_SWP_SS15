@@ -23,7 +23,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             mDestUseCaseNode = dest;
             mSourceUseCaseNode.AddEdge(this);
             mDestUseCaseNode.AddEdge(this);
-            ProcessType = source.YOffset < dest.YOffset ? EdgeProcessType.ForwardEdge : EdgeProcessType.BackwardEdge;
+            ProcessType = Canvas.GetTop(source) < Canvas.GetTop(dest) ? EdgeProcessType.ForwardEdge : EdgeProcessType.BackwardEdge;
 
             Stroke = mDrawingBrush = new SolidColorBrush(Colors.Black);
             StrokeThickness = 1.5;
