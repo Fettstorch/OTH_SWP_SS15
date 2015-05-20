@@ -67,11 +67,11 @@ namespace GraphFramework
         /// <summary>
         /// Removes an attribute with the defined name from the element. (if the element has an attribute with this name)
         /// </summary>
-        /// <param name="name">the name of the attribute you want to remove</param>
-        public void RemoveAttribute(string name)
+        /// <param name="nameOfAttributeToRemove">the name of the attribute you want to remove</param>
+        public void RemoveAttribute(string nameOfAttributeToRemove)
         {
-            if (name == null) throw new ArgumentNullException();
-            IAttribute attr = mAttributes.Find(graphelem => string.Equals(graphelem.Name, name));
+            if (nameOfAttributeToRemove == null) throw new ArgumentNullException();
+            IAttribute attr = mAttributes.Find(graphelem => string.Equals(graphelem.Name, nameOfAttributeToRemove));
             if (attr != null)
             {
                 mAttributes.Remove(attr);
@@ -85,11 +85,11 @@ namespace GraphFramework
         /// <summary>
         /// Removes the defined attribute if the element holds it
         /// </summary>
-        /// <param name="attribute"></param>
-        public void RemoveAttribute(IAttribute attribute)
+        /// <param name="attributeToRemove"></param>
+        public void RemoveAttribute(IAttribute attributeToRemove)
         {
-            if (attribute == null) throw new ArgumentNullException();
-            if (!mAttributes.Remove(attribute))
+            if (attributeToRemove == null) throw new ArgumentNullException();
+            if (!mAttributes.Remove(attributeToRemove))
             {
                 throw new InvalidOperationException("the defined attribute can not be found!");
             }

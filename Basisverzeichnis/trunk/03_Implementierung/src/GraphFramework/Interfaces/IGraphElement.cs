@@ -18,15 +18,15 @@ namespace GraphFramework.Interfaces
         /// <summary>
         /// removes the attribute identified by its name
         /// </summary>
-        /// <param name="name">name property of the attribute to remove</param>
+        /// <param name="nameOfAttributeToRemove">name property of the attribute to remove</param>
         /// <returns>weather the remove was successful</returns>
-        void RemoveAttribute(string name);
+        void RemoveAttribute(string nameOfAttributeToRemove);
 
         /// <summary>
         /// remove the attribute identified by its reference
         /// </summary>
-        /// <param name="attribute">reference of the attribute to remove</param>
+        /// <param name="attributeToRemove">reference of the attribute to remove</param>
         /// <returns>weather the remove was successful</returns>
-        void RemoveAttribute(IAttribute attribute);
+        void RemoveAttribute(IAttribute attributeToRemove);
     }
 }

@@ -23,9 +23,9 @@ namespace GraphFramework.Interfaces
         /// <summary>
         /// removes the node identified by its reference from the graph
         /// </summary>
-        /// <param name="nodes">reference of the nodes to remove</param>
+        /// <param name="nodesToRemove">reference of the nodes to remove</param>
         /// <returns></returns>
-        void RemoveNode(params INode[] nodes);
+        void RemoveNode(params INode[] nodesToRemove);
 
         /// <summary>
         /// adds the edge to the edge collection of the graph
@@ -38,9 +38,9 @@ namespace GraphFramework.Interfaces
         /// <summary>
         /// removes the edge identified by its reference from the graph
         /// </summary>
-        /// <param name="edges">reference of the edges to remove</param>
+        /// <param name="edgesToRemove">reference of the edges to remove</param>
         /// <returns></returns>
-        void RemoveEdge(params IEdge[] edges);
+        void RemoveEdge(params IEdge[] edgesToRemove);
 
         /// <summary>
         /// returns all Nodes that are not connected by Edges
