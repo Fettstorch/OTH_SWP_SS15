@@ -4,6 +4,10 @@ using System.Windows.Input;
 
 namespace UseCaseAnalyser.Model.ViewModel
 {
+    /// <summary>
+    /// implementation of the icommand interface.
+    /// used to bind to from view side
+    /// </summary>
     public class AsyncCommand : ICommand
     {
         private static readonly TaskFactory UiTaskFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
@@ -12,9 +16,13 @@ namespace UseCaseAnalyser.Model.ViewModel
         private readonly Func<object, bool> mCanExecuteFunc;
         private readonly Action<Exception> mOnError;
         private bool mIsExecuting;
-
-        public AsyncCommand(Action<object> executeAction) : this(executeAction, o => true, e => { }) { }
-
+        
+        /// <summary>
+        /// creates a new command to bind to from the gui
+        /// </summary>
+        /// <param name="executeAction">action to execute on command execute</param>
+        /// <param name="canExecuteFunc">function to determine weather the action can be executed</param>
+        /// <param name="onError">action to run if the execute action throws an exception</param>
         public AsyncCommand(Action<object> executeAction, Func<object, bool> canExecuteFunc, Action<Exception> onError)
         {
             mExecuteAction = executeAction;
@@ -22,12 +30,21 @@ namespace UseCaseAnalyser.Model.ViewModel
             mOnError = onError;
         }
 
+        /// <summary>
+        /// checks if the command is currently executable
+        /// </summary>
+        /// <param name="parameter">parameter which can be passed from the view</param>
+        /// <returns>weather the command is executable</returns>
         public bool CanExecute(object parameter)
         {
             bool result = !mIsExecuting && mCanExecuteFunc(parameter);
             return result;
         }
 
+        /// <summary>
+        /// executes the action of the command
+        /// </summary>
+        /// <param name="parameter">action parameter which can be passed from the view</param>
         public void Execute(object parameter)
         {
             if (!CanExecute(parameter)) return;
@@ -48,6 +65,10 @@ namespace UseCaseAnalyser.Model.ViewModel
             });
         }
 
+
+        /// <summary>
+        /// invoked if the commandmanager detects action which might change the executable state --> can execute will be invoked
+        /// </summary>
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }

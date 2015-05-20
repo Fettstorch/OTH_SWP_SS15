@@ -9,15 +9,19 @@ namespace UseCaseAnalyser.Model.Model
     {
         private IEnumerable<IGraph> mScenarios;
 
-        public UseCaseGraph(string name = null, params IAttribute[] attributes)
+        /// <summary>
+        /// creates a new use case graph with the given attributes
+        /// </summary>
+        /// <param name="attributes">attributes to add to the use case graph</param>
+        public UseCaseGraph(params IAttribute[] attributes)
             : base(attributes)
         {
-            if (name != null)
-            {
-                AddAttribute(new Attribute("Name", name)); 
-            }
         }
 
+        /// <summary>
+        /// scenarios of the use case graph
+        /// lazy initialized when getter is called
+        /// </summary>
         public IEnumerable<IGraph> Scenarios
         {
             //  lazy initialization of the scenarios

@@ -1,11 +1,13 @@
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Converters
 {
+    /// <summary>
+    /// converts an attribute to a boolean to determine weather the attribute is filled
+    /// </summary>
     public class AttributeToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

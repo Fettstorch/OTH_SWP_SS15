@@ -6,6 +6,13 @@ using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.Converters
 {
+    /// <summary>
+    /// convertes the report entry type to a color 
+    /// log --> blue,
+    /// warning --> yellow,
+    /// error --> red
+    /// default --> none
+    /// </summary>
     public class EntryTypeToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -10,6 +10,10 @@ namespace GraphFramework
         private readonly List<IEdge> mEdges;
         private readonly List<INode> mNodes;
 
+        /// <summary>
+        /// creates a new graph with the given parameters
+        /// </summary>
+        /// <param name="attributes">attributes to add to the graph</param>
         public Graph(params IAttribute[] attributes) : base(attributes)
         {
             mNodes = new List<INode>();

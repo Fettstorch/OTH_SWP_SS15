@@ -13,6 +13,10 @@ using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.Model.ViewModel
 {
+    /// <summary>
+    /// main view model of the application
+    /// provides all properties which will be displayed in view
+    /// </summary>
     public class DialogViewModel : INotifyPropertyChanged
     {
         private readonly IDialogView mView;
@@ -25,13 +29,24 @@ namespace UseCaseAnalyser.Model.ViewModel
         private ICommand mOpenReportView;
         //private IGraphElement mSelectedGraphElement;
 
+        /// <summary>
+        /// creates a new dialogviewmodel without interface of the view 
+        /// (for tests and wpf designer)
+        /// </summary>
         public DialogViewModel() : this(null) { }
 
+        /// <summary>
+        /// creates a new dialogviewmodel. view specific actions can be invoked over the view interface
+        /// </summary>
+        /// <param name="view">interface abstraction of the view</param>
         public DialogViewModel(IDialogView view)
         {
             mView = view;
         }
 
+        /// <summary>
+        /// all use cases which are currently saved (have been read by the word importer)
+        /// </summary>
         public IEnumerable<UseCaseGraph> UseCaseGraphs
         {
             get { return mMUseCaseGraphs; }
@@ -43,7 +58,9 @@ namespace UseCaseAnalyser.Model.ViewModel
             }
         }
 
-        //  set by gui
+        /// <summary>
+        /// the currently selected graph from the view --> set via binding
+        /// </summary>
         public UseCaseGraph SelectedGraph
         {
             get { return mSelectedGraph; }
@@ -54,6 +71,9 @@ namespace UseCaseAnalyser.Model.ViewModel
             }
         }
 
+        /// <summary>
+        /// the currently selection scenario from the view --> set via binding
+        /// </summary>
         public IGraph SelectedScenario
         {
             get { return mSelectedScenario; }
@@ -64,6 +84,9 @@ namespace UseCaseAnalyser.Model.ViewModel
             }
         }
 
+        /// <summary>
+        /// the latest word import report gotten from the word importer
+        /// </summary>
         public Report LatestWordImportReport { get; private set; }
 
         //public IGraphElement SelectedGraphElement
@@ -78,6 +101,9 @@ namespace UseCaseAnalyser.Model.ViewModel
 
         //  commands in menu
 
+        /// <summary>
+        /// opens a word file and tries to read in the use cases
+        /// </summary>
         public ICommand OpenWordFile
         {
             get
@@ -100,6 +126,11 @@ namespace UseCaseAnalyser.Model.ViewModel
             }
         }
 
+        /// <summary>
+        /// exports the scenarios from the currently selected use case
+        /// 
+        /// enabled if: a use case is selected
+        /// </summary>
         public ICommand ExportScenarioMatrix
         {
             get
@@ -115,6 +146,11 @@ namespace UseCaseAnalyser.Model.ViewModel
             }
         }
 
+        /// <summary>
+        /// opens the logfile as seperate process
+        /// 
+        /// enabled if: the logfile exists
+        /// </summary>
         public ICommand OpenLogfile
         {
             get
@@ -129,6 +165,11 @@ namespace UseCaseAnalyser.Model.ViewModel
             }
         }
 
+        /// <summary>
+        /// opens the latest word import report view in its seperate window
+        /// 
+        /// enabled if: there is a latest word import report
+        /// </summary>
         public ICommand OpenReportView
         {
             get
@@ -144,11 +185,14 @@ namespace UseCaseAnalyser.Model.ViewModel
 
         private void OnError(Exception ex)
         {
+            LoggingFunctions.Exception(ex);
             mView.OpenMessageBox(ex.GetType().Name, string.Format("An error occured:{0}{1}", Environment.NewLine, ex.Message), MessageType.Error);
         }
 
         #region Property Changed event + invoker to notify gui about changes
-
+        /// <summary>
+        /// invoked to notify the gui about changed of properties
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
