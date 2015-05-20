@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Media;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
@@ -35,17 +34,17 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             foreach (UseCaseEdge ucEdge in mEdges)
             {
                 ucEdge.RecalcBezier();
-                if (ucEdge.mDestUseCaseNode != this)
+                if (!Equals(ucEdge.mDestUseCaseNode, this))
                     ucEdge.mDestUseCaseNode.RenderEdgesExceptNode(this);
                 else
                     ucEdge.mSourceUseCaseNode.RenderEdgesExceptNode(this);
             }
         }
-        public void RenderEdgesExceptNode(UseCaseNode notRenderNode)
+        private void RenderEdgesExceptNode(UseCaseNode notRenderNode)
         {
             foreach (UseCaseEdge ucEdge in mEdges)
             {
-                if (ucEdge.mSourceUseCaseNode == notRenderNode || ucEdge.mDestUseCaseNode == notRenderNode)
+                if (Equals(ucEdge.mSourceUseCaseNode, notRenderNode) || Equals(ucEdge.mDestUseCaseNode, notRenderNode))
                     continue;
 
                 ucEdge.RecalcBezier();
