@@ -254,23 +254,23 @@ namespace UseCaseAnalyser.Model.Model
                 IAttribute nodeType;
                 if (i == 0)
                 {
-                    nodeType = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType], 
+                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], 
                         UseCaseGraph.NodeTypeAttribute.StartNode);
                 }
                 else if (i == paragraphList.Count - 2)
                 {
-                    nodeType = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType], 
+                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], 
                         UseCaseGraph.NodeTypeAttribute.EndNode);
                 }
                 else
                 {
-                    nodeType = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType], 
+                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], 
                         UseCaseGraph.NodeTypeAttribute.NormalNode);
                 }
 
-                IAttribute indexAttribute = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index], 
+                IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index], 
                     (i + 1).ToString());
-                IAttribute descAttribute = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Description], 
+                IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], 
                     paragraphList[i].InnerText);                
                 INode node = new Node(indexAttribute, descAttribute, nodeType);
                 useCaseGraph.AddNode(node);
@@ -309,21 +309,21 @@ namespace UseCaseAnalyser.Model.Model
                     // Get all sequence nodes:
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute indexAttribute = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index], 
+                        IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index], 
                             variantIndex + (j + 1)); // obsulete
-                        IAttribute descAttribute = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Description], 
+                        IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], 
                             paragraphList[j].InnerText);
-                        IAttribute normIndexAttribute = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NormalIndex], 
+                        IAttribute normIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex], 
                             rgx.Replace(variantIndex, ""));
-                        IAttribute varIndexAttribute = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.VariantIndex], 
+                        IAttribute varIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex], 
                             variantIndex[variantIndex.Length-1]);
-                        IAttribute varStepAttribute = new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.VarSeqStep],
+                        IAttribute varStepAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep],
                                     (j+1).ToString());
 
                         INode node = new Node(indexAttribute, descAttribute, normIndexAttribute, varIndexAttribute, varStepAttribute);
                         if (j < paragraphList.Count - 2)
                         {
-                            node.AddAttribute(new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType],
+                            node.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                                 UseCaseGraph.NodeTypeAttribute.VariantNode));
                         }
                         useCaseGraph.AddNode(node);
@@ -339,7 +339,7 @@ namespace UseCaseAnalyser.Model.Model
                             if (j == 0)
                             {
                                 useCaseGraph.AddEdge(searchedNode, node,
-                                    new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Description], varDesc));    
+                                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], varDesc));    
                             }
                             else
                                 useCaseGraph.AddEdge(searchedNode, node);
@@ -360,7 +360,7 @@ namespace UseCaseAnalyser.Model.Model
                         {
                             // make a edge between the normal routine node and the first node of the sequence variant
                             useCaseGraph.AddEdge(lastNode, indexNode);
-                            lastNode.AddAttribute(new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType],
+                            lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                                 UseCaseGraph.NodeTypeAttribute.JumpNode));
                         }
                     }
@@ -369,7 +369,7 @@ namespace UseCaseAnalyser.Model.Model
                         INode lastNode;
                         if (sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
                         {
-                            lastNode.AddAttribute(new Attribute(UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType],
+                            lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                                 UseCaseGraph.NodeTypeAttribute.EndNode));
                         }
                     }
