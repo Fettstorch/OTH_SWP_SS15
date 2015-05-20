@@ -53,14 +53,14 @@ namespace UseCaseAnalyser.Model.Model
             return entries;
         }
 
-        public struct ReportEntry
+        public class ReportEntry
         {
             public string Heading { get; private set; }
             public string Content { get; private set; }
             public Entrytype Type { get; private set; }
             public string Tag { get; private set; }
 
-            public ReportEntry(string heading, string content, Entrytype type, string tag = "") : this()
+            public ReportEntry(string heading, string content, Entrytype type, string tag = "")
             {
                 Heading = heading;
                 Content = content;

@@ -27,7 +27,8 @@ namespace GraphFramework
         internal Edge(INode node1, INode node2, params IAttribute[] attributes)
             : base(attributes)
         {
-            if (node1 == null || node2 == null) throw new Exception("One node of the edge is null. Wrong edge initialization!");
+            if (node1 == null) throw new ArgumentNullException("node1");
+            if (node2 == null) throw new ArgumentNullException("node2");
             this.Node1 = node1;
             this.Node2 = node2;
         }

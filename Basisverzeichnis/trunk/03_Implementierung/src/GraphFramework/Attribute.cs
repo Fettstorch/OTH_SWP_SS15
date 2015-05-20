@@ -26,7 +26,7 @@ namespace GraphFramework
                 }
                 else
                 {
-                    throw new Exception("You cannot define a new attribute value with a different type!");
+                    throw new InvalidOperationException("You cannot define a new attribute value with a different type!");
                 }
             }
         }
@@ -53,9 +53,13 @@ namespace GraphFramework
         /// <param name="val">the generic value</param>
         public Attribute(string name, object val)
         {
-            if (val == null || string.IsNullOrWhiteSpace(name))
+            if (val == null || name == null)
             {
-                throw new Exception("Incorrect attribute initialisation!");
+                throw new ArgumentNullException("val");
+            }
+            if(string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("name string of the attribute shall not be empty");
             }
             
             Name = name;

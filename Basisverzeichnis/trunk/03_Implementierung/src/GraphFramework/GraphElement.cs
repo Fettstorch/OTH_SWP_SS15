@@ -35,6 +35,9 @@ namespace GraphFramework
         {
             mAttributes = new List<IAttribute>();
 
+            if(attributes == null)
+                throw new ArgumentNullException();
+
             foreach (IAttribute attribute in attributes)
             {
                 if (!mAttributes.Any(graphelem => string.Equals(graphelem.Name, attribute.Name)))
@@ -50,6 +53,7 @@ namespace GraphFramework
         /// <param name="attribute">the attribute you want to add</param>
         public void AddAttribute(IAttribute attribute)
         {
+            if(attribute == null) throw new ArgumentNullException();
             if (!mAttributes.Any(graphelem => string.Equals(graphelem.Name, attribute.Name)))
             {
                 mAttributes.Add(attribute);
@@ -66,6 +70,7 @@ namespace GraphFramework
         /// <param name="name">the name of the attribute you want to remove</param>
         public void RemoveAttribute(string name)
         {
+            if (name == null) throw new ArgumentNullException();
             IAttribute attr = mAttributes.Find(graphelem => string.Equals(graphelem.Name, name));
             if (attr != null)
             {
@@ -83,6 +88,7 @@ namespace GraphFramework
         /// <param name="attribute"></param>
         public void RemoveAttribute(IAttribute attribute)
         {
+            if (attribute == null) throw new ArgumentNullException();
             if (!mAttributes.Remove(attribute))
             {
                 throw new InvalidOperationException("the defined attribute can not be found!");
