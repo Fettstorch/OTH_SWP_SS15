@@ -46,6 +46,16 @@ namespace UseCaseAnalyser.Model.Model
             return endNodes;
         }
 
+        private static IEnumerable<IEdge> GetConnectionsOfNode(IGraph graph, INode node)
+        {
+            return Enumerable.Empty<IEdge>();
+        }
+
+        private static void CreateScenario(INode startNode, IGraph currentScenarion, IEnumerable<INode> endNodes, ref IEnumerable<IGraph> scenarios)
+        {
+            return;
+        }
+
         /// <summary>
         /// creates the scenarios from a use case graph
         /// </summary>
@@ -59,10 +69,7 @@ namespace UseCaseAnalyser.Model.Model
 
             IEnumerable<INode> endNodes = FindEndNodes(useCaseGraph);
 
-            foreach (INode endNode in endNodes)
-            {
-                //find all paths from startNode
-            }
+            CreateScenario(startNode, null, endNodes, ref allScenarios);
             
             //  EMPTY ENUMERABLE SO THE VIEW CAN BE TESTED WITHOUT CRASHES
             return Enumerable.Empty<IGraph>();
