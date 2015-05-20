@@ -15,7 +15,7 @@ namespace UseCaseAnalyser.Model.Model
                 foreach (IAttribute attribute in node.Attributes)
                 {
                     if (!attribute.Name.Equals(
-                        UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType]))
+                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]))
                         continue;
                     if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode))
                     {
@@ -35,7 +35,7 @@ namespace UseCaseAnalyser.Model.Model
                 foreach (IAttribute attribute in node.Attributes)
                 {
                     if (!attribute.Name.Equals(
-                        UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.NodeType]))
+                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]))
                         continue;
                     if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.EndNode))
                     {

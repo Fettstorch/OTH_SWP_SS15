@@ -22,7 +22,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             Selected = false;
             InitializeComponent();
             LblIndex.Content = node.Attributes.First(attr =>
-                attr.Name == UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index]).Value;
+                attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value;
             Node = node;
             mDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
         }

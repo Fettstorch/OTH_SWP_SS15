@@ -132,7 +132,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 //get node's attribute named "Index"
                 IAttribute ucNodeAttribut =
                     ucNode.Attributes.First(
-                        a => a.Name == UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index]);
+                        a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]);
 
                 //parse Index value
                 List<string> results = IndexParser(ucNodeAttribut.Value.ToString());
@@ -152,8 +152,8 @@ namespace UseCaseAnalyser.GraphVisualiser
                                     node.Attributes.Any(
                                         attr =>
                                             attr.Name.Equals(
-                                                UseCaseGraph.UseCaseNodeAttributeNames[
-                                                    (int)UseCaseGraph.UseCaseNodeAttributes.Index]) &&
+                                                UseCaseGraph.AttributeNames[
+                                                    (int)UseCaseGraph.NodeAttributes.Index]) &&
                                             ((string) attr.Value).Equals(results[0]))));
                         break;
                     default:
@@ -171,14 +171,14 @@ namespace UseCaseAnalyser.GraphVisualiser
                 foreach (UseCaseNode ucNode in mNodes)
                 {
                     IAttribute ucNodeIndexAttr =
-                        ucNode.Node.Attributes.First(attr => attr.Name == UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index]);
+                        ucNode.Node.Attributes.First(attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]);
 
                     if (firstNode == null &&
                         ucNodeIndexAttr.Value == ucEdge.Node1.Attributes.First(
-                        attr => attr.Name == UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index]).Value)
+                        attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value)
                         firstNode = ucNode;
                     if (secondNode == null && ucNodeIndexAttr.Value ==
-                        ucEdge.Node2.Attributes.First(attr => attr.Name == UseCaseGraph.UseCaseNodeAttributeNames[(int)UseCaseGraph.UseCaseNodeAttributes.Index]).Value)
+                        ucEdge.Node2.Attributes.First(attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value)
                         secondNode = ucNode;
                 }
 
