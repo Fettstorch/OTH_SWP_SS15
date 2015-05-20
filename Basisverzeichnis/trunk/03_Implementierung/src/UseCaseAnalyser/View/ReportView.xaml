@@ -1,0 +1,25 @@
+﻿<Window x:Class="UseCaseAnalyser.View.ReportView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:model="clr-namespace:UseCaseAnalyser.Model.Model;assembly=UseCaseAnalyser.Model"
+        xmlns:converters="clr-namespace:UseCaseAnalyser.Converters"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type model:Report}, IsDesignTimeCreatable=True}"
+        Title="Word import result" Height="200" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="SingleBorderWindow" >
+    <Window.Resources>
+        <converters:ReportToEntriesConverter x:Key="ReportToEntriesConverter" />
+        <converters:EntryTypeToColorConverter x:Key="EntryTypeToColorConverter" />
+    </Window.Resources>
+        <GroupBox Margin="3" Header="Results" Padding="5">
+            <ItemsControl ItemsSource="{Binding Converter={StaticResource ReportToEntriesConverter}}"
+                     HorizontalContentAlignment="Stretch">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type model:Report+ReportEntry}">
+                                <TextBlock Padding="5" Text="{Binding Path=Content}" ToolTip="{Binding Path=Heading}"
+                                           Background="{Binding Path=Type, Converter={StaticResource EntryTypeToColorConverter}}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </GroupBox>
+</Window>

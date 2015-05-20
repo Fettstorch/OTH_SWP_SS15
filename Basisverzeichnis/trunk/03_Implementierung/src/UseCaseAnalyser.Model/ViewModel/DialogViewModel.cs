@@ -4,28 +4,28 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using GraphFramework;
 using GraphFramework.Interfaces;
+using LogManager;
 using UseCaseAnalyser.Model.Model;
-using Attribute = GraphFramework.Attribute;
 
 namespace UseCaseAnalyser.Model.ViewModel
 {
     public class DialogViewModel : INotifyPropertyChanged
     {
         private readonly IDialogView mView;
-        private ICommand mExportScenarioMatrix;
         private IEnumerable<UseCaseGraph> mMUseCaseGraphs;
-        private ICommand mOpenWordFile;
-        private ICommand mOpenLogfile;
         private UseCaseGraph mSelectedGraph;
         private IGraph mSelectedScenario;
+        private ICommand mExportScenarioMatrix;
+        private ICommand mOpenWordFile;
+        private ICommand mOpenLogfile;
+        private ICommand mOpenReportView;
         //private IGraphElement mSelectedGraphElement;
 
-        public DialogViewModel() { }
+        public DialogViewModel() : this(null) { }
 
         public DialogViewModel(IDialogView view)
         {
@@ -64,6 +64,8 @@ namespace UseCaseAnalyser.Model.ViewModel
             }
         }
 
+        public Report LatestWordImportReport { get; private set; }
+
         //public IGraphElement SelectedGraphElement
         //{
         //    get { return mSelectedGraphElement; }
@@ -86,7 +88,14 @@ namespace UseCaseAnalyser.Model.ViewModel
                     FileInfo file = mView.OpenFileDialog("Word files |*.docx|All files |*.*", FileDialogType.Open);
                     if (file == null) return;
 
-                    UseCaseGraphs = WordImporter.ImportUseCases(file);
+                    Report newReport;
+                    UseCaseGraphs = WordImporter.ImportUseCases(file, out newReport);
+                    LatestWordImportReport = newReport;
+
+                    if (LatestWordImportReport.ErrorReportEntries.Any() || LatestWordImportReport.WarningReportEntries.Any())
+                    {
+                        mView.OpenReportResult(LatestWordImportReport); 
+                    }
                 }, o => true, OnError));
             }
         }
@@ -110,12 +119,25 @@ namespace UseCaseAnalyser.Model.ViewModel
         {
             get
             {
-                var logfile = Path.Combine(LogManager.LoggingFunctions.FilePath, LogManager.LoggingFunctions.FileName);
+                string logfile = Path.Combine(LoggingFunctions.FilePath, LoggingFunctions.FileName);
                 //  lazy initialization
                 return mOpenLogfile ?? (mOpenLogfile = new AsyncCommand(o =>
                 {
                     Process.Start(logfile);
                 }, o => File.Exists(logfile), OnError));
+                //  condtion to run the command (always true)
+            }
+        }
+
+        public ICommand OpenReportView
+        {
+            get
+            {
+                //  lazy initialization
+                return mOpenReportView ?? (mOpenReportView = new AsyncCommand(o =>
+                {
+                    mView.OpenReportResult(LatestWordImportReport);
+                }, o => LatestWordImportReport != null, OnError));
                 //  condtion to run the command (always true)
             }
         }

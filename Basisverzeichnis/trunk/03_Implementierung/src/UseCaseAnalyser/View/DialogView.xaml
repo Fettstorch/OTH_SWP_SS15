@@ -33,10 +33,11 @@
                 <MenuItem Header="Import word file" Command="{Binding Path=OpenWordFile}" />
                 <MenuItem Header="Export scenario matrix" Command="{Binding Path=ExportScenarioMatrix}" />
                 <Separator />
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Exit" Name="ExitMenuItem" Click="ExitMenuItem_OnClick"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Open Logfile" Command="{Binding Path=OpenLogfile}" />
+                <MenuItem Header="Open latest import report" Command="{Binding Path=OpenReportView}" />
                 <MenuItem Header="About" />
             </MenuItem>
         </Menu>
@@ -77,8 +78,9 @@
                     Mode=OneWay}" HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">
-                                <Expander IsExpanded="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" IsEnabled="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" Header="{Binding Path=Name}" Padding="5" HorizontalContentAlignment="Left" BorderThickness="1" 
-                                          BorderBrush="Black">
+                                <Expander IsExpanded="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" IsEnabled="{Binding Mode=OneWay, 
+                                    Converter={StaticResource AttributeToBoolConverter}}" Header="{Binding Path=Name}" Padding="5" HorizontalContentAlignment="Left" 
+                                          BorderThickness="1" BorderBrush="Black">
                                     <TextBlock Text="{Binding Path=Value}" TextWrapping="Wrap" Margin="10,5,0,0"/>
                                 </Expander>
                         </DataTemplate>

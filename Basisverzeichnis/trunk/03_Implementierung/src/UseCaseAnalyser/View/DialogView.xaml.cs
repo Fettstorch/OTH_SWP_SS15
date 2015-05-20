@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using Microsoft.Win32;
+using UseCaseAnalyser.Model.Model;
 using UseCaseAnalyser.Model.ViewModel;
 
 namespace UseCaseAnalyser.View
@@ -8,7 +9,7 @@ namespace UseCaseAnalyser.View
     /// <summary>
     /// Interaction logic for DialogView.xaml
     /// </summary>
-    public partial class DialogView : Window, IDialogView
+    public partial class DialogView : IDialogView
     {
         public DialogView()
         {
@@ -35,9 +36,15 @@ namespace UseCaseAnalyser.View
                     : messageType == MessageType.Warning ? MessageBoxImage.Warning : MessageBoxImage.Information);
         }
 
-        public void OpenReportResult(DialogViewModel viewModel)
+        public void OpenReportResult(Report viewModel)
         {
-            throw new System.NotImplementedException();
+            ReportView view = new ReportView(viewModel);
+            view.ShowDialog();
+        }
+
+        private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown(0);
         }
     }
 }

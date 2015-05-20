@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.Model.ViewModel
 {
@@ -14,7 +15,7 @@ namespace UseCaseAnalyser.Model.ViewModel
 
         void OpenMessageBox(string header, string content, MessageType messageType);
 
-        void OpenReportResult(DialogViewModel viewModel);
+        void OpenReportResult(Report viewModel);
     }
 
     public enum MessageType
