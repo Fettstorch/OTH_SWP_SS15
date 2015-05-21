@@ -303,36 +303,10 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             startNode.RenderEdges();
             endingNode.RenderEdges();
-        }
-
-        //public void ReCalcPositionsOfElements()
-        //{
-        //    UseCaseNode searchKnotenUc = Nodes.Find(uc => uc.StartKnoten);
-        //    if (searchKnotenUc != null)
-        //    {
-        //        CalcPosition(searchKnotenUc, 0);
-        //    }
-        //}
-
-        //private void CalcPosition(UseCaseNode source, double offset)
-        //{
-        //    for (int i = 0; i < source.KantenList.Count; i++)
-        //    {
-        //        if (!source.KantenList[i].SourceUseCaseNode.Equals(source) && source.KantenList[i].ProcessType == UseCaseEdge.EdgeProcessType.ForwardEdge)
-        //        {
-        //            source.KantenList[i].DestUseCaseNode.YOffset = source.YOffset + ElementHeight;
-        //            CalcPosition(source.KantenList[i].DestUseCaseNode, source.KantenList[i].DestUseCaseNode.YOffset);
-        //        }
-        //    }
-        //}
-
-        
-     
+        }     
 
         #region events
         
-        //Todo Is there another way to implement this behaviour? If a node is clicked currently this event will first Unselect the node and set UseCase as GraphElement and afterwards these values are overwritten by GraphVisualiser_OnMouseDown event.
-
         /// <summary>
         /// Event handler for canvas. Unselect all selectable elements in canvas and set dependency property GraphElement to UseCase.
         /// </summary>
@@ -342,8 +316,9 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             foreach (UIElement child in DrawingCanvas.Children)
             {
-                if (child is ISelectableObject)
-                    ((ISelectableObject)child).Unselect();
+                ISelectableObject selectableChild = child as ISelectableObject;
+                if (selectableChild != null)
+                    selectableChild.Unselect();
             }
             GraphElement = UseCase;
         }
@@ -356,27 +331,29 @@ namespace UseCaseAnalyser.GraphVisualiser
         private void GraphVisualiser_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             FrameworkElement element = sender as FrameworkElement;
-            if (element != null)
+            ISelectableObject selectableElement = element as ISelectableObject;
+            if (selectableElement == null)
+                return;
+
+            selectableElement.Select();
+            GraphElement = selectableElement.CurrentElement;
+
+            // ReSharper disable once LoopCanBePartlyConvertedToQuery
+            //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
+            foreach (UIElement child in DrawingCanvas.Children)
             {
-                if (element is ISelectableObject)
-                {
-                    ((ISelectableObject)element).Select();
-                    GraphElement = ((ISelectableObject)element).CurrentElement;
-
-                    foreach (UIElement child in DrawingCanvas.Children)
-                    {
-                        if (child is ISelectableObject && (ISelectableObject)child != (ISelectableObject)element)
-                            ((ISelectableObject)child).Unselect();
-                    }
-
-                    mSelectedElement = element;
-                    mOffsetElementPosition = Mouse.GetPosition(DrawingCanvas);
-                    Point elementPoint = new Point(Canvas.GetLeft(mSelectedElement), Canvas.GetTop(mSelectedElement));
-                    mOffsetElementPosition.X -= elementPoint.X;
-                    mOffsetElementPosition.Y -= elementPoint.Y;
-                }
-
+                ISelectableObject selectableChild = child as ISelectableObject;
+                if (selectableChild != null && selectableChild != selectableElement)
+                    selectableChild.Unselect();
             }
+
+            mSelectedElement = element;
+            mOffsetElementPosition = Mouse.GetPosition(DrawingCanvas);
+            Point elementPoint = new Point(Canvas.GetLeft(mSelectedElement), Canvas.GetTop(mSelectedElement));
+            mOffsetElementPosition.X -= elementPoint.X;
+            mOffsetElementPosition.Y -= elementPoint.Y;
+
+            e.Handled = true;
         }
 
         /// <summary>
@@ -386,20 +363,22 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <param name="e">GraphVisualiser_OnMouseMove mouse button event arguments.</param>
         private void GraphVisualiser_OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (mSelectedElement != null)
+            if (mSelectedElement == null) 
+                return;
+
+            // ReSharper disable once LoopCanBePartlyConvertedToQuery
+            //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
+            foreach (FrameworkElement frameworkElement in DrawingCanvas.Children)
             {
-                foreach (FrameworkElement frameworkElement in DrawingCanvas.Children)
-                {
-                    if (!frameworkElement.Equals(mSelectedElement))
-                        continue;
+                if (!frameworkElement.Equals(mSelectedElement))
+                    continue;
 
 
-                    Canvas.SetTop(frameworkElement, e.GetPosition(this).Y - mOffsetElementPosition.Y);
-                    Canvas.SetLeft(frameworkElement, e.GetPosition(this).X - mOffsetElementPosition.X);
-                    UseCaseNode node = frameworkElement as UseCaseNode;
-                    if (node != null)
-                        node.RenderEdges();
-                }
+                Canvas.SetTop(frameworkElement, e.GetPosition(this).Y - mOffsetElementPosition.Y);
+                Canvas.SetLeft(frameworkElement, e.GetPosition(this).X - mOffsetElementPosition.X);
+                UseCaseNode node = frameworkElement as UseCaseNode;
+                if (node != null)
+                    node.RenderEdges();
             }
         }
 

@@ -5,7 +5,7 @@
     <Grid>
         <Border BorderThickness="1" BorderBrush="Black">
             <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" >
-                <Canvas Name="DrawingCanvas" Margin="10" Background="Transparent"  PreviewMouseLeftButtonDown="Background_OnPreviewMouseLeftButtonDown"/>
+                <Canvas Name="DrawingCanvas" Margin="10" Background="Transparent"  MouseLeftButtonDown="Background_OnPreviewMouseLeftButtonDown"/>
             </ScrollViewer>
         </Border>
     </Grid>
