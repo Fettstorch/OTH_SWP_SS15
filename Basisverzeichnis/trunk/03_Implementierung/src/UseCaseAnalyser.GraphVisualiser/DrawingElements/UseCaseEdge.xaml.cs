@@ -214,7 +214,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         #region Properties
 
     
-        public bool Selected { get; set; }
+        public bool Selected { get; private set; }
         
         internal DockedStatus StatusSourceElement { get; set; }
         internal DockedStatus StatusDestElement { get; set; }

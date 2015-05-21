@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Ink;
 using System.Windows.Media;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
@@ -11,23 +12,28 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     /// </summary>
     internal partial class UseCaseNode : ISelectableObject
     {
-        public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
+        private readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
 
+        /// <summary>
+        /// Wrapper class for GraphFrameworks's INode which is used to define how a node will be displayed in GraphVisualiser.
+        /// </summary>
+        /// <param name="node">INode object that will be wrapped by UseCaseNode</param>
         public UseCaseNode(INode node)
         {
-            Selected = false;
             InitializeComponent();
-            LblIndex.Content = node.Attributes.First(attr =>
-                attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value;
+
+            //initalize member
+            LblIndex.Content = node.Attributes.First(attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value;
             Node = node;
             mDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
         }
 
-
-
+        /// <summary>
+        /// Node property for GraphFrameworks INode element which is wrapped by this class.
+        /// </summary>
         public INode Node { get; private set; }
 
-        public bool Selected { get; set; }
+        public bool Selected { get; private set; }
 
         /// <summary>
         /// Recursive function for rendering edges of this node by using RecalcBezier and its neighbours.
@@ -54,24 +60,33 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             }
         }
 
+        /// <summary>
+        /// Add an edge to UseCaseNode if not already contained and nodes is either starting or endpoint of the specified edge.
+        /// </summary>
+        /// <param name="newEdge"></param>
         public void AddEdge(UseCaseEdge newEdge)
         {
-            if (!mEdges.Contains(newEdge))
+            if (!mEdges.Contains(newEdge) && (Equals(newEdge.mDestUseCaseNode, this) || Equals(newEdge.mSourceUseCaseNode, this)))
                 mEdges.Add(newEdge);
         }
 
-        public int GetEdgeIndex(UseCaseEdge sourceKante)
+        /// <summary>
+        /// Return index of specified edge corresponding to its docking status.
+        /// </summary>
+        /// <param name="sourceEdge">Edge for determine index.</param>
+        /// <returns>Number of index.</returns>
+        public int GetEdgeIndex(UseCaseEdge sourceEdge)
         {
-            UseCaseEdge.DockedStatus currentDockedStatus = sourceKante.mSourceUseCaseNode.Equals(this)
-                ? sourceKante.StatusSourceElement
-                : sourceKante.StatusDestElement;
+            UseCaseEdge.DockedStatus currentDockedStatus = sourceEdge.mSourceUseCaseNode.Equals(this)
+                ? sourceEdge.StatusSourceElement
+                : sourceEdge.StatusDestElement;
 
             for (int i = 0, index = 1; i < mEdges.Count; i++)
             {
                 if (mEdges[i].mSourceUseCaseNode.Equals(this) && mEdges[i].StatusSourceElement == currentDockedStatus ||
                     mEdges[i].mDestUseCaseNode.Equals(this) && mEdges[i].StatusDestElement == currentDockedStatus)
                 {
-                    if (sourceKante.Equals(mEdges[i]))
+                    if (sourceEdge.Equals(mEdges[i]))
                         return index;
                     index++;
                 }
@@ -79,13 +94,13 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             return 0;
         }
 
-        public int GetCountOfEdges(UseCaseEdge sourceKante)
+        public int GetCountOfEdges(UseCaseEdge sourceEdge)
         {
             int index = 1;
 
-            UseCaseEdge.DockedStatus currentDockedStatus = sourceKante.mSourceUseCaseNode.Equals(this)
-                ? sourceKante.StatusSourceElement
-                : sourceKante.StatusDestElement;
+            UseCaseEdge.DockedStatus currentDockedStatus = sourceEdge.mSourceUseCaseNode.Equals(this)
+                ? sourceEdge.StatusSourceElement
+                : sourceEdge.StatusDestElement;
 
 
             // ReSharper disable once LoopCanBeConvertedToQuery

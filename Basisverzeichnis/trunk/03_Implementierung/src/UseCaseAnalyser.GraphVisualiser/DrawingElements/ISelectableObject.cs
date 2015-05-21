@@ -4,7 +4,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
     internal interface ISelectableObject
     {
-        bool Selected { get; set; }
+        bool Selected { get;}
         void Select();
         void Unselect();
         void ChangeSelection();
