@@ -29,29 +29,28 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         public bool Selected { get; set; }
 
-        public void RenderEdges()
+        /// <summary>
+        /// Recursive function for rendering edges of this node by using RecalcBezier and its neighbours.
+        /// </summary>
+        /// <param name="notRenderNode">Optional parameter for use case node which prevents rendering of specified node's edges.</param>
+        public void RenderEdges(UseCaseNode notRenderNode = null)
         {
             foreach (UseCaseEdge ucEdge in mEdges)
             {
-                ucEdge.RecalcBezier();
-                if (!Equals(ucEdge.mDestUseCaseNode, this))
-                    ucEdge.mDestUseCaseNode.RenderEdgesExceptNode(this);
-                else
-                    ucEdge.mSourceUseCaseNode.RenderEdgesExceptNode(this);
-            }
-        }
-        private void RenderEdgesExceptNode(UseCaseNode notRenderNode)
-        {
-            foreach (UseCaseEdge ucEdge in mEdges)
-            {
-                if (Equals(ucEdge.mSourceUseCaseNode, notRenderNode) || Equals(ucEdge.mDestUseCaseNode, notRenderNode))
+                //render this node
+                if (notRenderNode == null)
+                {
+                    //prevent re-rendering in recursive call by setting current node as not to render
+                    if (!Equals(ucEdge.mDestUseCaseNode, this))
+                        ucEdge.mDestUseCaseNode.RenderEdges(this);
+                    else
+                        ucEdge.mSourceUseCaseNode.RenderEdges(this);
+                }
+                //check if rendering of notRenderNode should be skipped (otherwise infinite recusive call of this function)
+                else if (Equals(ucEdge.mSourceUseCaseNode, notRenderNode) || Equals(ucEdge.mDestUseCaseNode, notRenderNode))
                     continue;
 
                 ucEdge.RecalcBezier();
-                //if (ucEdge.mDestUseCaseNode != this)
-                //    ucEdge.mDestUseCaseNode.RenderEdges();
-                //else
-                //    ucEdge.mSourceUseCaseNode.RenderEdges();
             }
         }
 
