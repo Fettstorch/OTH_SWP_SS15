@@ -310,10 +310,10 @@ namespace UseCaseAnalyser.GraphVisualiser
             mNodes.Add(useCaseNode);
 
             ////resize canvas size (for scrollviewer)
-            //if (DrawingCanvas.Width < Canvas.GetLeft(useCaseNode) + ElementWidth)
-            //    DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
-            //if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
-            //    DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
+            if (DrawingCanvas.Width < Canvas.GetLeft(useCaseNode) + ElementWidth)
+                DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
+            if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
+                DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
 
         }
 
@@ -417,15 +417,16 @@ namespace UseCaseAnalyser.GraphVisualiser
             double maxHeight = 0, maxWidth = 0;
             foreach (FrameworkElement frameworkElement in DrawingCanvas.Children)
             {
+                if (maxHeight < frameworkElement.Height + Canvas.GetTop(frameworkElement) + 50)
+                    maxHeight = frameworkElement.Height + Canvas.GetTop(frameworkElement) + 50;
+
+                if (maxWidth < frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 50)
+                    maxWidth = frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 50;
+
+
                 if (!frameworkElement.Equals(mSelectedElement))
                     continue;
-
-                if (maxHeight < frameworkElement.Height + e.GetPosition(DrawingCanvas).Y - mOffsetElementPosition.Y + 50)
-                    maxHeight = frameworkElement.Height + e.GetPosition(DrawingCanvas).Y - mOffsetElementPosition.Y + 50;
-
-                if (maxWidth < frameworkElement.Width + e.GetPosition(DrawingCanvas).X - mOffsetElementPosition.X + 50)
-                    maxWidth = frameworkElement.Width + e.GetPosition(DrawingCanvas).X - mOffsetElementPosition.X + 50;
-
+                
                 Canvas.SetTop(frameworkElement, e.GetPosition(DrawingCanvas).Y - mOffsetElementPosition.Y);
                 Canvas.SetLeft(frameworkElement, e.GetPosition(DrawingCanvas).X - mOffsetElementPosition.X);
                 UseCaseNode node = frameworkElement as UseCaseNode;
