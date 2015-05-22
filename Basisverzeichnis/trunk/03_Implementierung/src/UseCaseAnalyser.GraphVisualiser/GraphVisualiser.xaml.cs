@@ -84,8 +84,9 @@ namespace UseCaseAnalyser.GraphVisualiser
             GraphVisualiser visualizer = (GraphVisualiser)d;
 
             //TODO needs to be exchanged to a specific Color of the Scenario
-            
-            visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
+
+            if (visualizer.Scenario != null)
+                visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
         }
 
         /// <summary>
@@ -125,6 +126,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         public GraphVisualiser()
         {
             InitializeComponent();
+            
         }
         
         /// <summary>
@@ -282,11 +284,11 @@ namespace UseCaseAnalyser.GraphVisualiser
             //add node to graph visualiser usecase node list
             mNodes.Add(useCaseNode);
 
-            //resize canvas size (for scrollviewer)
-            if (DrawingCanvas.Width < Canvas.GetLeft(useCaseNode) + ElementWidth)
-                DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
-            if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
-                DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
+            ////resize canvas size (for scrollviewer)
+            //if (DrawingCanvas.Width < Canvas.GetLeft(useCaseNode) + ElementWidth)
+            //    DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
+            //if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
+            //    DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
 
         }
 
@@ -389,18 +391,31 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
+            double maxHeight = 0, maxWidth = 0;
             foreach (FrameworkElement frameworkElement in DrawingCanvas.Children)
             {
                 if (!frameworkElement.Equals(mSelectedElement))
                     continue;
 
+                if (maxHeight < frameworkElement.Height + e.GetPosition(DrawingCanvas).Y - mOffsetElementPosition.Y + 50)
+                    maxHeight = frameworkElement.Height + e.GetPosition(DrawingCanvas).Y - mOffsetElementPosition.Y + 50;
 
-                Canvas.SetTop(frameworkElement, e.GetPosition(this).Y - mOffsetElementPosition.Y);
-                Canvas.SetLeft(frameworkElement, e.GetPosition(this).X - mOffsetElementPosition.X);
+                if (maxWidth < frameworkElement.Width + e.GetPosition(DrawingCanvas).X - mOffsetElementPosition.X + 50)
+                    maxWidth = frameworkElement.Width + e.GetPosition(DrawingCanvas).X - mOffsetElementPosition.X + 50;
+
+                Canvas.SetTop(frameworkElement, e.GetPosition(DrawingCanvas).Y - mOffsetElementPosition.Y);
+                Canvas.SetLeft(frameworkElement, e.GetPosition(DrawingCanvas).X - mOffsetElementPosition.X);
                 UseCaseNode node = frameworkElement as UseCaseNode;
                 if (node != null)
                     node.RenderEdges();
+
             }
+            
+            DrawingCanvas.Height = maxHeight;
+            DrawingCanvas.Width = maxWidth;
+            CanvasScrollViewer.ScrollToRightEnd();
+            CanvasScrollViewer.ScrollToBottom();
+
         }
 
         /// <summary>

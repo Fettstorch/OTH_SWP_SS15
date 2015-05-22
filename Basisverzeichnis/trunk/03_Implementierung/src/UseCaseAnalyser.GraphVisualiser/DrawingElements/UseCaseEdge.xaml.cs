@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using GraphFramework.Interfaces;
+using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
@@ -23,7 +25,13 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             mDestUseCaseNode = dest;
             mSourceUseCaseNode.AddEdge(this);
             mDestUseCaseNode.AddEdge(this);
-            ProcessType = Canvas.GetTop(source) < Canvas.GetTop(dest) ? EdgeProcessType.ForwardEdge : EdgeProcessType.BackwardEdge;
+
+            if(source.Node.Attributes.Any(attribute =>
+                    attribute.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]) &&
+                    attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)))
+                ProcessType = EdgeProcessType.BackwardEdge;
+            else
+                ProcessType = EdgeProcessType.ForwardEdge;               
 
             Stroke = mDrawingBrush = new SolidColorBrush(Colors.Black);
             StrokeThickness = 1.5;
