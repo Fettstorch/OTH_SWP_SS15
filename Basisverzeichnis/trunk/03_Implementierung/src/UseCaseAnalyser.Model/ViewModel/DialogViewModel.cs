@@ -44,19 +44,7 @@ namespace UseCaseAnalyser.Model.ViewModel
             mView = view;
         }
 
-        /// <summary>
-        /// all use cases which are currently saved (have been read by the word importer)
-        /// </summary>
-        public IEnumerable<UseCaseGraph> UseCaseGraphs
-        {
-            get { return mMUseCaseGraphs; }
-            private set
-            {
-                mMUseCaseGraphs = value;
-                //  notify gui by fireing property changed
-                OnPropertyChanged();
-            }
-        }
+     
 
         /// <summary>
         /// the currently selected graph from the view --> set via binding
@@ -189,6 +177,20 @@ namespace UseCaseAnalyser.Model.ViewModel
             mView.OpenMessageBox(ex.GetType().Name, string.Format("An error occured:{0}{1}", Environment.NewLine, ex.Message), MessageType.Error);
         }
 
+
+        /// <summary>
+        /// all use cases which are currently saved (have been read by the word importer)
+        /// </summary>
+        public IEnumerable<UseCaseGraph> UseCaseGraphs
+        {
+            get { return mMUseCaseGraphs; }
+            private set
+            {
+                mMUseCaseGraphs = value;
+                //  notify gui by fireing property changed
+                OnPropertyChanged();
+            }
+        }
         #region Property Changed event + invoker to notify gui about changes
         /// <summary>
         /// invoked to notify the gui about changed of properties

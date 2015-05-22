@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Ink;
 using System.Windows.Media;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
@@ -120,9 +119,19 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         private Brush mDrawingBrush;
 
-        public void SetDrawingBrush(Brush newBrush)
+        /// <summary>
+        /// Color for specific Scenario will be set
+        /// </summary>
+        /// <param name="toColorEdges">List of Edges which will be colored</param>
+        /// <param name="newBrush">Brush which will be used to highlite the specific scenario</param>
+        public void SetDrawingBrush(IEnumerable<IEdge> toColorEdges, Brush newBrush)
         {
             NodeBorder.BorderBrush = mDrawingBrush = newBrush;
+            IEnumerable<IEdge> colorEdges = toColorEdges as IList<IEdge> ?? toColorEdges.ToList();
+            for (int i = 0; i < mEdges.Count(); i++)
+            {
+                mEdges[i].SetDrawingBrush(colorEdges.Contains(mEdges[i].Edge) ? newBrush : Brushes.Black);
+            }
         }
 
 

@@ -182,11 +182,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         }
 
-        
+        /// <summary>
+        /// Set new Brush Color to this Edge
+        /// </summary>
+        /// <param name="newBrush">future color which will be used for drawing</param>
         public void SetDrawingBrush(Brush newBrush)
         {
-            Stroke = mDrawingBrush = newBrush;
-            RecalcBezier();
+            if (!(Equals(newBrush, mDrawingBrush)))
+            {
+                Stroke = mDrawingBrush = newBrush;
+                RecalcBezier(); 
+            }
+
         }
 
         #region DockedStatus enum

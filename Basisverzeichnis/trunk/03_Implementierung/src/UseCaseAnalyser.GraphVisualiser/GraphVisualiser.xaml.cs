@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.GraphVisualiser.DrawingElements;
 using UseCaseAnalyser.Model.Model;
@@ -81,6 +82,10 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             GraphVisualiser visualizer = (GraphVisualiser)d;
+
+            //TODO needs to be exchanged to a specific Color of the Scenario
+            
+            visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
         }
 
         /// <summary>
@@ -283,6 +288,22 @@ namespace UseCaseAnalyser.GraphVisualiser
             if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
                 DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
 
+        }
+
+        /// <summary>
+        /// Color for specific Scenario will be set
+        /// </summary>
+        /// <param name="sourceGraph">Scenario which will be highlited</param>
+        /// <param name="futureBrush">Brush which will be used to highlite the specific scenario</param>
+        private void SetBrushForScenario(IGraph sourceGraph, Brush futureBrush)
+        {
+            foreach (UseCaseNode useCaseNode in mNodes)
+            {
+                if(sourceGraph.Nodes.Contains(useCaseNode.Node))
+                    useCaseNode.SetDrawingBrush(sourceGraph.Edges,futureBrush);
+                else
+                    useCaseNode.SetDrawingBrush(sourceGraph.Edges, Brushes.Black);
+            }
         }
 
         /// <summary>

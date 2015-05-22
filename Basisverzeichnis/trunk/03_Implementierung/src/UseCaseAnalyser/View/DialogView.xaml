@@ -43,7 +43,8 @@
         </Menu>
         
         <graphVisualiser:GraphVisualiser Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Name="UseCaseGraphViewer" 
-                                         UseCase="{Binding ElementName=UseCases, Path=SelectedItem, Mode=OneWay}"/>
+                                         UseCase="{Binding ElementName=UseCases, Path=SelectedItem, Mode=OneWay}"
+                                         Scenario="{Binding ElementName=Scenarios, Path=SelectedItem, Mode=OneWay}"/>
         <!--<view:DummyGraphVisualizer x:Name="GraphVisualizer" Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" 
                                    UseCase="{Binding ElementName=UseCases, Path=SelectedItem, Mode=OneWay}"
                                    Scenario="{Binding ElementName=Scenarios, Path=SelectedItem, Mode=OneWay}" />-->
