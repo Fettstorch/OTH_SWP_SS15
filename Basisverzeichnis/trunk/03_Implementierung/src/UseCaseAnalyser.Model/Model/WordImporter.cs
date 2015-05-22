@@ -113,6 +113,8 @@ namespace UseCaseAnalyser.Model.Model
             }
 
             WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("LOG", numberOfUseCases + " Use Cases successfully imported!", Report.Entrytype.LOG));
+            doc.Close();
+            doc.Dispose();
 
             return useCaseList; 
         }
