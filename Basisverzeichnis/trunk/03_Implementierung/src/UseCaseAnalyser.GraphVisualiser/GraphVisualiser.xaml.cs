@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using GraphFramework.Interfaces;
+using LogManager;
 using UseCaseAnalyser.GraphVisualiser.DrawingElements;
 using UseCaseAnalyser.Model.Model;
 
@@ -84,9 +85,12 @@ namespace UseCaseAnalyser.GraphVisualiser
             GraphVisualiser visualizer = (GraphVisualiser)d;
 
             //TODO needs to be exchanged to a specific Color of the Scenario
-
+            
+            IAttribute nameAttribute = visualizer.Scenario.Attributes.FirstOrDefault(attr => attr.Name=="Name");
+            if (nameAttribute != null)
+                LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
             if (visualizer.Scenario != null)
-                visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
+            visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
         }
 
         /// <summary>
@@ -103,16 +107,31 @@ namespace UseCaseAnalyser.GraphVisualiser
             GraphVisualiser visualizer = (GraphVisualiser)d;
             visualizer.Clear();
 
+            IAttribute nameAttribute = visualizer.UseCase.Attributes.FirstOrDefault(attr => attr.Name == "Name");
+            if (nameAttribute != null)
+                LoggingFunctions.Trace("UseCase : " + nameAttribute.Value + " was selected.");
+
+            //  REDRAW (NEW GRAPH)
             try
             {
-                //  REDRAW (NEW GRAPH)
                 visualizer.VisualiseNodes();
+            }
+            catch
+            {
+                LoggingFunctions.Error("Error while calculating visualisation of use case nodes occured.");
+                throw;
+            }
+
+            try
+            {
                 visualizer.VisualiseEdges();
             }
             catch
             {
-                //Todo Log
+                LoggingFunctions.Error("Error while calculating visualisation of use case egdes occured.");
+                throw;
             }
+
 
             visualizer.GraphElement = (IGraphElement)e.NewValue;
             
@@ -126,7 +145,6 @@ namespace UseCaseAnalyser.GraphVisualiser
         public GraphVisualiser()
         {
             InitializeComponent();
-            
         }
         
         /// <summary>
@@ -185,7 +203,9 @@ namespace UseCaseAnalyser.GraphVisualiser
                                             ((string) attr.Value).Equals(results[0]))));
                         break;
                     default:
-                        throw new InvalidOperationException("Extraction of index failed.");
+                        InvalidOperationException invalidOperationException = new InvalidOperationException(@"Extraction of node index failed. Node position can not be determined.");
+                        LoggingFunctions.Exception(invalidOperationException);
+                        throw invalidOperationException;
                 }
             }
         }
@@ -215,7 +235,12 @@ namespace UseCaseAnalyser.GraphVisualiser
                 }
 
                 if (firstNode == null || secondNode == null)
-                    throw new InvalidOperationException("Edge could not be added, because at least one node does not exist in GraphVisualiser.");
+                {
+                    InvalidOperationException invalidOperationException = new InvalidOperationException(@"Edge could not be added, because at least one node does not exist in GraphVisualiser.");
+                    LoggingFunctions.Exception(invalidOperationException);
+                    throw invalidOperationException;
+                }
+
 
                 AddEdge(firstNode, secondNode, ucEdge);
             }
@@ -301,10 +326,8 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             foreach (UseCaseNode useCaseNode in mNodes)
             {
-                if(sourceGraph.Nodes.Contains(useCaseNode.Node))
-                    useCaseNode.SetDrawingBrush(sourceGraph.Edges,futureBrush);
-                else
-                    useCaseNode.SetDrawingBrush(sourceGraph.Edges, Brushes.Black);
+                useCaseNode.SetDrawingBrush(sourceGraph.Edges,
+                    sourceGraph.Nodes.Contains(useCaseNode.Node) ? futureBrush : Brushes.Black);
             }
         }
 
@@ -425,8 +448,12 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <param name="e">GraphVisualiser_OnMouseUp mouse button event arguments.</param>
         private void GraphVisualiser_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (mSelectedElement != null)
-            {
+            if (mSelectedElement == null) 
+                return;
+            
+
+            // ReSharper disable once LoopCanBePartlyConvertedToQuery
+            //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
                 foreach (FrameworkElement element in DrawingCanvas.Children)
                 {
                     if (!element.Equals(mSelectedElement))
@@ -440,7 +467,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                     break;
                 }
             }
-        }
+
         #endregion
        
     }
