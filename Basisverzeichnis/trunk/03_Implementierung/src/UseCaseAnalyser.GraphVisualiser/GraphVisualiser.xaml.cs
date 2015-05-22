@@ -437,8 +437,10 @@ namespace UseCaseAnalyser.GraphVisualiser
             
             DrawingCanvas.Height = maxHeight;
             DrawingCanvas.Width = maxWidth;
-            CanvasScrollViewer.ScrollToRightEnd();
-            CanvasScrollViewer.ScrollToBottom();
+            if (Canvas.GetLeft(mSelectedElement) + 300 > DrawingCanvas.Width)
+                CanvasScrollViewer.ScrollToRightEnd();
+            if (Canvas.GetTop(mSelectedElement) + 300 > DrawingCanvas.Height)
+                CanvasScrollViewer.ScrollToBottom();
 
         }
 
