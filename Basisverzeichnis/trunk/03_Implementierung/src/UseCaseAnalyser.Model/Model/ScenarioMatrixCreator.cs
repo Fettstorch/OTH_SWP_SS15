@@ -53,7 +53,56 @@ namespace UseCaseAnalyser.Model.Model
 
         private static void CreateScenario(INode startNode, IGraph currentScenarion, IEnumerable<INode> endNodes, ref IEnumerable<IGraph> scenarios)
         {
+
+
             return;
+        }
+
+        private static List<IGraph> CreateScenario(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
+        {
+            List<IGraph> retScenario = new List<IGraph>();
+            UseCaseGraph internalGraph = new UseCaseGraph(useCaseGraph.Attributes.ToArray());
+           
+            if (existingScenario != null)
+                internalGraph.AddGraph(existingScenario);
+            
+            if (!useCaseGraph.Nodes.Contains(currentNode))
+                return retScenario;
+
+            if (!internalGraph.Nodes.Contains(currentNode))
+                internalGraph.AddNode(currentNode);
+
+            //TODO atribute needs to be checked
+            //if (currentNode.Attributes.EndNote)
+            //{
+            //    retScenario.Add(internalGraph);
+            //    return retScenario;
+            //}
+
+            IEnumerable<IEdge> edges = internalGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
+            IList<IEdge> edgeList= edges as IList<IEdge> ?? edges.ToList();
+            
+            for (int i = 0; i < edgeList.Count(); i++)
+            {
+                if (!internalGraph.Edges.Contains(edgeList[i]))
+                {
+                    //TODO this atribute needs to be implemented by the word importer for the direction of the edge
+                    //if(! edgesList[i].SourceNode)
+                    // continue;
+                    INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node1 : edgeList[i].Node2;
+                    internalGraph.AddNode(destNode);
+                    internalGraph.AddEdge(currentNode, destNode,edgeList[i].Attributes.ToArray());
+
+                    retScenario.AddRange(CreateScenario(destNode,internalGraph,useCaseGraph));
+
+                    //Remove last node 
+                    internalGraph.RemoveNode(destNode);
+                }
+
+            }
+
+            return retScenario;
+
         }
 
         /// <summary>
@@ -74,5 +123,8 @@ namespace UseCaseAnalyser.Model.Model
             //  EMPTY ENUMERABLE SO THE VIEW CAN BE TESTED WITHOUT CRASHES
             return Enumerable.Empty<IGraph>();
         }
+
+
+
     }
 }
