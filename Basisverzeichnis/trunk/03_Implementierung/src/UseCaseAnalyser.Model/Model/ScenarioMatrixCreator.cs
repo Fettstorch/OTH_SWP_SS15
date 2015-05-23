@@ -6,8 +6,21 @@ using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Model.Model
 {
-    public static class ScenarioMatrixCreator
+    [Serializable()]
+    public class SourceNodeNotFoundException : System.Exception
     {
+        public SourceNodeNotFoundException() : base() { }
+        public SourceNodeNotFoundException(string message) : base(message) { }
+        public SourceNodeNotFoundException(string message, System.Exception inner) : base(message, inner) { }
+
+        // A constructor is needed for serialization when an
+        // exception propagates from a remoting server to the client. 
+        protected SourceNodeNotFoundException(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) { }
+    }
+
+    public static class ScenarioMatrixCreator
+    {       
         private static INode FindStartingNode(IGraph graph)
         {          
             foreach (INode node in graph.Nodes)
@@ -46,19 +59,26 @@ namespace UseCaseAnalyser.Model.Model
             return endNodes;
         }
 
-        private static IEnumerable<IEdge> GetConnectionsOfNode(IGraph graph, INode node)
+        private static INode FindSourceNode(IEdge edge)
         {
-            return Enumerable.Empty<IEdge>();
+            //Todo: Im UseCaseGraph/WordImporter muss die Richtung von edges implementiert werden
+            //foreach (INode node in new[] {edge.Node1, edge.Node2})
+            //{
+            //    foreach (IAttribute attribute in node.Attributes)
+            //    {
+            //        if (!attribute.Name.Equals(
+            //            UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Direction]))
+            //            continue;
+            //        if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.SourceNode))
+            //        {
+            //            return node;
+            //        }
+            //    }
+            //}
+            throw new SourceNodeNotFoundException();
         }
 
-        private static void CreateScenario(INode startNode, IGraph currentScenarion, IEnumerable<INode> endNodes, ref IEnumerable<IGraph> scenarios)
-        {
-
-
-            return;
-        }
-
-        private static List<IGraph> CreateScenario(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
+        private static List<IGraph> CreateScenario(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph, params INode[] endNodes)
         {
             List<IGraph> retScenario = new List<IGraph>();
             UseCaseGraph internalGraph = new UseCaseGraph(useCaseGraph.Attributes.ToArray());
@@ -72,12 +92,11 @@ namespace UseCaseAnalyser.Model.Model
             if (!internalGraph.Nodes.Contains(currentNode))
                 internalGraph.AddNode(currentNode);
 
-            //TODO atribute needs to be checked
-            //if (currentNode.Attributes.EndNote)
-            //{
-            //    retScenario.Add(internalGraph);
-            //    return retScenario;
-            //}
+            if (endNodes.Contains(currentNode))
+            {
+                retScenario.Add(internalGraph);
+                return retScenario;
+            }
 
             IEnumerable<IEdge> edges = internalGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
             IList<IEdge> edgeList= edges as IList<IEdge> ?? edges.ToList();
@@ -86,14 +105,14 @@ namespace UseCaseAnalyser.Model.Model
             {
                 if (!internalGraph.Edges.Contains(edgeList[i]))
                 {
-                    //TODO this atribute needs to be implemented by the word importer for the direction of the edge
-                    //if(! edgesList[i].SourceNode)
-                    // continue;
-                    INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node1 : edgeList[i].Node2;
+                    if(! currentNode.Equals(FindSourceNode(edgeList[i])))
+                     continue;
+                    //Todo: Patrick please check if this is now correct, the order of the Nodes was the other way round before
+                    INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node2 : edgeList[i].Node1; 
                     internalGraph.AddNode(destNode);
                     internalGraph.AddEdge(currentNode, destNode,edgeList[i].Attributes.ToArray());
 
-                    retScenario.AddRange(CreateScenario(destNode,internalGraph,useCaseGraph));
+                    retScenario.AddRange(CreateScenario(destNode,internalGraph,useCaseGraph, endNodes));
 
                     //Remove last node 
                     internalGraph.RemoveNode(destNode);
@@ -106,19 +125,17 @@ namespace UseCaseAnalyser.Model.Model
         }
 
         /// <summary>
-        /// creates the scenarios from a use case graph
+        /// Creates all scenarios from a Use-Case graph.
         /// </summary>
-        /// <param name="useCaseGraph">use case graph to get its scenarios from</param>
+        /// <param name="useCaseGraph">Use-Case graph to get its scenarios from</param>
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
         public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
-        {
-            IEnumerable<IGraph> allScenarios = new List<IGraph>();
-
+        {           
             INode startNode = FindStartingNode(useCaseGraph);
 
             IEnumerable<INode> endNodes = FindEndNodes(useCaseGraph);
 
-            CreateScenario(startNode, null, endNodes, ref allScenarios);
+            IEnumerable<IGraph> allScenarios = CreateScenario(startNode, new Graph(), useCaseGraph, endNodes.ToArray());
             
             //  EMPTY ENUMERABLE SO THE VIEW CAN BE TESTED WITHOUT CRASHES
             return Enumerable.Empty<IGraph>();
