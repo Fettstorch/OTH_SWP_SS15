@@ -24,7 +24,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             //initalize member
             LblIndex.Content = node.Attributes.First(attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value;
             Node = node;
-            mDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
+            mUnselectDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
         }
 
         /// <summary>
@@ -77,13 +77,13 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public int GetEdgeIndex(UseCaseEdge sourceEdge)
         {
             UseCaseEdge.DockedStatus currentDockedStatus = sourceEdge.mSourceUseCaseNode.Equals(this)
-                ? sourceEdge.StatusSourceElement
-                : sourceEdge.StatusDestElement;
+                ? sourceEdge.DockPosSourceElement
+                : sourceEdge.DockPosDestElement;
 
             for (int i = 0, index = 1; i < mEdges.Count; i++)
             {
-                if (mEdges[i].mSourceUseCaseNode.Equals(this) && mEdges[i].StatusSourceElement == currentDockedStatus ||
-                    mEdges[i].mDestUseCaseNode.Equals(this) && mEdges[i].StatusDestElement == currentDockedStatus)
+                if (mEdges[i].mSourceUseCaseNode.Equals(this) && mEdges[i].DockPosSourceElement == currentDockedStatus ||
+                    mEdges[i].mDestUseCaseNode.Equals(this) && mEdges[i].DockPosDestElement == currentDockedStatus)
                 {
                     if (sourceEdge.Equals(mEdges[i]))
                         return index;
@@ -93,13 +93,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             return 0;
         }
 
+        /// <summary>
+        /// Counts the amount of Edges in depending of the docking status
+        /// </summary>
+        /// <param name="sourceEdge">Elements will be counted by the position of this element </param>
+        /// <returns>amount of Edges at the same docking status of this node</returns>
         public int GetCountOfEdges(UseCaseEdge sourceEdge)
         {
             int index = 1;
 
             UseCaseEdge.DockedStatus currentDockedStatus = sourceEdge.mSourceUseCaseNode.Equals(this)
-                ? sourceEdge.StatusSourceElement
-                : sourceEdge.StatusDestElement;
+                ? sourceEdge.DockPosSourceElement
+                : sourceEdge.DockPosDestElement;
 
 
             // ReSharper disable once LoopCanBeConvertedToQuery
@@ -107,8 +112,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             foreach (UseCaseEdge useCaseEdge in mEdges)
             {
                 if (useCaseEdge.mSourceUseCaseNode.Equals(this) &&
-                    useCaseEdge.StatusSourceElement == currentDockedStatus ||
-                    useCaseEdge.mDestUseCaseNode.Equals(this) && useCaseEdge.StatusDestElement == currentDockedStatus)
+                    useCaseEdge.DockPosSourceElement == currentDockedStatus ||
+                    useCaseEdge.mDestUseCaseNode.Equals(this) && useCaseEdge.DockPosDestElement == currentDockedStatus)
                 {
                     index++;
                 }
@@ -116,8 +121,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             return index;
         }
 
-
-        private Brush mDrawingBrush;
+        /// <summary>
+        /// Brush which will be displayed if the element is not selected
+        /// </summary>
+        private Brush mUnselectDrawingBrush;
 
         /// <summary>
         /// Color for specific Scenario will be set
@@ -126,7 +133,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// <param name="newBrush">Brush which will be used to highlite the specific scenario</param>
         public void SetDrawingBrush(IEnumerable<IEdge> toColorEdges, Brush newBrush)
         {
-            NodeBorder.BorderBrush = mDrawingBrush = newBrush;
+            NodeBorder.BorderBrush = mUnselectDrawingBrush = newBrush;
             IEnumerable<IEdge> colorEdges = toColorEdges as IList<IEdge> ?? toColorEdges.ToList();
             for (int i = 0; i < mEdges.Count(); i++)
             {
@@ -134,18 +141,27 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             }
         }
 
-
+        /// <summary>
+        /// Select this Element
+        /// </summary>
         public void Select()
         {
             Selected = true;
             NodeBorder.BorderBrush = Brushes.Orange;
         }
-
+        
+        /// <summary>
+        /// Unselect this Element
+        /// </summary>
         public void Unselect()
         {
             Selected = false;
-            NodeBorder.BorderBrush = mDrawingBrush;
+            NodeBorder.BorderBrush = mUnselectDrawingBrush;
         }
+
+        /// <summary>
+        /// Switch selection status of this element
+        /// </summary>
         public void ChangeSelection()
         {
             if (Selected)
@@ -153,12 +169,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             else
                 Select();
         }
-        public IGraphElement CurrentElement
-        {
-            get
-            {
-                return Node;
-            }
-        }
+        /// <summary>
+        /// Reference to the Element in the Graph
+        /// </summary>
+        public IGraphElement CurrentElement { get { return Node; } }
     }
 }

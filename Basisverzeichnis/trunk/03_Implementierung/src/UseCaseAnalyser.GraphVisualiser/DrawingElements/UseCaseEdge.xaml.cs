@@ -8,24 +8,38 @@ using UseCaseAnalyser.Model.Model;
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
     /// <summary>
-    ///     Interaction logic for UseCaseEdge.xaml
+    /// Interaction logic for UseCaseEdge.xaml
     /// </summary>
     internal partial class UseCaseEdge : ISelectableObject
     {
+        /// <summary>
+        /// Reference of destination visual Use Case Node 
+        /// </summary>
         public readonly UseCaseNode mDestUseCaseNode;
+        /// <summary>
+        /// Reference of source visual Use Case Node
+        /// </summary>
         public readonly UseCaseNode mSourceUseCaseNode;
       
         #region constructors
-
+        /// <summary>
+        /// Creates a new Instance of an visual presenter of an Use Case Edge
+        /// </summary>
+        /// <param name="source">Source Use Node</param>
+        /// <param name="dest">Destination Use Case Node</param>
+        /// <param name="edge">Reference to the Edge in the Graph</param>
         public UseCaseEdge(UseCaseNode source, UseCaseNode dest, IEdge edge)
         {
             InitializeComponent();
             Edge = edge;
             mSourceUseCaseNode = source;
             mDestUseCaseNode = dest;
+            //Add Edge Reference to visual UseCaseNodes
             mSourceUseCaseNode.AddEdge(this);
             mDestUseCaseNode.AddEdge(this);
 
+            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+            // [Patrick Schießl] Better readable with if statement
             if(source.Node.Attributes.Any(attribute =>
                     attribute.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]) &&
                     attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)))
@@ -33,8 +47,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             else
                 ProcessType = EdgeProcessType.ForwardEdge;               
 
-            Stroke = mDrawingBrush = new SolidColorBrush(Colors.Black);
+            //Set properties for visual appearience
+            Stroke = mUnselectDrawingBrush = new SolidColorBrush(Colors.Black);
             StrokeThickness = 1.5;
+            //This geometry will represent an arrow at the end of this edge
             EndCap = Geometry.Parse("M0,0 L6,-6 L6,6 z");
 
             RecalcBezier();
@@ -42,85 +58,89 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         #endregion
 
+        /// <summary>
+        /// Reference to the Edge in the Graph
+        /// </summary>
         public IEdge Edge { get; private set; }
 
+        /// <summary>
+        /// Recaclulation of the Bezier Curve and redraw the Edge 
+        /// </summary>
         public void RecalcBezier()
         {
+            //Set Start- and End-Position of Edge depending on the Position of the Edges
             switch (ProcessType)
             {
                 case EdgeProcessType.ForwardEdge:
                     //Source node over destination node
                     if (Canvas.GetTop(mSourceUseCaseNode) + mSourceUseCaseNode.Height < Canvas.GetTop(mDestUseCaseNode))
                     {
-                        StatusSourceElement = DockedStatus.Bottom;
-                        StatusDestElement = DockedStatus.Top;
+                        DockPosSourceElement = DockedStatus.Bottom;
+                        DockPosDestElement = DockedStatus.Top;
                     }
                     //Source node under destination node
                     else if (Canvas.GetTop(mDestUseCaseNode) + mDestUseCaseNode.Height <
                              Canvas.GetTop(mSourceUseCaseNode))
                     {
-                        StatusSourceElement = DockedStatus.Top;
-                        StatusDestElement = DockedStatus.Bottom;
+                        DockPosSourceElement = DockedStatus.Top;
+                        DockPosDestElement = DockedStatus.Bottom;
                     }
                     //Source node left of destination node
                     else if (Canvas.GetLeft(mSourceUseCaseNode) + mSourceUseCaseNode.Width <
                              Canvas.GetLeft(mDestUseCaseNode))
                     {
-                        StatusSourceElement = DockedStatus.Right;
-                        StatusDestElement = DockedStatus.Left;
+                        DockPosSourceElement = DockedStatus.Right;
+                        DockPosDestElement = DockedStatus.Left;
                     }
                     //Source node right of destination node
                     else if (Canvas.GetLeft(mSourceUseCaseNode) >
                              Canvas.GetLeft(mDestUseCaseNode) + mDestUseCaseNode.Width)
                     {
-                        StatusSourceElement = DockedStatus.Left;
-                        StatusDestElement = DockedStatus.Right;
+                        DockPosSourceElement = DockedStatus.Left;
+                        DockPosDestElement = DockedStatus.Right;
                     }
                     break;
                 case EdgeProcessType.BackwardEdge:
                     if (Canvas.GetLeft(mSourceUseCaseNode) + mDestUseCaseNode.Width < Canvas.GetLeft(mDestUseCaseNode))
                     {
-                        StatusSourceElement = DockedStatus.Right;
-                        StatusDestElement = DockedStatus.Left;
-
+                        DockPosSourceElement = DockedStatus.Right;
+                        DockPosDestElement = DockedStatus.Left;
                     }
                     else
                     {
-                        StatusSourceElement = DockedStatus.Right;
-                        StatusDestElement = DockedStatus.Right;
+                        DockPosSourceElement = DockedStatus.Right;
+                        DockPosDestElement = DockedStatus.Right;
                     }
 
                     break;
             }
+            // Calculate Start and End Position of the capped line depending on the amount of Lines 
+            // which are already exist with the same dockedstatus.
             int indexStartElement = mSourceUseCaseNode.GetEdgeIndex(this);
             int indexDestElement = mDestUseCaseNode.GetEdgeIndex(this);
             int amountIndexStart = mSourceUseCaseNode.GetCountOfEdges(this);
             int amountIndexEnd = mDestUseCaseNode.GetCountOfEdges(this);
 
-            PathGeometry pthGeometry = new PathGeometry();
-            PathFigureCollection pthFigureCollection = new PathFigureCollection();
-            PathSegmentCollection myPathSegmentCollection = new PathSegmentCollection();
+
             BezierSegment bzSeg = new BezierSegment();
             PathFigure pthFigure = new PathFigure();
 
 
             Point startpoint;
             Point endpoint;
-            switch (StatusSourceElement)
+            switch (DockPosSourceElement)
             {
                 case DockedStatus.Top:
                 case DockedStatus.Bottom:
-                    startpoint =
-                        new Point(
+                    startpoint = new Point(
                             Canvas.GetLeft(mSourceUseCaseNode) +
                             (mSourceUseCaseNode.Width/amountIndexStart)*indexStartElement,
                             Canvas.GetTop(mSourceUseCaseNode));
-                    endpoint =
-                        new Point(
+                    endpoint = new Point(
                             Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
                             Canvas.GetTop(mDestUseCaseNode));
-                    double heightStart = StatusSourceElement == DockedStatus.Bottom ? mSourceUseCaseNode.Height : 0;
-                    double heightEnd = StatusDestElement == DockedStatus.Bottom ? mDestUseCaseNode.Height : 0;
+                    double heightStart = DockPosSourceElement == DockedStatus.Bottom ? mSourceUseCaseNode.Height : 0;
+                    double heightEnd = DockPosDestElement == DockedStatus.Bottom ? mDestUseCaseNode.Height : 0;
 
                     pthFigure.StartPoint = new Point(startpoint.X, startpoint.Y + heightStart);
                     bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
@@ -130,8 +150,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
                 case DockedStatus.Right:
                 case DockedStatus.Left:
-                    double widthStart = StatusSourceElement == DockedStatus.Right ? mSourceUseCaseNode.Width : 0;
-                    double widthEnd = StatusDestElement == DockedStatus.Right ? mDestUseCaseNode.Width : 0;
+                    double widthStart = DockPosSourceElement == DockedStatus.Right ? mSourceUseCaseNode.Width : 0;
+                    double widthEnd = DockPosDestElement == DockedStatus.Right ? mDestUseCaseNode.Width : 0;
 
                     startpoint = new Point(Canvas.GetLeft(mSourceUseCaseNode) + widthStart,
                         Canvas.GetTop(mSourceUseCaseNode) +
@@ -148,7 +168,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     {
                         double resultEndPosY;
 
-                        if (StatusDestElement == DockedStatus.Right &&
+                        if (DockPosDestElement == DockedStatus.Right &&
                             startpoint.Y - mSourceUseCaseNode.Height / 2 < endpoint.Y + mDestUseCaseNode.Height / 2)
                         {
                             if (startpoint.Y > endpoint.Y)
@@ -159,7 +179,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         else
                         {
                             resultEndPosY = endpoint.Y;
-                         }
+                        }
 
                         bzSeg.Point1 = new Point(startpoint.X + (mSourceUseCaseNode.Width / 2), startpoint.Y);
                         bzSeg.Point2 = new Point(startpoint.X + (mDestUseCaseNode.Width / 2), resultEndPosY);
@@ -167,27 +187,20 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     }
                     else
                     {
-                       
                         bzSeg.Point1 = new Point(startpoint.X + middlePos , startpoint.Y);
                         bzSeg.Point2 = new Point(startpoint.X + middlePos , endpoint.Y);
-                   
                     }
                     bzSeg.Point3 = endpoint;
                     break;
             }
 
-            myPathSegmentCollection.Clear();
-            myPathSegmentCollection.Add(bzSeg);
-            pthFigure.Segments = myPathSegmentCollection;
-            pthFigureCollection.Clear();
-            pthFigureCollection.Add(pthFigure);
+            if (LinePath == null)
+                LinePath = new PathGeometry();
 
-            pthGeometry.Figures = pthFigureCollection;
-
-            LinePath = pthGeometry;
-
-
-
+            //Exchange existing Geometry of the Capped Line 
+            pthFigure.Segments.Add(bzSeg);
+            LinePath.Figures.Clear();
+            LinePath.Figures.Add(pthFigure);
         }
 
         /// <summary>
@@ -196,16 +209,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// <param name="newBrush">future color which will be used for drawing</param>
         public void SetDrawingBrush(Brush newBrush)
         {
-            if (!(Equals(newBrush, mDrawingBrush)))
+            if (!(Equals(newBrush, mUnselectDrawingBrush)))
             {
-                Stroke = mDrawingBrush = newBrush;
+                Stroke = mUnselectDrawingBrush = newBrush;
                 RecalcBezier(); 
             }
 
         }
 
         #region DockedStatus enum
-
+        /// <summary>
+        /// Docked Status of Capped Line on Use Case Node
+        /// </summary>
         public enum DockedStatus
         {
             Top,
@@ -217,7 +232,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         #endregion
 
         #region EdgeProcessType enum
-
+        /// <summary>
+        /// Type of UseCaseEdge which will be displayed
+        /// </summary>
         public enum EdgeProcessType
         {
             ForwardEdge,
@@ -228,18 +245,36 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
         #region Properties
 
-    
+        /// <summary>
+        /// Selected Status of the Element
+        /// </summary>
         public bool Selected { get; private set; }
         
-        internal DockedStatus StatusSourceElement { get; set; }
-        internal DockedStatus StatusDestElement { get; set; }
+        /// <summary>
+        /// Dock Position Capped Line on the Source Element
+        /// </summary>
+        internal DockedStatus DockPosSourceElement { get; set; }
+
+        /// <summary>
+        /// Dock Position Capped Line on the Destination Element
+        /// </summary>
+        internal DockedStatus DockPosDestElement { get; set; }
+
+        /// <summary>
+        /// Process Type of Edge which will be displayed
+        /// </summary>
         internal EdgeProcessType ProcessType { get; set; }
         
-        private Brush mDrawingBrush;
+        /// <summary>
+        /// Brush which will be displayed if the element is not selected
+        /// </summary>
+        private Brush mUnselectDrawingBrush;
        
         #endregion
      
-
+        /// <summary>
+        /// Select this Element
+        /// </summary>
         public void Select()
         {
             Selected = true;
@@ -247,14 +282,19 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             RecalcBezier();
         }
 
+        /// <summary>
+        /// Unselect this Element
+        /// </summary>
         public void Unselect()
         {
             Selected = false;
-            Stroke = mDrawingBrush;
+            Stroke = mUnselectDrawingBrush;
             RecalcBezier();
         }
 
-
+        /// <summary>
+        /// Switch selection status of this element
+        /// </summary>
         public void ChangeSelection()
         {
             if(Selected)
@@ -263,13 +303,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                 Select();
         }
 
-
-        public IGraphElement CurrentElement
-        {
-            get
-            {
-                return Edge;
-            }
-        }
+        /// <summary>
+        /// Reference to the Element in the Graph
+        /// </summary>
+        public IGraphElement CurrentElement { get{ return Edge; } }
     }
 }
