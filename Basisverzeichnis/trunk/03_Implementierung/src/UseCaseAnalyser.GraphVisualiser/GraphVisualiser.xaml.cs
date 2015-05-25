@@ -111,6 +111,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             GraphVisualiser visualizer = (GraphVisualiser)d;
             visualizer.Clear();
+            visualizer.GraphElement = (IGraphElement)e.NewValue;
             if (visualizer.UseCase == null)
             {
                 LoggingFunctions.Trace("UseCase unselected.");
@@ -142,7 +143,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
 
 
-            visualizer.GraphElement = (IGraphElement)e.NewValue;
+          
                 
        
         }
