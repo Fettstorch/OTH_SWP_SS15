@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using GraphFramework;
@@ -90,7 +93,7 @@ namespace UseCaseAnalyser.Model.Model
             WordprocessingDocument doc;
             try
             {
-                doc = WordprocessingDocument.Open(file.FullName, false);
+                doc = FixedOpen(file.FullName, false);
             }
             catch (Exception ex)
             {
@@ -405,6 +408,127 @@ namespace UseCaseAnalyser.Model.Model
             }
 
             return true;
-        }       
+        }
+
+        /// <summary>
+        /// Workaround for OpenXML bug regarding Invalid hyperlinks exception (thrown by System.IO.Packaging)
+        /// source: http://openxmldeveloper.org/blog/b/openxmldeveloper/archive/2014/08/19/handling-invalid-hyperlinks-openxmlpackageexception-in-the-open-xml-sdk.aspx
+        /// Check after first try of opening whether Invalid hyperlink exception was thrown. If it was thrown, create a copy of the document and remove invalid hyperlinks.
+        /// Afterwards try to read content of fixed document. If there are still opening errors these exceptions will be forwarded otherwise a WordprocessingDocument reference
+        /// will be returned.
+        /// </summary>
+        /// <param name="docPath">Path of docuemnt which should be opened.</param>
+        /// <param name="isEditable">Flag for enable editing while open the file.</param>
+        /// <returns>Reference of opened WordprocessingDocument.</returns>
+        private static WordprocessingDocument FixedOpen(string docPath, bool isEditable)
+        {
+            WordprocessingDocument wDoc;
+            try
+            {
+                wDoc = WordprocessingDocument.Open(docPath, isEditable);
+            }
+            catch (Exception e)
+            {
+                //try to fix
+                if (!e.ToString().Contains("Ungültiger URI"))
+                { 
+                    throw;
+                }
+
+                //create copy of corrupted doc file in temp directory
+                //ToDo decide where to create copy
+                String newDocPath = Path.GetTempPath() + Path.GetFileNameWithoutExtension(docPath) + ".docx";
+                FileInfo newDocFileInfo = new FileInfo(newDocPath);
+                if (newDocFileInfo.Exists)
+                    newDocFileInfo.Delete();
+                File.Copy(docPath, newDocPath);
+
+                using (FileStream fs = new FileStream(newDocPath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                {
+                    FixInvalidUri(fs, FixUri);
+                }
+
+                //try it again
+                wDoc = WordprocessingDocument.Open(newDocPath, isEditable);
+            }
+
+            return wDoc;
+        }
+
+        /// <summary>
+        /// Handler method for dealing with broken URIs.
+        /// </summary>
+        /// <param name="brokenUri">Broken URI that should be fixed.</param>
+        /// <returns>Returns a valid (dummy) URI.</returns>
+        private static Uri FixUri(string brokenUri)
+        {
+            return new Uri("http://broken-link/");
+        }
+
+        /// <summary>
+        /// Replaces all invalid URIs from a stream by using invalidUriHandler and writes it back into the stream.
+        /// </summary>
+        /// <param name="fs">Stream that should be checked and fixed regarding invalid URIs.</param>
+        /// <param name="invalidUriHandler">Function that should be called if URI is invalid.</param>
+        private static void FixInvalidUri(Stream fs, Func<string,Uri> invalidUriHandler)
+        {
+            XNamespace relNs = "http://schemas.openxmlformats.org/package/2006/relationships";
+            using (ZipArchive za = new ZipArchive(fs, ZipArchiveMode.Update))
+            {
+                foreach (ZipArchiveEntry entry in za.Entries.ToList())
+                {
+                    if (!entry.Name.EndsWith(".rels"))
+                        continue;
+                    bool replaceEntry = false;
+                    XDocument entryXDoc;
+                    using (Stream entryStream = entry.Open())
+                    {
+                        try
+                        {
+                            entryXDoc = XDocument.Load(entryStream);
+                            if (entryXDoc.Root != null && entryXDoc.Root.Name.Namespace == relNs)
+                            {
+                                IEnumerable<XElement> urisToCheck = entryXDoc
+                                    .Descendants(relNs + "Relationship")
+                                    .Where(r => r.Attribute("TargetMode") != null && (string)r.Attribute("TargetMode") == "External");
+                                foreach (XElement rel in urisToCheck)
+                                {
+                                    string target = (string)rel.Attribute("Target");
+                                    if (target == null) continue;
+                                    //check if URI is invalid
+                                    try
+                                    {
+                                        // ReSharper disable once UnusedVariable
+                                        //[Mathias Schneider] necessary to check if exception will be thrown
+                                        Uri uri = new Uri(target);
+                                    }
+                                    catch (UriFormatException)
+                                    {
+                                        Uri newUri = invalidUriHandler(target);
+                                        rel.Attribute("Target").Value = newUri.ToString();
+                                        replaceEntry = true;
+                                    }
+                                }
+                            }
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+                    }
+                    if (!replaceEntry) continue;
+
+                    string fullName = entry.FullName;
+                    entry.Delete();
+                    ZipArchiveEntry newEntry = za.CreateEntry(fullName);
+                    //write back to entryXDoc
+                    using (StreamWriter writer = new StreamWriter(newEntry.Open()))
+                    using (XmlWriter xmlWriter = XmlWriter.Create(writer))
+                    {
+                        entryXDoc.WriteTo(xmlWriter);
+                    }
+                }
+            }
+        }
     }
 }
