@@ -47,20 +47,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DrawingElements\CappedLine.cs" />
-    <Compile Include="DrawingElements\ISelectableObject.cs" />
+    <Compile Include="DrawingElements\ISelectableGraphElement.cs" />
     <Compile Include="DrawingElements\UseCaseEdge.xaml.cs">
       <DependentUpon>UseCaseEdge.xaml</DependentUpon>
     </Compile>
     <Compile Include="DrawingElements\UseCaseNode.xaml.cs">
       <DependentUpon>UseCaseNode.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GraphVisualiser.xaml.cs">
-      <DependentUpon>GraphVisualiser.xaml</DependentUpon>
+    <Compile Include="UseCaseGraphVisualiser.xaml.cs">
+      <DependentUpon>UseCaseGraphVisualiser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="GraphVisualiser.xaml">
+    <Page Include="UseCaseGraphVisualiser.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -31,7 +31,7 @@
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Interface">
-        <Name>ISelectableObject</Name>
+        <Name>ISelectableGraphElement</Name>
         <Access>Internal</Access>
         <Location left="402" top="281" />
         <Size width="469" height="163" />
@@ -68,7 +68,7 @@
       <Entity type="Class">
         <Name>UseCaseNode</Name>
         <Access>Internal</Access>
-        <Location left="168" top="605" />
+        <Location left="169" top="605" />
         <Size width="394" height="383" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private Brush mDrawingBrush</Member>
@@ -77,22 +77,20 @@
         <Member type="Property">public IGraphElement CurrentElement { get; }</Member>
         <Member type="Property">public INode Node { get; private set; }</Member>
         <Member type="Property">public bool Selected { get; set; }</Member>
-        <Member type="Property">public uint SlotNumber { get; set; }</Member>
-        <Member type="Property">public double YOffset { get; set; }</Member>
         <Member type="Constructor">public UseCaseNode(uint slotNumber, INode node)</Member>
         <Member type="Method">public void AddEdge(UseCaseEdge newEdge)</Member>
         <Member type="Method">public void ChangeSelection()</Member>
         <Member type="Method">public int GetCountOfEdges(UseCaseEdge sourceKante)</Member>
         <Member type="Method">public int GetEdgeIndex(UseCaseEdge sourceKante)</Member>
         <Member type="Method">public void RenderEdges()</Member>
-        <Member type="Method">public void RenderEdgesExceptNode(UseCaseNode notRenderNode)</Member>
+        <Member type="Method">private void RenderEdgesExceptNode(UseCaseNode notRenderNode)</Member>
         <Member type="Method">public void Select()</Member>
         <Member type="Method">public void SetDrawingBrush(Brush newBrush)</Member>
         <Member type="Method">public void Unselect()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
-        <Name>GraphVisualiser</Name>
+        <Name>UseCaseGraphVisualiser</Name>
         <Access>Public</Access>
         <Location left="431" top="1083" />
         <Size width="601" height="451" />
@@ -108,7 +106,7 @@
         <Member type="Property">public IGraphElement GraphElement { get; set; }</Member>
         <Member type="Property">public IGraph Scenario { get; set; }</Member>
         <Member type="Property">public UseCaseGraph UseCase { get; set; }</Member>
-        <Member type="Constructor">public GraphVisualiser()</Member>
+        <Member type="Constructor">public UseCaseGraphVisualiser()</Member>
         <Member type="Method">private void AddEdge(UseCaseNode firstNode, UseCaseNode secondNode, IEdge edge)</Member>
         <Member type="Method">private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)</Member>
         <Member type="Method">private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)</Member>
@@ -168,6 +166,8 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="4" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -180,6 +180,8 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="4" second="3">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -192,24 +194,18 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="5" second="2">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="6" second="2">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="5" second="3">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>

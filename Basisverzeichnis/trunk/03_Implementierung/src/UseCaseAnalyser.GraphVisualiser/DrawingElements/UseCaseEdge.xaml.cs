@@ -10,7 +10,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     /// <summary>
     /// Interaction logic for UseCaseEdge.xaml
     /// </summary>
-    internal partial class UseCaseEdge : ISelectableObject
+    internal partial class UseCaseEdge : ISelectableGraphElement
     {
         /// <summary>
         /// Reference of destination visual Use Case Node 

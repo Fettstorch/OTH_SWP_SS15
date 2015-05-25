@@ -9,12 +9,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
     /// <summary>
     ///     Interaction logic for UseCaseNode.xaml
     /// </summary>
-    internal partial class UseCaseNode : ISelectableObject
+    internal partial class UseCaseNode : ISelectableGraphElement
     {
         private readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
 
         /// <summary>
-        /// Wrapper class for GraphFrameworks's INode which is used to define how a node will be displayed in GraphVisualiser.
+        /// Wrapper class for GraphFrameworks's INode which is used to define how a node will be displayed in UseCaseGraphVisualiser.
         /// </summary>
         /// <param name="node">INode object that will be wrapped by UseCaseNode</param>
         public UseCaseNode(INode node)

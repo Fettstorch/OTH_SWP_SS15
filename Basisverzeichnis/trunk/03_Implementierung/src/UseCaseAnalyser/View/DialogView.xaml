@@ -1,7 +1,7 @@
 ﻿<Window x:Class="UseCaseAnalyser.View.DialogView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:graphVisualiser="clr-namespace:UseCaseAnalyser.GraphVisualiser;assembly=UseCaseAnalyser.GraphVisualiser"
+        xmlns:useCaseGraphVisualiser="clr-namespace:UseCaseAnalyser.GraphVisualiser;assembly=UseCaseAnalyser.GraphVisualiser"
         xmlns:viewModel="clr-namespace:UseCaseAnalyser.Model.ViewModel;assembly=UseCaseAnalyser.Model"
         xmlns:interfaces="clr-namespace:GraphFramework.Interfaces;assembly=GraphFramework"
         xmlns:converters="clr-namespace:UseCaseAnalyser.Converters"
@@ -42,7 +42,7 @@
             </MenuItem>
         </Menu>
         
-        <graphVisualiser:GraphVisualiser Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Name="UseCaseGraphViewer" 
+        <useCaseGraphVisualiser:UseCaseGraphVisualiser Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Name="UseCaseGraphViewer" 
                                          UseCase="{Binding ElementName=UseCases, Path=SelectedItem, Mode=OneWay}"
                                          Scenario="{Binding ElementName=Scenarios, Path=SelectedItem, Mode=OneWay}"/>
         <!--<view:DummyGraphVisualizer x:Name="GraphVisualizer" Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" 

@@ -2,7 +2,7 @@
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
-    internal interface ISelectableObject
+    internal interface ISelectableGraphElement
     {
         bool Selected { get;}
         void Select();

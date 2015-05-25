@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UseCaseAnalyser.GraphVisualiser.GraphVisualiser"
+﻿<UserControl x:Class="UseCaseAnalyser.GraphVisualiser.UseCaseGraphVisualiser"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              PreviewMouseLeftButtonUp="GraphVisualiser_OnMouseUp"  MouseMove="GraphVisualiser_OnMouseMove">
