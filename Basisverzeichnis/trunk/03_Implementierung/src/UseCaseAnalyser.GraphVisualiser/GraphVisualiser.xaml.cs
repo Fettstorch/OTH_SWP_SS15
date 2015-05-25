@@ -71,6 +71,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             get { return GetValue(UseCaseProperty) as UseCaseGraph; }
             set { SetValue(UseCaseProperty, value);}
         }
+
         /// <summary>
         /// Property changed evented handler for Scenerio property.
         /// If Scenario property is modified GraphVisualiser will highlight them within the view.
@@ -82,15 +83,19 @@ namespace UseCaseAnalyser.GraphVisualiser
             //  MARK THE NODES WITHIN THE SCENARIO
 
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
-            GraphVisualiser visualizer = (GraphVisualiser)d;
+            GraphVisualiser visualizer = (GraphVisualiser) d;
 
             //TODO needs to be exchanged to a specific Color of the Scenario
-            
-            IAttribute nameAttribute = visualizer.Scenario.Attributes.FirstOrDefault(attr => attr.Name=="Name");
-            if (nameAttribute != null)
-                LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
-            if (visualizer.Scenario != null)
-            visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
+           if (visualizer.Scenario == null)
+            {
+                LoggingFunctions.Trace("Scenario unselected.");
+                return;
+            }
+                IAttribute nameAttribute = visualizer.Scenario.Attributes.FirstOrDefault(attr => attr.Name == "Name");
+                if (nameAttribute != null)
+                    LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
+                if (visualizer.Scenario != null)
+                    visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
         }
 
         /// <summary>
@@ -106,7 +111,11 @@ namespace UseCaseAnalyser.GraphVisualiser
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             GraphVisualiser visualizer = (GraphVisualiser)d;
             visualizer.Clear();
-
+            if (visualizer.UseCase == null)
+            {
+                LoggingFunctions.Trace("UseCase unselected.");
+                return;
+            }
             IAttribute nameAttribute = visualizer.UseCase.Attributes.FirstOrDefault(attr => attr.Name == "Name");
             if (nameAttribute != null)
                 LoggingFunctions.Trace("UseCase : " + nameAttribute.Value + " was selected.");
@@ -134,7 +143,8 @@ namespace UseCaseAnalyser.GraphVisualiser
 
 
             visualizer.GraphElement = (IGraphElement)e.NewValue;
-            
+                
+       
         }
 
         #endregion
