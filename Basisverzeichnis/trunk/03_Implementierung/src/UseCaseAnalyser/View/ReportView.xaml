@@ -12,14 +12,14 @@
         <converters:EntryTypeToColorConverter x:Key="EntryTypeToColorConverter" />
     </Window.Resources>
         <GroupBox Margin="3" Header="Results" Padding="5">
-            <ItemsControl ItemsSource="{Binding Converter={StaticResource ReportToEntriesConverter}}"
+            <ListBox ItemsSource="{Binding Converter={StaticResource ReportToEntriesConverter}}"
                      HorizontalContentAlignment="Stretch">
-                <ItemsControl.ItemTemplate>
+            <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type model:Report+ReportEntry}">
                                 <TextBlock Padding="5" Text="{Binding Path=Content}" ToolTip="{Binding Path=Heading}"
                                            Background="{Binding Path=Type, Converter={StaticResource EntryTypeToColorConverter}}"/>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </GroupBox>
 </Window>

@@ -11,6 +11,9 @@ namespace UseCaseAnalyser.View
     /// </summary>
     public partial class DialogView : IDialogView
     {
+        private ReportView mView;
+
+
         public DialogView()
         {
             InitializeComponent();
@@ -38,8 +41,8 @@ namespace UseCaseAnalyser.View
 
         public void OpenReportResult(Report viewModel)
         {
-            ReportView view = new ReportView(viewModel);
-            view.ShowDialog();
+            mView = new ReportView(viewModel) {Owner = this};
+            mView.ShowDialog();
         }
 
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
