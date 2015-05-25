@@ -25,7 +25,7 @@ namespace UseCaseAnalyser.Converters
 
 
             Brush entryTypeBrush = type.Value == Report.Entrytype.LOG
-                ? Brushes.LightBlue : type.Value == Report.Entrytype.WARNING ? Brushes.LightYellow : Brushes.LightSalmon;
+                ? Brushes.LightGreen : type.Value == Report.Entrytype.WARNING ? Brushes.LightYellow : Brushes.LightSalmon;
 
             return entryTypeBrush;
         }

@@ -110,7 +110,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                     {
                         mView.OpenReportResult(LatestWordImportReport); 
                     }
-                }, o => true, OnError));
+                }, o => true, e => OnError(e, "Das Einlesen der Word Datei ergab einen Fehler.")));
             }
         }
 
@@ -129,7 +129,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                     FileInfo file = mView.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save);
 
                     ScenarioMatrixExporter.ExportScenarioMatrix(SelectedGraph, file);
-                }, o => SelectedGraph != null, OnError));
+                }, o => SelectedGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler.")));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
@@ -148,7 +148,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                 return mOpenLogfile ?? (mOpenLogfile = new AsyncCommand(o =>
                 {
                     Process.Start(logfile);
-                }, o => File.Exists(logfile), OnError));
+                }, o => File.Exists(logfile), e => OnError(e)));
                 //  condtion to run the command (always true)
             }
         }
@@ -166,15 +166,15 @@ namespace UseCaseAnalyser.Model.ViewModel
                 return mOpenReportView ?? (mOpenReportView = new AsyncCommand(o =>
                 {
                     mView.OpenReportResult(LatestWordImportReport);
-                }, o => LatestWordImportReport != null, OnError));
+                }, o => LatestWordImportReport != null, e => OnError(e)));
                 //  condtion to run the command (always true)
             }
         }
 
-        private void OnError(Exception ex)
+        private void OnError(Exception ex, string customText = null)
         {
             LoggingFunctions.Exception(ex);
-            mView.OpenMessageBox(ex.GetType().Name, string.Format("An error occured:{0}{1}", Environment.NewLine, ex.Message), MessageType.Error);
+            mView.OpenMessageBox(ex.GetType().Name, string.Format(customText ?? "An error occured:{0}{1}", Environment.NewLine, ex.Message), MessageType.Error);
         }
 
 

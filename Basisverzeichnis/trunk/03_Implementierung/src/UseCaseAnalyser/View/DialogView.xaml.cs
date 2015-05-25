@@ -14,12 +14,21 @@ namespace UseCaseAnalyser.View
         private ReportView mView;
 
 
+        /// <summary>
+        /// creates a new dialog view and sets the data context
+        /// </summary>
         public DialogView()
         {
             InitializeComponent();
             DataContext = new DialogViewModel(this);
         }
 
+        /// <summary>
+        /// opens a file dialog and returns the file
+        /// </summary>
+        /// <param name="filter">filter of the files</param>
+        /// <param name="dialogType">dialog type (open or save)</param>
+        /// <returns>the file which has been selected</returns>
         public FileInfo OpenFileDialog(string filter, FileDialogType dialogType)
         {
             FileDialog dialog = dialogType == FileDialogType.Open ? (FileDialog) new OpenFileDialog() : new SaveFileDialog();
@@ -31,14 +40,24 @@ namespace UseCaseAnalyser.View
             return file;
         }
 
+        /// <summary>
+        /// opens a message box with the given parameters
+        /// </summary>
+        /// <param name="header">header of the message box</param>
+        /// <param name="content">content of the message box</param>
+        /// <param name="messageType">type of the message --> determines the message box icon</param>
         public void OpenMessageBox(string header, string content, MessageType messageType)
         {
             MessageBox.Show(content, header, MessageBoxButton.OK,
                 messageType == MessageType.Error
-                    ? MessageBoxImage.Information
+                    ? MessageBoxImage.Error
                     : messageType == MessageType.Warning ? MessageBoxImage.Warning : MessageBoxImage.Information);
         }
 
+        /// <summary>
+        /// opens the report view
+        /// </summary>
+        /// <param name="viewModel">the report which is used as viewmodel of the report view</param>
         public void OpenReportResult(Report viewModel)
         {
             mView = new ReportView(viewModel) {Owner = this};
