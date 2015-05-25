@@ -1,4 +1,5 @@
 ﻿#region Copyright information
+
 // <summary>
 // <copyright file="UseCaseNode.xaml.cs">Copyright (c) 2015</copyright>
 // 
@@ -9,7 +10,9 @@
 // <branchOfStudy>Industrieinformatik</branchOfStudy>
 // <subject>Software Projekt</subject>
 // </summary>
+
 #endregion
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
@@ -19,10 +22,14 @@ using UseCaseAnalyser.Model.Model;
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
     /// <summary>
-    ///     Interaction logic for UseCaseNode.xaml
+    /// Class for displaying a node as rectangule within a UseCaseGraph. On selection border color changes.
+    /// It contains the node to display as a reference.
     /// </summary>
     internal partial class UseCaseNode : ISelectableGraphElement
     {
+        /// <summary>
+        /// List of UseCaseEdge that either start or end in this UseCaseNode
+        /// </summary>
         private readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
 
         /// <summary>
@@ -34,7 +41,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             InitializeComponent();
 
             //initalize member
-            LblIndex.Content = node.Attributes.First(attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value;
+            LblIndex.Content =
+                node.Attributes.First(
+                    attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]).Value;
             Node = node;
             mUnselectDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
         }
@@ -44,6 +53,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public INode Node { get; private set; }
 
+
+        /// <summary>
+        /// Property to check if UseCaseNode is marked as selected
+        /// </summary>
         public bool Selected { get; private set; }
 
         /// <summary>
@@ -64,7 +77,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         ucEdge.mSourceUseCaseNode.RenderEdges(this);
                 }
                 //check if rendering of notRenderNode should be skipped (otherwise infinite recusive call of this function)
-                else if (Equals(ucEdge.mSourceUseCaseNode, notRenderNode) || Equals(ucEdge.mDestUseCaseNode, notRenderNode))
+                else if (Equals(ucEdge.mSourceUseCaseNode, notRenderNode) ||
+                         Equals(ucEdge.mDestUseCaseNode, notRenderNode))
                     continue;
 
                 ucEdge.RecalcBezier();
@@ -74,15 +88,16 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// <summary>
         /// Add an edge to UseCaseNode if not already contained and nodes is either starting or endpoint of the specified edge.
         /// </summary>
-        /// <param name="newEdge"></param>
+        /// <param name="newEdge">UseCaseEgde that should be added to the UseCaseNode</param>
         public void AddEdge(UseCaseEdge newEdge)
         {
-            if (!mEdges.Contains(newEdge) && (Equals(newEdge.mDestUseCaseNode, this) || Equals(newEdge.mSourceUseCaseNode, this)))
+            if (!mEdges.Contains(newEdge) &&
+                (Equals(newEdge.mDestUseCaseNode, this) || Equals(newEdge.mSourceUseCaseNode, this)))
                 mEdges.Add(newEdge);
         }
 
         /// <summary>
-        /// Return index of specified edge corresponding to its docking status.
+        /// Return index of specified edge corresponding to its DockedStatus.
         /// </summary>
         /// <param name="sourceEdge">Edge for determine index.</param>
         /// <returns>Number of index.</returns>
@@ -94,19 +109,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
             for (int i = 0, index = 1; i < mEdges.Count; i++)
             {
-                if (mEdges[i].mSourceUseCaseNode.Equals(this) && mEdges[i].DockPosSourceElement == currentDockedStatus ||
-                    mEdges[i].mDestUseCaseNode.Equals(this) && mEdges[i].DockPosDestElement == currentDockedStatus)
-                {
-                    if (sourceEdge.Equals(mEdges[i]))
-                        return index;
-                    index++;
-                }
+                if ((!mEdges[i].mSourceUseCaseNode.Equals(this) || mEdges[i].DockPosSourceElement != currentDockedStatus) &&
+                    (!mEdges[i].mDestUseCaseNode.Equals(this) || mEdges[i].DockPosDestElement != currentDockedStatus))
+                    continue;
+                if (sourceEdge.Equals(mEdges[i]))
+                    return index;
+                index++;
             }
             return 0;
         }
 
         /// <summary>
-        /// Counts the amount of Edges in depending of the docking status
+        /// Counts the amount of edges in depending of the docking status
         /// </summary>
         /// <param name="sourceEdge">Elements will be counted by the position of this element </param>
         /// <returns>amount of Edges at the same docking status of this node</returns>
@@ -139,7 +153,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         private Brush mUnselectDrawingBrush;
 
         /// <summary>
-        /// Color for specific Scenario will be set
+        /// Color for specific scenario will be set
         /// </summary>
         /// <param name="toColorEdges">List of Edges which will be colored</param>
         /// <param name="newBrush">Brush which will be used to highlite the specific scenario</param>
@@ -154,16 +168,16 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         }
 
         /// <summary>
-        /// Select this Element
+        /// Select this element
         /// </summary>
         public void Select()
         {
             Selected = true;
             NodeBorder.BorderBrush = Brushes.Orange;
         }
-        
+
         /// <summary>
-        /// Unselect this Element
+        /// Unselect this element
         /// </summary>
         public void Unselect()
         {
@@ -181,9 +195,13 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             else
                 Select();
         }
+
         /// <summary>
-        /// Reference to the Element in the Graph
+        /// Reference to the element in the Graph
         /// </summary>
-        public IGraphElement CurrentElement { get { return Node; } }
+        public IGraphElement CurrentElement
+        {
+            get { return Node; }
+        }
     }
 }

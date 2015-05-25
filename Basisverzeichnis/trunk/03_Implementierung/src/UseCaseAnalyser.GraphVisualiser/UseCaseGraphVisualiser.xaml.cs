@@ -1,15 +1,18 @@
 ﻿#region Copyright information
+
 // <summary>
 // <copyright file="UseCaseGraphVisualiser.xaml.cs">Copyright (c) 2015</copyright>
 // 
-// <creationDate>25/05/2015</creationDate>
+// <creationDate>09/05/2015</creationDate>
 // 
 // <professor>Prof. Dr. Kurt Hoffmann</professor>
 // <studyCourse>Angewandte Informatik</studyCourse>
 // <branchOfStudy>Industrieinformatik</branchOfStudy>
 // <subject>Software Projekt</subject>
 // </summary>
+
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,36 +29,37 @@ using UseCaseAnalyser.Model.Model;
 namespace UseCaseAnalyser.GraphVisualiser
 {
     /// <summary>
-    /// Class for displaying a UseCaseGraph element. It offers possibilities to select single GraphElement 
-    /// setting a dependency property GraphElement.
+    /// Class for displaying a UseCaseGraph element. It offers possibilities to select a single GraphElement 
+    /// while setting a dependency property GraphElement. Furthermore the user has the option to move all nodes.
     /// </summary>
     public partial class UseCaseGraphVisualiser
     {
         #region properties
+
         private const double ElementWidth = 80;
         private const double ElementHeight = 65;
         private readonly List<UseCaseNode> mNodes = new List<UseCaseNode>();
-        private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>(); 
+        private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>();
         private Point mOffsetElementPosition;
         private FrameworkElement mSelectedElement;
 
         /// <summary>
-        /// Binding configuration for a dependecy property which is  setting UseCaseGraph to display
+        /// Binding configuration for a dependecy property which is setting UseCaseGraph to display
         /// </summary>
         public static readonly DependencyProperty UseCaseProperty = DependencyProperty.Register("UseCase",
-        typeof(UseCaseGraph), typeof(UseCaseGraphVisualiser), new PropertyMetadata(UseCase_PropertyChanged));
+            typeof (UseCaseGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(UseCase_PropertyChanged));
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting a scenario graph (which will be highlighted by UseCaseGraphVisualiser)
         /// </summary>
         public static readonly DependencyProperty ScenarioProperty = DependencyProperty.Register("Scenario",
-            typeof(IGraph), typeof(UseCaseGraphVisualiser), new PropertyMetadata(Scenario_PropertyChanged));
+            typeof (IGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(Scenario_PropertyChanged));
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting the currently selected IGraphElement (INode/IEdge/IGraph) in UseCaseGraphVisualiser
         /// </summary>
         public static readonly DependencyProperty GraphElementProperty = DependencyProperty.Register("GraphElement",
-            typeof(IGraphElement), typeof(UseCaseGraphVisualiser));
+            typeof (IGraphElement), typeof (UseCaseGraphVisualiser));
 
 
         /// <summary>
@@ -82,7 +86,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         public UseCaseGraph UseCase
         {
             get { return GetValue(UseCaseProperty) as UseCaseGraph; }
-            set { SetValue(UseCaseProperty, value);}
+            set { SetValue(UseCaseProperty, value); }
         }
 
         /// <summary>
@@ -99,16 +103,16 @@ namespace UseCaseAnalyser.GraphVisualiser
             UseCaseGraphVisualiser visualizer = (UseCaseGraphVisualiser) d;
 
             //TODO needs to be exchanged to a specific Color of the Scenario
-           if (visualizer.Scenario == null)
+            if (visualizer.Scenario == null)
             {
                 LoggingFunctions.Trace("Scenario unselected.");
                 return;
             }
-                IAttribute nameAttribute = visualizer.Scenario.Attributes.FirstOrDefault(attr => attr.Name == "Name");
-                if (nameAttribute != null)
-                    LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
-                if (visualizer.Scenario != null)
-                    visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
+            IAttribute nameAttribute = visualizer.Scenario.Attributes.FirstOrDefault(attr => attr.Name == "Name");
+            if (nameAttribute != null)
+                LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
+            if (visualizer.Scenario != null)
+                visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
         }
 
         /// <summary>
@@ -122,9 +126,9 @@ namespace UseCaseAnalyser.GraphVisualiser
         private static void UseCase_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
-            UseCaseGraphVisualiser visualizer = (UseCaseGraphVisualiser)d;
+            UseCaseGraphVisualiser visualizer = (UseCaseGraphVisualiser) d;
             visualizer.Clear();
-            visualizer.GraphElement = (IGraphElement)e.NewValue;
+            visualizer.GraphElement = (IGraphElement) e.NewValue;
             if (visualizer.UseCase == null)
             {
                 LoggingFunctions.Trace("UseCase unselected.");
@@ -157,7 +161,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         #endregion
-        
+
         /// <summary>
         /// UseCaseGraphVisualiser default constructor
         /// </summary>
@@ -165,7 +169,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             InitializeComponent();
         }
-        
+
         /// <summary>
         /// Creates cache entries (current position) for all INode objects within the UseCaseNodes.
         /// Furthermore clear Canvas and mNodes list.
@@ -196,7 +200,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 //get node's attribute named "Index"
                 IAttribute ucNodeAttribut =
                     ucNode.Attributes.First(
-                        a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]);
+                        a => a.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]);
 
                 //parse Index value
                 // Todo Use NodeAttributes NormalIndex, VariantIndex, VarSeqStep instead of IndexParser()
@@ -218,11 +222,13 @@ namespace UseCaseAnalyser.GraphVisualiser
                                         attr =>
                                             attr.Name.Equals(
                                                 UseCaseGraph.AttributeNames[
-                                                    (int)UseCaseGraph.NodeAttributes.Index]) &&
+                                                    (int) UseCaseGraph.NodeAttributes.Index]) &&
                                             ((string) attr.Value).Equals(results[0]))));
                         break;
                     default:
-                        InvalidOperationException invalidOperationException = new InvalidOperationException(@"Extraction of node index failed. Node position can not be determined.");
+                        InvalidOperationException invalidOperationException =
+                            new InvalidOperationException(
+                                @"Extraction of node index failed. Node position can not be determined.");
                         LoggingFunctions.Exception(invalidOperationException);
                         throw invalidOperationException;
                 }
@@ -242,20 +248,26 @@ namespace UseCaseAnalyser.GraphVisualiser
                 foreach (UseCaseNode ucNode in mNodes)
                 {
                     IAttribute ucNodeIndexAttr =
-                        ucNode.Node.Attributes.First(attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]);
+                        ucNode.Node.Attributes.First(
+                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]);
 
                     if (firstNode == null &&
                         ucNodeIndexAttr.Value == ucEdge.Node1.Attributes.First(
-                        attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value)
+                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index])
+                            .Value)
                         firstNode = ucNode;
                     if (secondNode == null && ucNodeIndexAttr.Value ==
-                        ucEdge.Node2.Attributes.First(attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index]).Value)
+                        ucEdge.Node2.Attributes.First(
+                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index])
+                            .Value)
                         secondNode = ucNode;
                 }
 
                 if (firstNode == null || secondNode == null)
                 {
-                    InvalidOperationException invalidOperationException = new InvalidOperationException(@"Edge could not be added, because at least one node does not exist in UseCaseGraphVisualiser.");
+                    InvalidOperationException invalidOperationException =
+                        new InvalidOperationException(
+                            @"Edge could not be added, because at least one node does not exist in UseCaseGraphVisualiser.");
                     LoggingFunctions.Exception(invalidOperationException);
                     throw invalidOperationException;
                 }
@@ -301,7 +313,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
             else
             {
-                double leftPos = ElementWidth * (slotNumber - 1) + 40;
+                double leftPos = ElementWidth*(slotNumber - 1) + 40;
                 double topPos = 0;
 
                 if (referenceUseCaseNode != null)
@@ -320,9 +332,9 @@ namespace UseCaseAnalyser.GraphVisualiser
                 if (mNodes.Count > 0)
                     topPos += ElementHeight;
 
-                    mNodePosDict.Add(node,new Point(leftPos,topPos));
-                    Canvas.SetTop(useCaseNode, topPos);
-                    Canvas.SetLeft(useCaseNode, leftPos);
+                mNodePosDict.Add(node, new Point(leftPos, topPos));
+                Canvas.SetTop(useCaseNode, topPos);
+                Canvas.SetLeft(useCaseNode, leftPos);
             }
 
             //add node to graph visualiser usecase node list
@@ -333,7 +345,6 @@ namespace UseCaseAnalyser.GraphVisualiser
                 DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
             if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
                 DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
-
         }
 
         /// <summary>
@@ -368,10 +379,10 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             startNode.RenderEdges();
             endingNode.RenderEdges();
-        }     
+        }
 
         #region events
-        
+
         /// <summary>
         /// Event handler for canvas. Unselect all selectable elements in canvas and set dependency property GraphElement to UseCase.
         /// </summary>
@@ -428,7 +439,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <param name="e">GraphVisualiser_OnMouseMove mouse button event arguments.</param>
         private void GraphVisualiser_OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (mSelectedElement == null) 
+            if (mSelectedElement == null)
                 return;
 
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
@@ -445,22 +456,20 @@ namespace UseCaseAnalyser.GraphVisualiser
 
                 if (!frameworkElement.Equals(mSelectedElement))
                     continue;
-                
+
                 Canvas.SetTop(frameworkElement, e.GetPosition(DrawingCanvas).Y - mOffsetElementPosition.Y);
                 Canvas.SetLeft(frameworkElement, e.GetPosition(DrawingCanvas).X - mOffsetElementPosition.X);
                 UseCaseNode node = frameworkElement as UseCaseNode;
                 if (node != null)
                     node.RenderEdges();
-
             }
-            
+
             DrawingCanvas.Height = maxHeight;
             DrawingCanvas.Width = maxWidth;
             if (Canvas.GetLeft(mSelectedElement) + 300 > DrawingCanvas.Width)
                 CanvasScrollViewer.ScrollToRightEnd();
             if (Canvas.GetTop(mSelectedElement) + 300 > DrawingCanvas.Height)
                 CanvasScrollViewer.ScrollToBottom();
-
         }
 
         /// <summary>
@@ -470,27 +479,26 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <param name="e">GraphVisualiser_OnMouseUp mouse button event arguments.</param>
         private void GraphVisualiser_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (mSelectedElement == null) 
+            if (mSelectedElement == null)
                 return;
-            
+
 
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
-                foreach (FrameworkElement element in DrawingCanvas.Children)
-                {
-                    if (!element.Equals(mSelectedElement))
-                        continue;
-                    //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
-                    //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
-                    UseCaseNode node = element as UseCaseNode;
-                    if (node != null)
-                        node.RenderEdges();
-                    mSelectedElement = null;
-                    break;
-                }
+            foreach (FrameworkElement element in DrawingCanvas.Children)
+            {
+                if (!element.Equals(mSelectedElement))
+                    continue;
+                //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
+                //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
+                UseCaseNode node = element as UseCaseNode;
+                if (node != null)
+                    node.RenderEdges();
+                mSelectedElement = null;
+                break;
             }
+        }
 
         #endregion
-       
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region Copyright information
+
 // <summary>
 // <copyright file="UseCaseEdge.xaml.cs">Copyright (c) 2015</copyright>
 // 
@@ -9,7 +10,9 @@
 // <branchOfStudy>Industrieinformatik</branchOfStudy>
 // <subject>Software Projekt</subject>
 // </summary>
+
 #endregion
+
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,25 +23,28 @@ using UseCaseAnalyser.Model.Model;
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
     /// <summary>
-    /// Interaction logic for UseCaseEdge.xaml
+    /// Class for displaying a edge as a Bezier curve within a UseCaseGraph. On selection line color changes.
+    /// It contains the edge to display as a reference.
     /// </summary>
     internal partial class UseCaseEdge : ISelectableGraphElement
     {
         /// <summary>
-        /// Reference of destination visual Use Case Node 
+        /// Reference of destination visual UseCaseNode 
         /// </summary>
         public readonly UseCaseNode mDestUseCaseNode;
+
         /// <summary>
-        /// Reference of source visual Use Case Node
+        /// Reference of source visual UseCaseNode
         /// </summary>
         public readonly UseCaseNode mSourceUseCaseNode;
-      
+
         #region constructors
+
         /// <summary>
-        /// Creates a new Instance of an visual presenter of an Use Case Edge
+        /// Creates a new instance of an visual presenter of an UseCaseEdge
         /// </summary>
-        /// <param name="source">Source Use Node</param>
-        /// <param name="dest">Destination Use Case Node</param>
+        /// <param name="source">Source UseCaseNode</param>
+        /// <param name="dest">Destination UseCaseNode</param>
         /// <param name="edge">Reference to the Edge in the Graph</param>
         public UseCaseEdge(UseCaseNode source, UseCaseNode dest, IEdge edge)
         {
@@ -52,12 +58,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
             // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
             // [Patrick Schießl] Better readable with if statement
-            if(source.Node.Attributes.Any(attribute =>
-                    attribute.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]) &&
-                    attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)))
+            if (source.Node.Attributes.Any(attribute =>
+                attribute.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]) &&
+                attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)))
                 ProcessType = EdgeProcessType.BackwardEdge;
             else
-                ProcessType = EdgeProcessType.ForwardEdge;               
+                ProcessType = EdgeProcessType.ForwardEdge;
 
             //Set properties for visual appearience
             Stroke = mUnselectDrawingBrush = new SolidColorBrush(Colors.Black);
@@ -71,12 +77,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         #endregion
 
         /// <summary>
-        /// Reference to the Edge in the Graph
+        /// Reference to the Edge in the UseCaseGraph
         /// </summary>
         public IEdge Edge { get; private set; }
 
         /// <summary>
-        /// Recaclulation of the Bezier Curve and redraw the Edge 
+        /// Recaclulation of the Bezier curve and redraw the Edge 
         /// </summary>
         public void RecalcBezier()
         {
@@ -145,12 +151,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                 case DockedStatus.Top:
                 case DockedStatus.Bottom:
                     startpoint = new Point(
-                            Canvas.GetLeft(mSourceUseCaseNode) +
-                            (mSourceUseCaseNode.Width/amountIndexStart)*indexStartElement,
-                            Canvas.GetTop(mSourceUseCaseNode));
+                        Canvas.GetLeft(mSourceUseCaseNode) +
+                        (mSourceUseCaseNode.Width/amountIndexStart)*indexStartElement,
+                        Canvas.GetTop(mSourceUseCaseNode));
                     endpoint = new Point(
-                            Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
-                            Canvas.GetTop(mDestUseCaseNode));
+                        Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
+                        Canvas.GetTop(mDestUseCaseNode));
                     double heightStart = DockPosSourceElement == DockedStatus.Bottom ? mSourceUseCaseNode.Height : 0;
                     double heightEnd = DockPosDestElement == DockedStatus.Bottom ? mDestUseCaseNode.Height : 0;
 
@@ -172,35 +178,34 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
                     endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) + widthEnd,
                         Canvas.GetTop(mDestUseCaseNode) + (mDestUseCaseNode.Height/amountIndexEnd)*indexDestElement);
-                   
-                    double middlePos = (endpoint.X - startpoint.X)/ 2;
-                    
+
+                    double middlePos = (endpoint.X - startpoint.X)/2;
+
                     //middlePos = middlePos < 0 ? middlePos * -1 : middlePos;
                     if (ProcessType == EdgeProcessType.BackwardEdge)
                     {
                         double resultEndPosY;
 
                         if (DockPosDestElement == DockedStatus.Right &&
-                            startpoint.Y - mSourceUseCaseNode.Height / 2 < endpoint.Y + mDestUseCaseNode.Height / 2)
+                            startpoint.Y - mSourceUseCaseNode.Height/2 < endpoint.Y + mDestUseCaseNode.Height/2)
                         {
                             if (startpoint.Y > endpoint.Y)
-                                resultEndPosY = startpoint.Y - 1.5 * mSourceUseCaseNode.Height;
+                                resultEndPosY = startpoint.Y - 1.5*mSourceUseCaseNode.Height;
                             else
-                                resultEndPosY = startpoint.Y + 1.5 * mSourceUseCaseNode.Height;
+                                resultEndPosY = startpoint.Y + 1.5*mSourceUseCaseNode.Height;
                         }
                         else
                         {
                             resultEndPosY = endpoint.Y;
                         }
 
-                        bzSeg.Point1 = new Point(startpoint.X + (mSourceUseCaseNode.Width / 2), startpoint.Y);
-                        bzSeg.Point2 = new Point(startpoint.X + (mDestUseCaseNode.Width / 2), resultEndPosY);
-
+                        bzSeg.Point1 = new Point(startpoint.X + (mSourceUseCaseNode.Width/2), startpoint.Y);
+                        bzSeg.Point2 = new Point(startpoint.X + (mDestUseCaseNode.Width/2), resultEndPosY);
                     }
                     else
                     {
-                        bzSeg.Point1 = new Point(startpoint.X + middlePos , startpoint.Y);
-                        bzSeg.Point2 = new Point(startpoint.X + middlePos , endpoint.Y);
+                        bzSeg.Point1 = new Point(startpoint.X + middlePos, startpoint.Y);
+                        bzSeg.Point2 = new Point(startpoint.X + middlePos, endpoint.Y);
                     }
                     bzSeg.Point3 = endpoint;
                     break;
@@ -216,22 +221,20 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         }
 
         /// <summary>
-        /// Set new Brush Color to this Edge
+        /// Set new brush color to this Edge
         /// </summary>
         /// <param name="newBrush">future color which will be used for drawing</param>
         public void SetDrawingBrush(Brush newBrush)
         {
-            if (!(Equals(newBrush, mUnselectDrawingBrush)))
-            {
-                Stroke = mUnselectDrawingBrush = newBrush;
-                RecalcBezier(); 
-            }
-
+            if (Equals(newBrush, mUnselectDrawingBrush)) return;
+            Stroke = mUnselectDrawingBrush = newBrush;
+            RecalcBezier();
         }
 
         #region DockedStatus enum
+
         /// <summary>
-        /// Docked Status of Capped Line on Use Case Node
+        /// Docked status of CappedLine on UseCaseNode
         /// </summary>
         public enum DockedStatus
         {
@@ -244,6 +247,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         #endregion
 
         #region EdgeProcessType enum
+
         /// <summary>
         /// Type of UseCaseEdge which will be displayed
         /// </summary>
@@ -258,12 +262,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         #region Properties
 
         /// <summary>
-        /// Selected Status of the Element
+        /// Selected status of the element
         /// </summary>
         public bool Selected { get; private set; }
-        
+
         /// <summary>
-        /// Dock Position Capped Line on the Source Element
+        /// Dock position of CappedLine on the source Element
         /// </summary>
         internal DockedStatus DockPosSourceElement { get; set; }
 
@@ -273,19 +277,19 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         internal DockedStatus DockPosDestElement { get; set; }
 
         /// <summary>
-        /// Process Type of Edge which will be displayed
+        /// Process type of Edge which will be displayed
         /// </summary>
         internal EdgeProcessType ProcessType { get; set; }
-        
+
         /// <summary>
         /// Brush which will be displayed if the element is not selected
         /// </summary>
         private Brush mUnselectDrawingBrush;
-       
+
         #endregion
-     
+
         /// <summary>
-        /// Select this Element
+        /// Select this element
         /// </summary>
         public void Select()
         {
@@ -295,7 +299,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         }
 
         /// <summary>
-        /// Unselect this Element
+        /// Unselect this element
         /// </summary>
         public void Unselect()
         {
@@ -309,15 +313,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void ChangeSelection()
         {
-            if(Selected)
+            if (Selected)
                 Unselect();
             else
                 Select();
         }
 
         /// <summary>
-        /// Reference to the Element in the Graph
+        /// Reference to the element in the UseCaseGraph
         /// </summary>
-        public IGraphElement CurrentElement { get{ return Edge; } }
+        public IGraphElement CurrentElement
+        {
+            get { return Edge; }
+        }
     }
 }
