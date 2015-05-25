@@ -10,6 +10,6 @@
         <Border Name="NodeBorder"  BorderThickness="2">
             <Rectangle Fill="Yellow"  />
         </Border>
-        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Name="LblIndex"></Label>
+        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Name="LblIndex" />
     </Grid>
 </UserControl>
