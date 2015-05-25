@@ -166,7 +166,8 @@ namespace UseCaseAnalyser.Model.Model
             useCaseGraph = new UseCaseGraph();
             if (tableRows == null) return false;
             List<TableRow> rows = tableRows.ToList(); // Table is empty
-            if (rows.Count == 0 || rows[0] == null) return false;                       
+            if (rows.Count == 0 || rows[0] == null) return false;
+            if (rows.Count < 3) return false; // Not a use case but a table -> no error
 
             string prio, desc, precon, postcon, spec, open;
 
@@ -228,13 +229,13 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns></returns>
         private static bool TryGetVerticalContent(IReadOnlyList<TableRow> rows, int actRowIndex, out string result, string heading)
         {
-            result = null;
+            result = null;            
             if (rows == null) return false;
             if (actRowIndex < 0) return false;
             List<TableCell> cells = rows[actRowIndex].Descendants<TableCell>().ToList();
-            if (cells.Count != 1 || actRowIndex + 1 >= rows.Count) return false;
+            if (cells.Count != 1 || ++actRowIndex >= rows.Count) return false;
             if (!string.Equals(cells[0].InnerText, heading)) return false;
-            cells = rows[actRowIndex+1].Descendants<TableCell>().ToList();
+            cells = rows[actRowIndex].Descendants<TableCell>().ToList();
             if (cells.Count != 1) return false;
             result = cells[0].InnerText;
             return true;
