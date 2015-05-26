@@ -36,8 +36,8 @@ namespace UseCaseAnalyser.GraphVisualiser
     {
         #region properties
 
-        private const double ElementWidth = 80;
-        private const double ElementHeight = 65;
+        private const double ElementWidth = 150;
+        private const double ElementHeight = 120;
         private readonly List<UseCaseNode> mNodes = new List<UseCaseNode>();
         private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>();
         private Point mOffsetElementPosition;
@@ -358,6 +358,8 @@ namespace UseCaseAnalyser.GraphVisualiser
             {
                 useCaseNode.SetDrawingBrush(sourceGraph.Edges,
                     sourceGraph.Nodes.Contains(useCaseNode.Node) ? futureBrush : Brushes.Black);
+                useCaseNode.LblIndex.Foreground=
+                     sourceGraph.Nodes.Contains(useCaseNode.Node) ? futureBrush : Brushes.Black;
             }
         }
 

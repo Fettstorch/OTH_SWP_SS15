@@ -67,7 +67,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
             //Set properties for visual appearience
             Stroke = mUnselectDrawingBrush = new SolidColorBrush(Colors.Black);
-            StrokeThickness = 1.5;
+            StrokeThickness = 2.5;           
             //This geometry will represent an arrow at the end of this edge
             EndCap = Geometry.Parse("M0,0 L6,-6 L6,6 z");
 
