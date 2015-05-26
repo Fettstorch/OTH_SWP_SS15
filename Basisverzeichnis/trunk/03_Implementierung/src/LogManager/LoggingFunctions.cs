@@ -112,8 +112,7 @@ namespace LogManager
         /// Gets or sets the minimum LogLevel.
         /// Everything passed to Log(...) with a LogLevel below will be ignored.
         /// </summary>
-        /// <param name="level">The LogLevel. Everything, passed to the Log(...) function, below the specified Loglevel will be ignored.</param>
-        public static LogLevel SetLogLevel
+         public static LogLevel SetLogLevel
         {
             get { return logger.LogLevel; }
             set { logger.LogLevel = value; }
@@ -122,7 +121,6 @@ namespace LogManager
         /// <summary>
         /// Gets or sets the name of the LogFile.
         /// </summary>
-        /// <param name="filename">The filename.</param>
         public static string FileName
         {
             get { return logger.FileName; }
@@ -133,8 +131,7 @@ namespace LogManager
         /// Gets or sets the path of the LogFile.
         /// Can be a relative or absolute path.
         /// </summary>
-        /// <param name="path">Can be a relative or absolute path.</param>
-        public static string FilePath
+         public static string FilePath
         {
             get { return logger.FilePath; }
             set { logger.FilePath = value; }
@@ -144,7 +141,6 @@ namespace LogManager
         /// Gets or sets the type of the logfile name.
         /// Can be LogfileNameType.Date or LogfileNameType.Rolling
         /// </summary>
-        /// <param name="type">The logfile name type. Can be LogfileNameType.Date or LogfileNameType.Rolling.</param>
         public static LogfileNameType LogfileNameType
         {
             get { return logger.FileNameType; }
@@ -155,8 +151,7 @@ namespace LogManager
         /// Gets or sets the Logtarget.
         /// Can be LogTarget.Console and/or LogTarget.File
         /// </summary>
-        /// <param name="target">The logging target. Can be LogTarget.Console and/or LogTarget.File.</param>
-        public static LogTarget LogTarget
+       public static LogTarget LogTarget
         {
             get { return logger.Target; }
             set { logger.Target = value;}
