@@ -35,7 +35,7 @@ namespace UseCaseAnalyser.Model.Model
         /// <summary>
         /// The expression which initiates a jump to another use case
         /// </summary>
-        private const string USeCaseJump = "Weiter mit:";
+        private const string UseCaseJump = "Weiter mit:";
 
         /// <summary>
         /// The expression which initiates a jump from the sequence variant to the normal routine
