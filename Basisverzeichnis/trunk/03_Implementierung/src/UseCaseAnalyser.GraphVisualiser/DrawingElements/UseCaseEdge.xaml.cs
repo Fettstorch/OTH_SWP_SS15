@@ -17,6 +17,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
 
@@ -316,7 +317,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public void Select()
         {
             Selected = true;
-            Stroke = Brushes.Orange;
+            Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 100000, BlurRadius = 10 };
             RecalcBezier();
         }
 
@@ -326,7 +327,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public void Unselect()
         {
             Selected = false;
-            Stroke = mUnselectDrawingBrush;
+            Effect = null;
             RecalcBezier();
         }
 

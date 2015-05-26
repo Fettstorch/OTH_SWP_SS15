@@ -175,7 +175,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public void Select()
         {
             Selected = true;
-            NodeBorder.Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.Orange, Opacity = 1, BlurRadius = 30 };
+            NodeBorder.Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 1, BlurRadius = 30 };
         }
 
         /// <summary>
