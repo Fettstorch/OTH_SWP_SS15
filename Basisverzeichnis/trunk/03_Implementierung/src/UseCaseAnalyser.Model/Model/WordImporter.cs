@@ -32,13 +32,24 @@ namespace UseCaseAnalyser.Model.Model
     /// </summary>
     public static class WordImporter
     {
-
+        /// <summary>
+        /// The expression which initiates a jump to another use case
+        /// </summary>
         private const string USeCaseJump = "Weiter mit:";
 
+        /// <summary>
+        /// The expression which initiates a jump from the sequence variant to the normal routine
+        /// </summary>
         private const string SequenceJump = "Rückkehr nach:";
 
+        /// <summary>
+        /// The expression which defines the end of the use case
+        /// </summary>
         private const string UseCaseEnd = "Ende.";
 
+        /// <summary>
+        /// The expressions in the use case table
+        /// </summary>
         private static readonly string[] ImportStepNames = 
         {
             "Name",
@@ -53,6 +64,9 @@ namespace UseCaseAnalyser.Model.Model
             "Zu klärende Punkte:"
         };
 
+        /// <summary>
+        /// The access enum to the array ImportStepNames
+        /// </summary>
         private enum ImportStep
         {
             Name = 0, 
@@ -67,8 +81,14 @@ namespace UseCaseAnalyser.Model.Model
             OpenPoints
         }        
 
+        /// <summary>
+        /// The report of the actual import process
+        /// </summary>
         private static Report wordImporteReport;
-
+        
+        /// <summary>
+        /// The use case ID of the actual use case
+        /// </summary>
         private static string actUseCaseId;
 
         /// <summary>
@@ -146,6 +166,12 @@ namespace UseCaseAnalyser.Model.Model
             return useCaseList; 
         }
 
+        /// <summary>
+        /// Tries to get the name of the use case which is alway in the first cell in the first row in the use case table
+        /// </summary>
+        /// <param name="row">the first row of the table</param>
+        /// <param name="useCaseGraph">the actual use case graph</param>
+        /// <returns>true if success, false if not</returns>
         private static bool TryGetUseCaseName(TableRow row, UseCaseGraph useCaseGraph)
         {
             // Get name field of the use case:
@@ -528,6 +554,7 @@ namespace UseCaseAnalyser.Model.Model
                             continue;
                         }
                     }
+
                     if (!replaceEntry) continue;
 
                     string fullName = entry.FullName;

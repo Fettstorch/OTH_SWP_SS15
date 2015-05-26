@@ -106,5 +106,16 @@ namespace GraphFramework
                 throw new InvalidOperationException("the defined attribute can not be found!");
             }
         }
+
+        /// <summary>
+        /// Returns the attribute with the given name. Warning: can be also null
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>null or the attribute with the given name</returns>
+        public IAttribute GetAttributeByName(string name)
+        {
+            if (name == null) throw new ArgumentNullException();
+            return mAttributes.Find(graphelem => string.Equals(graphelem.Name, name));            
+        }
     }
 }
