@@ -20,25 +20,61 @@ namespace LogManager
 {
     #region Enums
 
+    /// <summary>
+    /// The LogLevel Enum
+    /// </summary>
     public enum LogLevel
     {
+        /// <summary>
+        /// The trace LogLevel
+        /// </summary>
         Trace,
+        /// <summary>
+        /// The debug LogLevel
+        /// </summary>
         Debug,
+        /// <summary>
+        /// The error LogLevel
+        /// </summary>
         Error,
+        /// <summary>
+        /// The exception LogLevel
+        /// </summary>
         Exception,
+        /// <summary>
+        /// The status LogLevel
+        /// </summary>
         Status
     }
 
+    /// <summary>
+    /// The LogTarget Enum
+    /// </summary>
     [Flags]
     public enum LogTarget
     {
+        /// <summary>
+        /// The console LogTarget
+        /// </summary>
         Console = 1,
+        /// <summary>
+        /// The file LogTarget
+        /// </summary>
         File = 2,
     }
 
+    /// <summary>
+    /// The LogfileNameType enum
+    /// </summary>
     public enum LogfileNameType
     {
+        /// <summary>
+        /// A date as logfile name.
+        /// </summary>
         Date,
+        /// <summary>
+        /// A rolling logfile name
+        /// </summary>
         Rolling
     }
 
@@ -50,24 +86,44 @@ namespace LogManager
 
         object lockObject = new object();
 
-        public LogTarget Target { get; set; }
+        /// <summary>
+        /// Gets or sets the Logtarget.
+        /// </summary>
+        /// <value>
+        /// The logtarget. Console and/or File.
+        /// </value>
+        internal LogTarget Target { get; set; }
 
         private LogfileNameType fileNameType;
-        public LogfileNameType FileNameType
+        /// <summary>
+        /// Gets or sets the type of the file name.
+        /// </summary>
+        /// <value>
+        /// The type of the file name.
+        /// </value>
+        /// <exception cref="System.NotSupportedException">More than one flag is not allowed for FileNameType</exception>
+        internal LogfileNameType FileNameType
         {
             get { return fileNameType; }
             set
             {
                 if ((value & (value - 1)) != 0) //has more than 1 flag
                 {
-                    throw new NotSupportedException("More that one flag is not allowed for FileNameType");
+                    throw new NotSupportedException("More than one flag is not allowed for FileNameType");
                 }
                 fileNameType = value;
             }
         }
 
         private LogLevel minimumLogLevel;
-        public LogLevel LogLevel
+        /// <summary>
+        /// Gets or sets the log level.
+        /// </summary>
+        /// <value>
+        /// The log level.
+        /// </value>
+        /// <exception cref="System.NotSupportedException">More that one flag is not allowed for LogLevel</exception>
+        internal LogLevel LogLevel
         {
             get { return minimumLogLevel; }
             set
@@ -81,14 +137,29 @@ namespace LogManager
         }
 
         string filename;
-        public string FileName { get { return filename; } set { filename = value; } }
+        /// <summary>
+        /// Gets or sets the name of the file.
+        /// </summary>
+        /// <value>
+        /// The name of the file.
+        /// </value>
+        internal string FileName { get { return filename; } set { filename = value; } }
 
         string filepath;
-        public string FilePath { get { return filepath; } set { filename = filepath; } }
+        /// <summary>
+        /// Gets or sets the file path.
+        /// </summary>
+        /// <value>
+        /// The file path.
+        /// </value>
+        internal string FilePath { get { return filepath; } set { filename = filepath; } }
 
         #endregion
 
-        public LogManager()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogManager"/> class.
+        /// </summary>
+        internal LogManager()
         {
             LogLevel = LogLevel.Trace;
             fileNameType = LogfileNameType.Date;
@@ -97,7 +168,13 @@ namespace LogManager
             Target = LogTarget.Console | LogTarget.File;
         }
 
-        public void Log(string message, LogLevel level)
+
+        /// <summary>
+        /// Logs the specified message with the loglevel in the file and/or the console.
+        /// </summary>
+        /// <param name="message">The message to write into the log.</param>
+        /// <param name="level">The loglevel.</param>
+        internal void Log(string message, LogLevel level)
         {
             if (level < LogLevel) return;
 
@@ -124,6 +201,12 @@ namespace LogManager
             }
         }
 
+        /// <summary>
+        /// Returns a new Filename for a logfile.
+        /// If fileNameType is set to Date then this will give a filename containing the current date.
+        /// If fileNameType is set to Rolling then this will rename the old logfiles and return "session.0.log.txt".
+        /// </summary>
+        /// <returns></returns>
         private string GetFileName()
         {
             if (fileNameType == LogfileNameType.Date)
