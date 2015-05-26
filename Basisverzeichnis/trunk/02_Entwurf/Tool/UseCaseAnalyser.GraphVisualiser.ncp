@@ -7,7 +7,7 @@
       <Entity type="Class">
         <Name>CappedLine</Name>
         <Access>Internal</Access>
-        <Location left="1206" top="196" />
+        <Location left="1180" top="77" />
         <Size width="567" height="383" />
         <Collapsed>False</Collapsed>
         <Member type="Field">public static readonly DependencyProperty BeginCapProperty</Member>
@@ -108,9 +108,7 @@
         <Member type="Property">public IGraph Scenario { get; set; }</Member>
         <Member type="Property">public UseCaseGraph UseCase { get; set; }</Member>
         <Member type="Constructor">public UseCaseGraphVisualiser()</Member>
-        <Member type="Method">private void AddEdge(UseCaseNode firstNode, UseCaseNode secondNode, IEdge edge)</Member>
         <Member type="Method">private void AddEdge(UseCaseNode startNode, UseCaseNode endingNode, IEdge edge)</Member>
-        <Member type="Method">private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)</Member>
         <Member type="Method">private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)</Member>
         <Member type="Method">private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)</Member>
         <Member type="Method">private void Clear()</Member>
@@ -172,6 +170,8 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="4" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -184,6 +184,8 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="4" second="3">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -196,24 +198,18 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="2" second="5">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="2" second="6">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="3" second="5">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
