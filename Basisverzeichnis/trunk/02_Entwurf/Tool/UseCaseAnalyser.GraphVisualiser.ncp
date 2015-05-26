@@ -49,14 +49,14 @@
         <Size width="385" height="332" />
         <Collapsed>False</Collapsed>
         <Member type="Field">public readonly UseCaseNode mDestUseCaseNode</Member>
-        <Member type="Field">private Brush mUnselectDrawingBrush</Member>
         <Member type="Field">public readonly UseCaseNode mSourceUseCaseNode</Member>
+        <Member type="Field">private Brush mUnselectDrawingBrush</Member>
         <Member type="Property">public IGraphElement CurrentElement { get; }</Member>
+        <Member type="Property">internal DockedStatus DockPosDestElement { get; set; }</Member>
+        <Member type="Property">internal DockedStatus DockPosSourceElement { get; set; }</Member>
         <Member type="Property">public IEdge Edge { get; private set; }</Member>
         <Member type="Property">internal EdgeProcessType ProcessType { get; set; }</Member>
         <Member type="Property">public bool Selected { get; set; }</Member>
-        <Member type="Property">internal DockedStatus DockPosDestElement { get; set; }</Member>
-        <Member type="Property">internal DockedStatus DockPosSourceElement { get; set; }</Member>
         <Member type="Constructor">public UseCaseEdge(UseCaseNode source, UseCaseNode dest, IEdge edge)</Member>
         <Member type="Method">public void ChangeSelection()</Member>
         <Member type="Method">public void RecalcBezier()</Member>
@@ -108,8 +108,8 @@
         <Member type="Property">public IGraph Scenario { get; set; }</Member>
         <Member type="Property">public UseCaseGraph UseCase { get; set; }</Member>
         <Member type="Constructor">public UseCaseGraphVisualiser()</Member>
-        <Member type="Method">private void AddEdge(UseCaseNode startNode, UseCaseNode endingNode, IEdge edge)</Member>
         <Member type="Method">private void AddEdge(UseCaseNode firstNode, UseCaseNode secondNode, IEdge edge)</Member>
+        <Member type="Method">private void AddEdge(UseCaseNode startNode, UseCaseNode endingNode, IEdge edge)</Member>
         <Member type="Method">private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)</Member>
         <Member type="Method">private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)</Member>
         <Member type="Method">private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)</Member>
@@ -195,7 +195,7 @@
         <StartMultiplicity>1</StartMultiplicity>
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
-      <Relationship type="Association" first="5" second="2">
+      <Relationship type="Association" first="2" second="5">
         <Label>
         </Label>
         <StartOrientation>Horizontal</StartOrientation>
@@ -203,7 +203,7 @@
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
-      <Relationship type="Association" first="6" second="2">
+      <Relationship type="Association" first="2" second="6">
         <Label>
         </Label>
         <StartOrientation>Horizontal</StartOrientation>
@@ -211,7 +211,7 @@
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
-      <Relationship type="Association" first="5" second="3">
+      <Relationship type="Association" first="3" second="5">
         <Label>
         </Label>
         <StartOrientation>Horizontal</StartOrientation>
