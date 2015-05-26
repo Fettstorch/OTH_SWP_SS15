@@ -10,12 +10,8 @@
 // <subject>Software Projekt</subject>
 // </summary>
 #endregion
-using System;
-using System.Collections.Generic;
+
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.Model.ViewModel
@@ -54,8 +50,19 @@ namespace UseCaseAnalyser.Model.ViewModel
     /// </summary>
     public enum MessageType
     {
+        /// <summary>
+        /// message type to display an information
+        /// </summary>
         Information,
+
+        /// <summary>
+        /// message type to display a warning
+        /// </summary>
         Warning,
+
+        /// <summary>
+        /// message type to display an error
+        /// </summary>
         Error
     }
 
@@ -64,7 +71,13 @@ namespace UseCaseAnalyser.Model.ViewModel
     /// </summary>
     public enum FileDialogType
     {
+        /// <summary>
+        /// dialog type to open a document
+        /// </summary>
         Open,
+        /// <summary>
+        /// dialog type to save a document
+        /// </summary>
         Save
     }
 }

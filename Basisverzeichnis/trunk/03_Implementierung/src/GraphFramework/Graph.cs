@@ -17,6 +17,9 @@ using GraphFramework.Interfaces;
 
 namespace GraphFramework
 {
+    /// <summary>
+    /// the graph class: holder of edges and nodes + methods to modify the graph
+    /// </summary>
     public class Graph : GraphElement, IGraph
     {
         private readonly List<IEdge> mEdges;

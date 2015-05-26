@@ -26,7 +26,15 @@ namespace UseCaseAnalyser.Converters
     /// default --> none
     /// </summary>
     public class EntryTypeToColorConverter : IValueConverter
-    {
+    {   
+        /// <summary>
+        /// converts a entry type to a color for better displaying in the view.
+        /// </summary>
+        /// <param name="value">object to convert</param>
+        /// <param name="targetType">target type for the conversion</param>
+        /// <param name="parameter">parameter which can be passed in view</param>
+        /// <param name="culture">the current culture info</param>
+        /// <returns>the converted object</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Report.Entrytype? type = value as Report.Entrytype?;
@@ -42,6 +50,15 @@ namespace UseCaseAnalyser.Converters
             return entryTypeBrush;
         }
 
+        /// <summary>
+        /// converts the converted value back to its original type
+        /// -- not supported here --> only 1 way binding is supported
+        /// </summary>
+        /// <param name="value">object to convert</param>
+        /// <param name="targetType">target type for the conversion</param>
+        /// <param name="parameter">parameter which can be passed in view</param>
+        /// <param name="culture">the current culture info</param>
+        /// <returns>the converted object</returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();

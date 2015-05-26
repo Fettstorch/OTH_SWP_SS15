@@ -196,6 +196,10 @@ namespace UseCaseAnalyser.Model.ViewModel
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// fires the property changed for the given property name
+        /// </summary>
+        /// <param name="propertyName"></param>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
             Justification = "False positive - attribute introduced in .NET 4.5 is similiar to overloading")]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
