@@ -51,11 +51,11 @@
         
         <TabControl Grid.Column="2" Grid.Row="1">
             <TabItem Header="UseCases">
-                <ListBox Name="UseCases" ItemsSource="{Binding Path=UseCaseGraphs, Mode=OneWay}" SelectedItem="{Binding Path=SelectedGraph, Mode=OneWayToSource}"
+                <ListBox Name="UseCases" ItemsSource="{Binding Path=UseCaseGraphs, Mode=OneWay}" SelectedItem="{Binding Path=SelectedUseCaseGraph, Mode=OneWayToSource}"
                          HorizontalContentAlignment="Stretch" />
             </TabItem>
             <TabItem Header="Scenarios">
-                <ListBox Name="Scenarios" ItemsSource="{Binding Path=SelectedGraph.Scenarios, Mode=OneWay}" SelectedItem="{Binding Path=SelectedScenario, 
+                <ListBox Name="Scenarios" ItemsSource="{Binding Path=SelectedUseCaseGraph.Scenarios, Mode=OneWay}" SelectedItem="{Binding Path=SelectedScenario, 
                     Mode=OneWayToSource}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IGraph}">
