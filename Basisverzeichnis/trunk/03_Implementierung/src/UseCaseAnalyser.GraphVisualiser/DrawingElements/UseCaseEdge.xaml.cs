@@ -238,9 +238,24 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public enum DockedStatus
         {
+            /// <summary>
+            /// UseCaseEdge is visualised on top of UseCaseNode
+            /// </summary>
             Top,
+
+            /// <summary>
+            /// UseCaseEdge is visualised on bottom of UseCaseNode
+            /// </summary>
             Bottom,
+
+            /// <summary>
+            /// UseCaseEdge is visualised on the left of UseCaseNode
+            /// </summary>
             Left,
+
+            /// <summary>
+            /// UseCaseEdge is visualised on the right of UseCaseNode
+            /// </summary>
             Right
         }
 
@@ -253,7 +268,14 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public enum EdgeProcessType
         {
+            /// <summary>
+            /// UseCaseEdge is a forwarding edge
+            /// </summary>
             ForwardEdge,
+
+            /// <summary>
+            /// UseCaseEdge is a backwarding edge (UseCaseNode with type JumpNode as source)
+            /// </summary>
             BackwardEdge
         }
 
