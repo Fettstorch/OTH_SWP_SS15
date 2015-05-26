@@ -18,12 +18,12 @@ using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Model.Model
 {
-    [Serializable()]
-    public class SourceNodeNotFoundException : System.Exception
+    [Serializable]
+    public class SourceNodeNotFoundException : Exception
     {
-        public SourceNodeNotFoundException() : base() { }
+        public SourceNodeNotFoundException() { }
         public SourceNodeNotFoundException(string message) : base(message) { }
-        public SourceNodeNotFoundException(string message, System.Exception inner) : base(message, inner) { }
+        public SourceNodeNotFoundException(string message, Exception inner) : base(message, inner) { }
 
         // A constructor is needed for serialization when an
         // exception propagates from a remoting server to the client. 
@@ -31,6 +31,9 @@ namespace UseCaseAnalyser.Model.Model
             System.Runtime.Serialization.StreamingContext context) { }
     }
 
+    /// <summary>
+    /// class to create the scenarios for a use case graph
+    /// </summary>
     public static class ScenarioMatrixCreator
     {       
         private static INode FindStartingNode(IGraph graph)

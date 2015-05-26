@@ -15,6 +15,9 @@ using System.IO;
 
 namespace UseCaseAnalyser.Model.Model
 {
+    /// <summary>
+    /// class to export the scenario matrix to a file
+    /// </summary>
     public static class ScenarioMatrixExporter
     {
         /// <summary>
