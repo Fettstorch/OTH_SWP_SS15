@@ -146,10 +146,8 @@ namespace UseCaseAnalyser.Model.Model
                 {
                     // Valid Use Case found:
                     useCaseList.Add(useCaseGraph);
-                    IAttribute nameAtribute =
-                        useCaseGraph.Attributes.ToList()
-                            .Find(x => string.Equals(x.Name, ImportStepNames[(int) ImportStep.Id]));
-                    WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry(nameAtribute.Value as string , "Use Case " + " successfully imported!", Report.Entrytype.LOG));
+                    WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("Success!" , 
+                        "Use Case " + actUseCaseId + " successfully imported!", Report.Entrytype.LOG, actUseCaseId));
                     numberOfUseCases++;
                 }
             }
@@ -157,7 +155,8 @@ namespace UseCaseAnalyser.Model.Model
             if (numberOfUseCases == 0)
             {
                 // No Use Cases were imported
-                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING", "No use cases found", Report.Entrytype.WARNING));
+                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING",
+                    "No use cases found", Report.Entrytype.WARNING));
             }
             
             doc.Close();
@@ -191,7 +190,8 @@ namespace UseCaseAnalyser.Model.Model
                 return true;
             }
 
-            wordImporteReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Use Case doesn't have a name", Report.Entrytype.ERROR));
+            wordImporteReport.AddReportEntry(new Report.ReportEntry("Invalid format!", "Use Case doesn't have a name", 
+                Report.Entrytype.ERROR, actUseCaseId));
             return false;
         }
 
@@ -254,14 +254,23 @@ namespace UseCaseAnalyser.Model.Model
         {
             result = null;
             List<TableCell> cells = row.Descendants<TableCell>().ToList();
-            if (cells.Count != 2) return false;
-            if (!string.Equals(cells[0].InnerText, heading)) return false;
-            result = cells[1].InnerText;
-            return true;
+            if (cells.Count == 2)
+            {
+                if (string.Equals(cells[0].InnerText, heading))
+                {
+                    result = cells[1].InnerText;
+                    return true;
+                }
+            }
+
+            wordImporteReport.AddReportEntry(new Report.ReportEntry("Invalid format!", "Could not read '" + heading + "'!", 
+                Report.Entrytype.WARNING, actUseCaseId));
+            return false;
         }
 
         /// <summary>
-        /// Returns true or false if success
+        /// This function tries to fetch the content from a use case table, that is declared underneeth each other,
+        /// e.g. "Kurzbeschreibung", "Vorbedingung", etc.
         /// </summary>
         /// <param name="rows">List of the table rows of this use case</param>
         /// <param name="actRowIndex">index of the row the heading is located</param>
@@ -271,15 +280,27 @@ namespace UseCaseAnalyser.Model.Model
         private static bool TryGetVerticalContent(IReadOnlyList<TableRow> rows, int actRowIndex, out string result, string heading)
         {
             result = null;            
-            if (rows == null) return false;
-            if (actRowIndex < 0) return false;
+            if (rows == null) throw new NullReferenceException("rows"); 
+            if (actRowIndex < 0) throw new InvalidOperationException("actRowIndex < 0!!");
+            // Get content in the first row
             List<TableCell> cells = rows[actRowIndex].Descendants<TableCell>().ToList();
-            if (cells.Count != 1 || ++actRowIndex >= rows.Count) return false;
-            if (!string.Equals(cells[0].InnerText, heading)) return false;
-            cells = rows[actRowIndex].Descendants<TableCell>().ToList();
-            if (cells.Count != 1) return false;
-            result = cells[0].InnerText;
-            return true;
+            if (cells.Count == 1 && ++actRowIndex < rows.Count)
+            {
+                if (string.Equals(cells[0].InnerText, heading))
+                {
+                    // Get content in the second row
+                    cells = rows[actRowIndex].Descendants<TableCell>().ToList();
+                    if (cells.Count == 1)
+                    {
+                        result = cells[0].InnerText;
+                        return true;
+                    }
+                }                
+            }
+            
+            wordImporteReport.AddReportEntry(new Report.ReportEntry("Invalid format!", 
+                "the content of '" + heading + "' could not be interpreted", Report.Entrytype.ERROR, actUseCaseId));
+            return false;
         }
 
         /// <summary>
@@ -292,9 +313,9 @@ namespace UseCaseAnalyser.Model.Model
         private static bool TryGetNormalRoutineAndSeqVars(UseCaseGraph useCaseGraph, IReadOnlyList<TableRow> rows, int rowIndex)
         {
             // Defensive programming
-            if (rows == null) return false;
-            if (rowIndex < 0) return false;
-            if (useCaseGraph == null) return false;
+            if (rows == null) throw new NullReferenceException("rows");
+            if (rowIndex < 0) throw new InvalidOperationException("rowIndex < 0 !!");
+            if (useCaseGraph == null) throw new NullReferenceException("useCaseGraph");
 
             // Initializing
             Dictionary<string, INode> nodes = new Dictionary<string, INode>();            
@@ -427,7 +448,13 @@ namespace UseCaseAnalyser.Model.Model
                         INode indexNode;
                         if (!nodes.TryGetValue(lastConditionId, out indexNode)) continue;
                         INode lastNode;
-                        if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode)) continue;
+                        if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
+                        {
+                            // Node to jump back not found in use case
+                            wordImporteReport.AddReportEntry(new Report.ReportEntry("Node not found", "Node (" + previousVariantIndex + ") to jump back was not found", 
+                                Report.Entrytype.WARNING, actUseCaseId));
+                            continue;
+                        }
                         // make a edge between the normal routine node and the first node of the sequence variant
                         useCaseGraph.AddEdge(lastNode, indexNode);
                         lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
