@@ -44,6 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute.Test.cs" />
+    <Compile Include="BaseUnitTest.cs" />
+    <Compile Include="Edge.Test.cs" />
+    <Compile Include="Graph.Test.cs" />
+    <Compile Include="GraphElement.Test.cs" />
+    <Compile Include="Node.Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

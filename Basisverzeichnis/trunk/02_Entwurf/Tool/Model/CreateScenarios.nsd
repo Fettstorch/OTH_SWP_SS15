@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root text="&#34;CreateScenarios (Startknoten s, Teilszenario v, ListeEndknoten e)&#34;" comment="&#34;&#34;" color="ffffff" type="program" style="nice">
+	<children>
+		<instruction text="&#34;Vor Aufruf der Methode muss der Startknoten als besucht markiert werden.&#34;,&#34;Aufrufparameter v = s.&#34;" comment="&#34;&#34;" color="c0c0c0" rotated="0"></instruction>
+		<instruction text="&#34;Setze s als aktuellen Knoten a&#34;" comment="" color="ffffff" rotated="0"></instruction>
+		<for text="&#34;Für jeden von a erreichbaren Knoten k&#34;" comment="" color="ffff80">
+			<qFor>
+				<alternative text="&#34;Wenn k mehrfach besucht&#34;" comment="" color="ffffff">
+					<qTrue>
+						<instruction text="&#34;continue&#34;" comment="" color="ffffff" rotated="0"></instruction>
+					</qTrue>
+					<qFalse>
+						<alternative text="&#34;Wenn k besucht&#34;" comment="" color="ffffff">
+							<qTrue>
+								<instruction text="&#34;Markiere k als mehrfach besucht&#34;" comment="" color="ffffff" rotated="0"></instruction>
+							</qTrue>
+							<qFalse>
+								<instruction text="&#34;Markiere k als besucht&#34;" comment="" color="ffffff" rotated="0"></instruction>
+							</qFalse>
+						</alternative>
+					</qFalse>
+				</alternative>
+				<instruction text="&#34;v += k&#34;" comment="" color="ffffff" rotated="0"></instruction>
+				<alternative text="&#34;Wenn k in e enthalten&#34;" comment="&#34;&#34;" color="ffffff">
+					<qTrue>
+						<instruction text="&#34;Speicher v als gültiges Szenario&#34;" comment="" color="80ff80" rotated="0"></instruction>
+						<alternative text="&#34;Wenn zweiter Durchlauf&#34;" comment="&#34;&#34;" color="ffffff">
+							<qTrue>
+								<instruction text="&#34;break&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+							</qTrue>
+							<qFalse>
+								<instruction text="&#34;Lösche alle Markierungen&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+								<instruction text="&#34;Setze Flag für zweiten Durchlauf&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+							</qFalse>
+						</alternative>
+					</qTrue>
+					<qFalse>
+					</qFalse>
+				</alternative>
+				<instruction text="&#34;CreateScenario(k, v, e)&#34;" comment="" color="ffffff" rotated="0"></instruction>
+			</qFor>
+		</for>
+		<alternative text="&#34;Wenn summe(k) == 0 und a in e enthalten&#34;" comment="&#34;&#34;" color="0080ff">
+			<qTrue>
+				<instruction text="&#34;Speicher v als gültiges Szenario&#34;" comment="" color="80ff80" rotated="0"></instruction>
+			</qTrue>
+			<qFalse>
+				<instruction text="&#34;Fehler&#34;" comment="" color="ff8080" rotated="0"></instruction>
+			</qFalse>
+		</alternative>
+	</children>
+</root>

@@ -1,0 +1,220 @@
+<Project>
+  <Name>UseCaseAnalyser</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>GraphVisualiser</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>CappedLine</Name>
+        <Access>Internal</Access>
+        <Location left="1180" top="77" />
+        <Size width="567" height="383" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public static readonly DependencyProperty BeginCapProperty</Member>
+        <Member type="Field">public static readonly DependencyProperty EndCapProperty</Member>
+        <Member type="Field">public static readonly DependencyProperty LinePathProperty</Member>
+        <Member type="Field">public static readonly DependencyProperty StrokeProperty</Member>
+        <Member type="Field">public static readonly DependencyProperty StrokeThicknessProperty</Member>
+        <Member type="Property">public Geometry BeginCap { get; set; }</Member>
+        <Member type="Property">public Geometry EndCap { get; set; }</Member>
+        <Member type="Property">public PathGeometry LinePath { get; set; }</Member>
+        <Member type="Property">public Brush Stroke { get; set; }</Member>
+        <Member type="Property">public double StrokeThickness { get; set; }</Member>
+        <Member type="Method">private static void BeginCapChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs args)</Member>
+        <Member type="Method">private static void EndCapChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs args)</Member>
+        <Member type="Method">private static void LinePathChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs args)</Member>
+        <Member type="Method">protected override Size MeasureOverride(Size availableSize)</Member>
+        <Member type="Method">public virtual void OnBeginCapChanged(Geometry value)</Member>
+        <Member type="Method">public virtual void OnEndCapChanged(Geometry value)</Member>
+        <Member type="Method">public virtual void OnLinePathChanged(PathGeometry value)</Member>
+        <Member type="Method">protected override void OnRender(DrawingContext dc)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>ISelectableGraphElement</Name>
+        <Access>Internal</Access>
+        <Location left="402" top="281" />
+        <Size width="469" height="163" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">IGraphElement CurrentElement { get; }</Member>
+        <Member type="Property">bool Selected { get; set; }</Member>
+        <Member type="Method">void ChangeSelection()</Member>
+        <Member type="Method">void Select()</Member>
+        <Member type="Method">void Unselect()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>UseCaseEdge</Name>
+        <Access>Internal</Access>
+        <Location left="1017" top="643" />
+        <Size width="385" height="332" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public readonly UseCaseNode mDestUseCaseNode</Member>
+        <Member type="Field">public readonly UseCaseNode mSourceUseCaseNode</Member>
+        <Member type="Field">private Brush mUnselectDrawingBrush</Member>
+        <Member type="Property">public IGraphElement CurrentElement { get; }</Member>
+        <Member type="Property">internal DockedStatus DockPosDestElement { get; set; }</Member>
+        <Member type="Property">internal DockedStatus DockPosSourceElement { get; set; }</Member>
+        <Member type="Property">public IEdge Edge { get; private set; }</Member>
+        <Member type="Property">internal EdgeProcessType ProcessType { get; set; }</Member>
+        <Member type="Property">public bool Selected { get; set; }</Member>
+        <Member type="Constructor">public UseCaseEdge(UseCaseNode source, UseCaseNode dest, IEdge edge)</Member>
+        <Member type="Method">public void ChangeSelection()</Member>
+        <Member type="Method">public void RecalcBezier()</Member>
+        <Member type="Method">public void Select()</Member>
+        <Member type="Method">public void SetDrawingBrush(Brush newBrush)</Member>
+        <Member type="Method">public void Unselect()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UseCaseNode</Name>
+        <Access>Internal</Access>
+        <Location left="169" top="605" />
+        <Size width="394" height="400" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private Brush mDrawingBrush</Member>
+        <Member type="Field">public readonly List&lt;UseCaseEdge&gt; mEdges</Member>
+        <Member type="Field">private Brush mUnselectDrawingBrush</Member>
+        <Member type="Field">private double mYOffset</Member>
+        <Member type="Property">public IGraphElement CurrentElement { get; }</Member>
+        <Member type="Property">public INode Node { get; private set; }</Member>
+        <Member type="Property">public bool Selected { get; private set; }</Member>
+        <Member type="Constructor">public UseCaseNode(INode node)</Member>
+        <Member type="Method">public void AddEdge(UseCaseEdge newEdge)</Member>
+        <Member type="Method">public void ChangeSelection()</Member>
+        <Member type="Method">public int GetCountOfEdges(UseCaseEdge sourceKante)</Member>
+        <Member type="Method">public int GetEdgeIndex(UseCaseEdge sourceKante)</Member>
+        <Member type="Method">public void RenderEdges()</Member>
+        <Member type="Method">private void RenderEdgesExceptNode(UseCaseNode notRenderNode)</Member>
+        <Member type="Method">public void Select()</Member>
+        <Member type="Method">public void SetDrawingBrush(IEnumerable&lt;IEdge&gt; toColorEdges, Brush newBrush)</Member>
+        <Member type="Method">public void Unselect()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UseCaseGraphVisualiser</Name>
+        <Access>Public</Access>
+        <Location left="432" top="1083" />
+        <Size width="601" height="536" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private const double ElementHeight = 65</Member>
+        <Member type="Field">private const double ElementWidth = 80</Member>
+        <Member type="Field">public static readonly DependencyProperty GraphElementProperty</Member>
+        <Member type="Field">private readonly List&lt;UseCaseNode&gt; mNodes</Member>
+        <Member type="Field">private Point mOffsetElementPosition</Member>
+        <Member type="Field">private FrameworkElement mSelectedElement</Member>
+        <Member type="Field">public static readonly DependencyProperty ScenarioProperty</Member>
+        <Member type="Field">public static readonly DependencyProperty UseCaseProperty</Member>
+        <Member type="Property">public IGraphElement GraphElement { get; set; }</Member>
+        <Member type="Property">public IGraph Scenario { get; set; }</Member>
+        <Member type="Property">public UseCaseGraph UseCase { get; set; }</Member>
+        <Member type="Constructor">public UseCaseGraphVisualiser()</Member>
+        <Member type="Method">private void AddEdge(UseCaseNode startNode, UseCaseNode endingNode, IEdge edge)</Member>
+        <Member type="Method">private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)</Member>
+        <Member type="Method">private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)</Member>
+        <Member type="Method">private void Clear()</Member>
+        <Member type="Method">private void GraphVisualiser_OnMouseDown(object sender, MouseButtonEventArgs e)</Member>
+        <Member type="Method">private void GraphVisualiser_OnMouseMove(object sender, MouseEventArgs e)</Member>
+        <Member type="Method">private void GraphVisualiser_OnMouseUp(object sender, MouseButtonEventArgs e)</Member>
+        <Member type="Method">private List&lt;string&gt; IndexParser(string index)</Member>
+        <Member type="Method">private static void Scenario_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</Member>
+        <Member type="Method">private void SetBrushForScenario(IGraph sourceGraph, Brush futureBrush)</Member>
+        <Member type="Method">private static void UseCase_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</Member>
+        <Member type="Method">private void VisualiseEdges()</Member>
+        <Member type="Method">private void VisualiseNodes()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>DockedStatus</Name>
+        <Access>Internal</Access>
+        <Location left="728" top="748" />
+        <Size width="162" height="146" />
+        <Collapsed>False</Collapsed>
+        <Value>Top</Value>
+        <Value>Bottom</Value>
+        <Value>Left</Value>
+        <Value>Right</Value>
+      </Entity>
+      <Entity type="Enum">
+        <Name>EdgeProcessType</Name>
+        <Access>Public</Access>
+        <Location left="1568" top="748" />
+        <Size width="162" height="95" />
+        <Collapsed>False</Collapsed>
+        <Value>ForwardEdge</Value>
+        <Value>BackwardEdge</Value>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Realization" first="3" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>484</X>
+          <Y>469</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="2" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1065</X>
+          <Y>618</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="2" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1135</X>
+          <Y>613</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Association" first="4" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>574</X>
+          <Y>1058</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="4" second="3">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>471</X>
+          <Y>1058</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="5">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="2" second="6">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="3" second="5">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>

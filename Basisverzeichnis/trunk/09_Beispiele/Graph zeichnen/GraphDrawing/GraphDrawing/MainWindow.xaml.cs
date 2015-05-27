@@ -136,12 +136,12 @@ namespace GraphDrawing
             {
                 foreach (KnotenUc fe in DrawingCanvas.Children)
                 {
-                    if(fe != selElement)
+                    if (!fe.Equals(selElement))
                         continue;
 
-                    Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
-                    Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
-                    
+                    //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
+                    //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
+
                     fe.RecalcKanten();
                     selElement = null;
                     break;
@@ -159,12 +159,14 @@ namespace GraphDrawing
             {
                 foreach (FrameworkElement fe in DrawingCanvas.Children)
                 {
-                    if (fe != selElement)
+                    if (!fe.Equals(selElement))
                         continue;
+
 
                     Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
                     Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
-
+                    if(fe is KnotenUc)
+                        ((KnotenUc)fe).RecalcKanten();
                 }
             }
         }

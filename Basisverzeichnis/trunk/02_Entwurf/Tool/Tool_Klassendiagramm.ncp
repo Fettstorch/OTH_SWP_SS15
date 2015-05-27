@@ -1,0 +1,483 @@
+<Project>
+  <Name>UseCaseTool</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Klassendiagramm</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>UseCaseGraph</Name>
+        <Access>Public</Access>
+        <Location left="128" top="353" />
+        <Size width="249" height="125" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">IEnumerable&lt;IGraph&gt; mScenarios</Member>
+        <Member type="Property">public IEnumerable&lt;IGraph&gt; Scenarios { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ScenarioMatrixCreator</Name>
+        <Access>Public</Access>
+        <Location left="407" top="81" />
+        <Size width="419" height="104" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public static IEnumerable&lt;IGraph&gt; CreateScenarioMatrix(UseCaseGraph useCaseGraph)</Member>
+        <Modifier>Static</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ScenarioMatrixExporter</Name>
+        <Access>Public</Access>
+        <Location left="846" top="81" />
+        <Size width="394" height="104" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public static void ExportScenarioMatrix(UseCaseGraph useCaseGraph, FileInfo file)</Member>
+        <Modifier>Static</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>WordImporter</Name>
+        <Access>Public</Access>
+        <Location left="1381" top="51" />
+        <Size width="421" height="247" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static Report wordImporteReport</Member>
+        <Member type="Field">private static string actUseCaseId</Member>
+        <Member type="Method">public static List&lt;UseCaseGraph&gt; ImportUseCases(FileInfo file)</Member>
+        <Member type="Method">public static List&lt;UseCaseGraph&gt; ImportUseCases(FileInfo file, out Report report)</Member>
+        <Member type="Method">private static bool TryGetUseCaseName(TableRow row, UseCaseGraph useCaseGraph)</Member>
+        <Member type="Method">private static bool TryReadInUseCase(IEnumerable&lt;TableRow&gt; tableRows, out UseCaseGraph useCaseGraph)</Member>
+        <Member type="Method">private static bool TryGetHorizontalContent(TableRow row, out string result, string heading)</Member>
+        <Member type="Method">private static bool TryGetVerticalContent(IReadOnlyList&lt;TableRow&gt; rows, int actRowIndex, out string result, string heading)</Member>
+        <Member type="Method">private static bool TryGetNormalRoutineAndSeqVars(UseCaseGraph useCaseGraph, IReadOnlyList&lt;TableRow&gt; rows, int rowIndex)</Member>
+        <Modifier>Static</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>DialogViewModel</Name>
+        <Access>Public</Access>
+        <Location left="593" top="290" />
+        <Size width="333" height="366" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly IDialogView mView</Member>
+        <Member type="Field">IEnumerable&lt;UseCaseGraph&gt; mUseCaseGraphs</Member>
+        <Member type="Field">private UseCaseGraph mSelectedGraph</Member>
+        <Member type="Field">private IGraph mSelectedScenario</Member>
+        <Member type="Field">ICommand mOpenWordFile</Member>
+        <Member type="Field">ICommand mExportScenarioMatrix</Member>
+        <Member type="Field">private ICommand mOpenLogfile</Member>
+        <Member type="Field">private ICommand mOpenReportView</Member>
+        <Member type="Constructor">public DialogViewModel(IDialogView viewAbstraction)</Member>
+        <Member type="Property">public IEnumerable&lt;UseCaseGraph&gt; UseCaseGraphs { get; private set; }</Member>
+        <Member type="Property">public UseCaseGraph SelectedUseCaseGraph { get; set; }</Member>
+        <Member type="Property">public IGraph SelectedScenario { get; set; }</Member>
+        <Member type="Property">public LatestWordImportReport Report { get; private set; }</Member>
+        <Member type="Property">public ICommand OpenWordFile { get; }</Member>
+        <Member type="Property">public ICommand ExportScearioMatrix { get; }</Member>
+        <Member type="Property">public ICommand OpenLogfile { get; }</Member>
+        <Member type="Property">public ICommand OpenReportView { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>DialogView</Name>
+        <Access>Public</Access>
+        <Location left="634" top="728" />
+        <Size width="194" height="112" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public GraphVisualizer GraphView</Member>
+        <Member type="Field">public DialogViewModel DataContext</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UseCaseGraphVisualiser</Name>
+        <Access>Public</Access>
+        <Location left="344" top="786" />
+        <Size width="177" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Graph</Name>
+        <Access>Public</Access>
+        <Location left="128" top="155" />
+        <Size width="162" height="216" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>from GraphFramework</Text>
+        <Location left="142" top="81" />
+        <Size width="160" height="50" />
+      </Entity>
+      <Entity type="Class">
+        <Name>OfficeSDK</Name>
+        <Access>Public</Access>
+        <Location left="1162" top="272" />
+        <Size width="162" height="216" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>MS Framework</Text>
+        <Location left="975" top="272" />
+        <Size width="160" height="50" />
+      </Entity>
+      <Entity type="Class">
+        <Name>AsyncCommand</Name>
+        <Access>Public</Access>
+        <Location left="1071" top="399" />
+        <Size width="162" height="216" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>ICommand Implementation</Text>
+        <Location left="1288" top="399" />
+        <Size width="160" height="50" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Report</Name>
+        <Access>Public</Access>
+        <Location left="1469" top="462" />
+        <Size width="358" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly List&lt;ReportEntry&gt; mReportErrorEntries</Member>
+        <Member type="Field">private readonly List&lt;ReportEntry&gt; mReportWarningEntries</Member>
+        <Member type="Field">private readonly List&lt;ReportEntry&gt; mReportLogEntries</Member>
+        <Member type="Property">public ReportEntry[] ErrorReportEntries { get; set; }</Member>
+        <Member type="Property">public ReportEntry[] WarningReportEntries { get; set; }</Member>
+        <Member type="Property">public ReportEntry[] LogReportEntries { get; set; }</Member>
+        <Member type="Method">public void AddReportEntry(ReportEntry entry)</Member>
+        <Member type="Method">public List&lt;ReportEntry&gt; GetEntriesByTag(string tag, Entrytype type = Entrytype.DEFAULT)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>EntryType</Name>
+        <Access>Public</Access>
+        <Location left="1889" top="462" />
+        <Size width="162" height="129" />
+        <Collapsed>False</Collapsed>
+        <Value>ERROR</Value>
+        <Value>WARNING</Value>
+        <Value>LOG</Value>
+        <Value>DEFAULT</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>ReportEntry</Name>
+        <Access>Public</Access>
+        <Location left="1469" top="734" />
+        <Size width="400" height="162" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public string Heading { get; private set; }</Member>
+        <Member type="Property">public string Content { get; private set; }</Member>
+        <Member type="Property">public string Tag { get; private set; }</Member>
+        <Member type="Property">public Entrytype Type { get; private set; }</Member>
+        <Member type="Constructor">public ReportEntry(string heading, string content, Entrytype type, string tag = "")</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IDialogView</Name>
+        <Access>Public</Access>
+        <Location left="997" top="476" />
+        <Size width="457" height="116" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">FileInfo OpenFileDialog(string filter, FileDialogType dialogType)</Member>
+        <Member type="Method">void OpenMessageBox(string header, string content, MessageType messageType)</Member>
+        <Member type="Method">void OpenReportResult(Report viewModel)</Member>
+      </Entity>
+      <Entity type="Enum">
+        <Name>MessageType</Name>
+        <Access>Public</Access>
+        <Location left="1263" top="638" />
+        <Size width="162" height="112" />
+        <Collapsed>False</Collapsed>
+        <Value>Information</Value>
+        <Value>Warning</Value>
+        <Value>Error</Value>
+      </Entity>
+      <Entity type="Enum">
+        <Name>FileDialogType</Name>
+        <Access>Public</Access>
+        <Location left="1072" top="638" />
+        <Size width="162" height="112" />
+        <Collapsed>False</Collapsed>
+        <Value>Open</Value>
+        <Value>Save</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>ReportView</Name>
+        <Access>Public</Access>
+        <Location left="373" top="529" />
+        <Size width="162" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public Report DataContext</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>The view uses some converters for the better display of data (commonly used with the MVVM Pattern)</Text>
+        <Location left="328" top="689" />
+        <Size width="207" height="75" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Comment" first="8" second="7">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>301</X>
+          <Y>156</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>317</X>
+          <Y>180</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="0" second="7">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="4" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Bidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="5" second="4">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Bidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="5" second="6">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Bidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Dependency" first="4" second="3">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1143</X>
+          <Y>380</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="4" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="3" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1439</X>
+          <Y>10</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>359</X>
+          <Y>323</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1060</X>
+          <Y>40</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>359</X>
+          <Y>315</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="1" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>665</X>
+          <Y>40</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>359</X>
+          <Y>328</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="0" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>489</X>
+          <Y>371</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="10" second="9">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1160</X>
+          <Y>294</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="9">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1230</X>
+          <Y>213</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="3" second="9">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1395</X>
+          <Y>323</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1238</X>
+          <Y>345</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Association" first="4" second="11">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1046</X>
+          <Y>408</Y>
+        </BendPoint>
+        <Direction>Bidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+      </Relationship>
+      <Relationship type="Comment" first="12" second="11">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1263</X>
+          <Y>423</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Association" first="13" second="3">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="13" second="14">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Bidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="13" second="15">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Bidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="4" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>971</X>
+          <Y>494</Y>
+        </BendPoint>
+        <Direction>Bidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Realization" first="5" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>853</X>
+          <Y>739</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1010</X>
+          <Y>623</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="18">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1027</X>
+          <Y>745</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1047</X>
+          <Y>725</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="17">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>994</X>
+          <Y>775</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1270</X>
+          <Y>775</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="17">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1380</X>
+          <Y>622</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="18">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1112</X>
+          <Y>619</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="19">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>652</X>
+          <Y>703</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="20" second="5">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>565</X>
+          <Y>727</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>584</X>
+          <Y>750</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>

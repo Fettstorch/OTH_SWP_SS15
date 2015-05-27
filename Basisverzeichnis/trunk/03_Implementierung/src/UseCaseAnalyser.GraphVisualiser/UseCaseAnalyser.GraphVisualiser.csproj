@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UseCaseAnalyser.GraphVisualiser</RootNamespace>
+    <AssemblyName>UseCaseAnalyser.GraphVisualiser</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Build\bin\Debug</OutputPath>
+    <BaseIntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Build\bin\Release</OutputPath>
+    <BaseIntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\Build\bin\Release\UseCaseAnalyser.GraphVisualiser.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DrawingElements\CappedLine.cs" />
+    <Compile Include="DrawingElements\ISelectableGraphElement.cs" />
+    <Compile Include="DrawingElements\UseCaseEdge.xaml.cs">
+      <DependentUpon>UseCaseEdge.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DrawingElements\UseCaseNode.xaml.cs">
+      <DependentUpon>UseCaseNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UseCaseGraphVisualiser.xaml.cs">
+      <DependentUpon>UseCaseGraphVisualiser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UseCaseGraphVisualiser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DrawingElements\UseCaseEdge.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DrawingElements\UseCaseNode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GraphFramework\GraphFramework.csproj">
+      <Project>{6d580afa-c172-4bfc-9c43-e79b2c44b44f}</Project>
+      <Name>GraphFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogManager\LogManager.csproj">
+      <Project>{7044c575-02f4-4565-b590-893754651f53}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UseCaseAnalyser.Stubs\UseCaseAnalyser.Stubs.csproj">
+      <Project>{08881a98-ec02-4206-9ae6-25f12cbea577}</Project>
+      <Name>UseCaseAnalyser.Stubs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UseCaseAnalyser.Model\UseCaseAnalyser.Model.csproj">
+      <Project>{f2c3ffb2-22a0-4a2b-aea9-dfd360310630}</Project>
+      <Name>UseCaseAnalyser.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
