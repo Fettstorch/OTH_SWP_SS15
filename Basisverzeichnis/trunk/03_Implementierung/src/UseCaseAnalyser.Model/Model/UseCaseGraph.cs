@@ -17,6 +17,9 @@ using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Model.Model
 {
+    /// <summary>
+    /// class to represent a use case. 
+    /// </summary>
     public class UseCaseGraph : Graph
     {
         /// <summary>
@@ -109,6 +112,10 @@ namespace UseCaseAnalyser.Model.Model
             get { return mScenarios ?? (mScenarios = /*ScenarioMatrixCreator.CreateScenarios(this)*/ CreateScenarios(this)); }
         }
 
+        /// <summary>
+        /// returns the use case graph as a string by returning its name attribute
+        /// </summary>
+        /// <returns>the use case graph as string</returns>
         public override string ToString()
         {
             return (string) Attributes.Single(a => a.Name == "Name").Value;

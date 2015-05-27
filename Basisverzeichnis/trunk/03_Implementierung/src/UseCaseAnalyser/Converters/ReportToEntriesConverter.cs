@@ -24,6 +24,14 @@ namespace UseCaseAnalyser.Converters
     /// </summary>
     public class ReportToEntriesConverter : IValueConverter
     {
+        /// <summary>
+        /// converts a report to a entry collection by concating all its entries (logs, warnings, errors)
+        /// </summary>
+        /// <param name="value">object to convert</param>
+        /// <param name="targetType">target type for the conversion</param>
+        /// <param name="parameter">parameter which can be passed in view</param>
+        /// <param name="culture">the current culture info</param>
+        /// <returns>the converted object</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Report report = value as Report;
@@ -39,6 +47,15 @@ namespace UseCaseAnalyser.Converters
             return entries;
         }
 
+        /// <summary>
+        /// converts the converted value back to its original type
+        /// -- not supported here --> only 1 way binding is supported
+        /// </summary>
+        /// <param name="value">object to convert</param>
+        /// <param name="targetType">target type for the conversion</param>
+        /// <param name="parameter">parameter which can be passed in view</param>
+        /// <param name="culture">the current culture info</param>
+        /// <returns>the converted object</returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();

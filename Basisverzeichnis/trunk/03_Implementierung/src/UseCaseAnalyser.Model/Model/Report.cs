@@ -24,7 +24,22 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         public enum Entrytype
         {            
-            ERROR, WARNING, LOG, DEFAULT
+            /// <summary>
+            /// error report entry
+            /// </summary>
+            ERROR,
+            /// <summary>
+            /// warning report entry
+            /// </summary>
+            WARNING, 
+            /// <summary>
+            /// information report entry
+            /// </summary>
+            LOG, 
+            /// <summary>
+            /// default report entry
+            /// </summary>
+            DEFAULT
         }
 
         /// <summary>
@@ -32,7 +47,7 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         public ReportEntry[] ErrorReportEntries
         {
-            get { return this.mErrorReportEntries.ToArray(); }
+            get { return mErrorReportEntries.ToArray(); }
         }
 
         /// <summary>
@@ -40,7 +55,7 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         public ReportEntry[] WarningReportEntries
         {
-            get { return this.mWarningReportEntries.ToArray(); }
+            get { return mWarningReportEntries.ToArray(); }
         }
 
         /// <summary>
@@ -48,7 +63,7 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         public ReportEntry[] LogReportEntries
         {
-            get { return this.mLogReportEntries.ToArray(); }
+            get { return mLogReportEntries.ToArray(); }
         }
 
         /// <summary>
@@ -74,11 +89,11 @@ namespace UseCaseAnalyser.Model.Model
         {
             switch (entry.Type)
             {
-                case Entrytype.ERROR: this.mErrorReportEntries.Add(entry);
+                case Entrytype.ERROR: mErrorReportEntries.Add(entry);
                     break;
-                case Entrytype.WARNING: this.mWarningReportEntries.Add(entry);
+                case Entrytype.WARNING: mWarningReportEntries.Add(entry);
                     break;
-                case Entrytype.LOG: this.mLogReportEntries.Add(entry);
+                case Entrytype.LOG: mLogReportEntries.Add(entry);
                     break;
             }
         }
@@ -95,18 +110,18 @@ namespace UseCaseAnalyser.Model.Model
             switch (type)
             {
                 case Entrytype.DEFAULT:
-                    entries.AddRange(this.mErrorReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
-                    entries.AddRange(this.mWarningReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
-                    entries.AddRange(this.mLogReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
+                    entries.AddRange(mErrorReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
+                    entries.AddRange(mWarningReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
+                    entries.AddRange(mLogReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
                     break;
                 case Entrytype.ERROR:
-                    entries.AddRange(this.mErrorReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
+                    entries.AddRange(mErrorReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
                     break;
                 case Entrytype.LOG:
-                    entries.AddRange(this.mLogReportEntries.FindAll(x => string.Equals(x.Tag, tag)));                    
+                    entries.AddRange(mLogReportEntries.FindAll(x => string.Equals(x.Tag, tag)));                    
                     break;
                 case Entrytype.WARNING:
-                    entries.AddRange(this.mWarningReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
+                    entries.AddRange(mWarningReportEntries.FindAll(x => string.Equals(x.Tag, tag)));
                     break;
             }
             
@@ -138,12 +153,19 @@ namespace UseCaseAnalyser.Model.Model
             /// </summary>
             public string Tag { get; private set; }
 
+            /// <summary>
+            /// creates a new report entry with the given parameters
+            /// </summary>
+            /// <param name="heading">heading of the report entry</param>
+            /// <param name="content">content of the report entry</param>
+            /// <param name="type">entry type (error, warning, log)</param>
+            /// <param name="tag">optional additional tag of the report entry</param>
             public ReportEntry(string heading, string content, Entrytype type, string tag = "")
             {
-                this.Heading = heading;
-                this.Content = content;
-                this.Type = type;
-                this.Tag = tag;
+                Heading = heading;
+                Content = content;
+                Type = type;
+                Tag = tag;
             }
         }
     }

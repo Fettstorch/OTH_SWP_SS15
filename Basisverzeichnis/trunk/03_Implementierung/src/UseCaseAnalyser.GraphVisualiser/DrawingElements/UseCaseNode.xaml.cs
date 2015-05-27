@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
 
@@ -44,15 +45,16 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             LblIndex.Content =
                 node.Attributes.First(
                     attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]).Value;
+
             Node = node;
-            mUnselectDrawingBrush = NodeBorder.BorderBrush = Brushes.Black;
+            mUnselectDrawingBrush = Brushes.Black;
+            Unselect();
         }
 
         /// <summary>
         /// Node property for GraphFrameworks INode element which is wrapped by this class.
         /// </summary>
         public INode Node { get; private set; }
-
 
         /// <summary>
         /// Property to check if UseCaseNode is marked as selected
@@ -168,21 +170,22 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         }
 
         /// <summary>
-        /// Select this element
+        /// Select this element (visualised by glowing)
         /// </summary>
         public void Select()
         {
             Selected = true;
-            NodeBorder.BorderBrush = Brushes.Orange;
+            NodeBorder.Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 1, BlurRadius = 30 };
         }
 
         /// <summary>
-        /// Unselect this element
+        /// Unselect this element (remove glow effect)
         /// </summary>
         public void Unselect()
         {
             Selected = false;
             NodeBorder.BorderBrush = mUnselectDrawingBrush;
+            NodeBorder.Effect = null;
         }
 
         /// <summary>

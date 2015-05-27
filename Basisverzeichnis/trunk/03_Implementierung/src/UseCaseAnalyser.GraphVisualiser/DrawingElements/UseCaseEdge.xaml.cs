@@ -17,6 +17,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
 
@@ -67,7 +68,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
             //Set properties for visual appearience
             Stroke = mUnselectDrawingBrush = new SolidColorBrush(Colors.Black);
-            StrokeThickness = 1.5;
+            StrokeThickness = 2.5;           
             //This geometry will represent an arrow at the end of this edge
             EndCap = Geometry.Parse("M0,0 L6,-6 L6,6 z");
 
@@ -238,9 +239,24 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public enum DockedStatus
         {
+            /// <summary>
+            /// UseCaseEdge is visualised on top of UseCaseNode
+            /// </summary>
             Top,
+
+            /// <summary>
+            /// UseCaseEdge is visualised on bottom of UseCaseNode
+            /// </summary>
             Bottom,
+
+            /// <summary>
+            /// UseCaseEdge is visualised on the left of UseCaseNode
+            /// </summary>
             Left,
+
+            /// <summary>
+            /// UseCaseEdge is visualised on the right of UseCaseNode
+            /// </summary>
             Right
         }
 
@@ -253,7 +269,14 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public enum EdgeProcessType
         {
+            /// <summary>
+            /// UseCaseEdge is a forwarding edge
+            /// </summary>
             ForwardEdge,
+
+            /// <summary>
+            /// UseCaseEdge is a backwarding edge (UseCaseNode with type JumpNode as source)
+            /// </summary>
             BackwardEdge
         }
 
@@ -294,7 +317,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public void Select()
         {
             Selected = true;
-            Stroke = Brushes.Orange;
+            Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 100000, BlurRadius = 10 };
             RecalcBezier();
         }
 
@@ -304,7 +327,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public void Unselect()
         {
             Selected = false;
-            Stroke = mUnselectDrawingBrush;
+            Effect = null;
             RecalcBezier();
         }
 

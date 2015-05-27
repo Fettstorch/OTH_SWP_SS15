@@ -31,9 +31,9 @@ namespace UseCaseAnalyser.Model.ViewModel
     /// </summary>
     public class DialogViewModel : INotifyPropertyChanged
     {
-        private readonly IDialogView mView;
-        private IEnumerable<UseCaseGraph> mMUseCaseGraphs;
-        private UseCaseGraph mSelectedGraph;
+        private readonly IDialogView mViewAbstraction;
+        private IEnumerable<UseCaseGraph> mUseCaseGraphs;
+        private UseCaseGraph mSelectedUseCaseGraph;
         private IGraph mSelectedScenario;
         private ICommand mExportScenarioMatrix;
         private ICommand mOpenWordFile;
@@ -50,23 +50,36 @@ namespace UseCaseAnalyser.Model.ViewModel
         /// <summary>
         /// creates a new dialogviewmodel. view specific actions can be invoked over the view interface
         /// </summary>
-        /// <param name="view">interface abstraction of the view</param>
-        public DialogViewModel(IDialogView view)
+        /// <param name="viewAbstraction">interface abstraction of the view</param>
+        public DialogViewModel(IDialogView viewAbstraction)
         {
-            mView = view;
+            mViewAbstraction = viewAbstraction;
         }
 
-     
+
+        /// <summary>
+        /// all use cases which are currently saved (have been read by the word importer)
+        /// </summary>
+        public IEnumerable<UseCaseGraph> UseCaseGraphs
+        {
+            get { return mUseCaseGraphs; }
+            private set
+            {
+                mUseCaseGraphs = value;
+                //  notify gui by fireing property changed
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// the currently selected graph from the view --> set via binding
         /// </summary>
-        public UseCaseGraph SelectedGraph
+        public UseCaseGraph SelectedUseCaseGraph
         {
-            get { return mSelectedGraph; }
+            get { return mSelectedUseCaseGraph; }
             set
             {
-                mSelectedGraph = value;
+                mSelectedUseCaseGraph = value;
                 OnPropertyChanged();
             }
         }
@@ -89,18 +102,6 @@ namespace UseCaseAnalyser.Model.ViewModel
         /// </summary>
         public Report LatestWordImportReport { get; private set; }
 
-        //public IGraphElement SelectedGraphElement
-        //{
-        //    get { return mSelectedGraphElement; }
-        //    set
-        //    {
-        //        mSelectedGraphElement = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
-        //  commands in menu
-
         /// <summary>
         /// opens a word file and tries to read in the use cases
         /// </summary>
@@ -111,7 +112,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mOpenWordFile ?? (mOpenWordFile = new AsyncCommand(o =>
                 {
-                    FileInfo file = mView.OpenFileDialog("Word files |*.docx|All files |*.*", FileDialogType.Open);
+                    FileInfo file = mViewAbstraction.OpenFileDialog("Word files |*.docx|All files |*.*", FileDialogType.Open);
                     if (file == null) return;
 
                     Report newReport;
@@ -120,7 +121,7 @@ namespace UseCaseAnalyser.Model.ViewModel
 
                     if (LatestWordImportReport.ErrorReportEntries.Any() || LatestWordImportReport.WarningReportEntries.Any())
                     {
-                        mView.OpenReportResult(LatestWordImportReport); 
+                        mViewAbstraction.OpenReportResult(LatestWordImportReport); 
                     }
                 }, o => true, e => OnError(e, "Das Einlesen der Word Datei ergab einen Fehler.")));
             }
@@ -138,10 +139,10 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mExportScenarioMatrix ?? (mExportScenarioMatrix = new AsyncCommand(o =>
                 {
-                    FileInfo file = mView.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save);
+                    FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save);
 
-                    ScenarioMatrixExporter.ExportScenarioMatrix(SelectedGraph, file);
-                }, o => SelectedGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler.")));
+                    ScenarioMatrixExporter.ExportScenarioMatrix(SelectedUseCaseGraph, file);
+                }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler.")));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
@@ -177,7 +178,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mOpenReportView ?? (mOpenReportView = new AsyncCommand(o =>
                 {
-                    mView.OpenReportResult(LatestWordImportReport);
+                    mViewAbstraction.OpenReportResult(LatestWordImportReport);
                 }, o => LatestWordImportReport != null, e => OnError(e)));
                 //  condtion to run the command (always true)
             }
@@ -186,29 +187,19 @@ namespace UseCaseAnalyser.Model.ViewModel
         private void OnError(Exception ex, string customText = null)
         {
             LoggingFunctions.Exception(ex);
-            mView.OpenMessageBox(ex.GetType().Name, string.Format(customText ?? "An error occured:{0}{1}", Environment.NewLine, ex.Message), MessageType.Error);
+            mViewAbstraction.OpenMessageBox(ex.GetType().Name, string.Format(customText ?? "An error occured:{0}{1}", Environment.NewLine, ex.Message), MessageType.Error);
         }
 
-
-        /// <summary>
-        /// all use cases which are currently saved (have been read by the word importer)
-        /// </summary>
-        public IEnumerable<UseCaseGraph> UseCaseGraphs
-        {
-            get { return mMUseCaseGraphs; }
-            private set
-            {
-                mMUseCaseGraphs = value;
-                //  notify gui by fireing property changed
-                OnPropertyChanged();
-            }
-        }
         #region Property Changed event + invoker to notify gui about changes
         /// <summary>
         /// invoked to notify the gui about changed of properties
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// fires the property changed for the given property name
+        /// </summary>
+        /// <param name="propertyName"></param>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed",
             Justification = "False positive - attribute introduced in .NET 4.5 is similiar to overloading")]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
