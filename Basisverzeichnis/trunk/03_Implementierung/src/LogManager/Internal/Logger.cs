@@ -162,9 +162,9 @@ namespace LogManager
         internal LogManager()
         {
             LogLevel = LogLevel.Trace;
-            fileNameType = LogfileNameType.Date;
-            filename = GetFileName();
+            fileNameType = LogfileNameType.Rolling;
             filepath = "Logs";
+            filename = GetFileName();
             Target = LogTarget.Console | LogTarget.File;
         }
 
@@ -216,19 +216,23 @@ namespace LogManager
             }
             else //if (FileNameType == LogFileNameType.Rolling)
             {
-                string obsoleteFile = Path.Combine(filepath, "session.9.log.txt");
-                File.Delete(obsoleteFile);
-
-                for (int i = 8; i < 0; i--)
+                try
                 {
-                    string oldFilename = String.Format("session.{0}.log.txt", i);
-                    string newFilename = String.Format("session.{0}.log.txt", i + 1);
+                    string obsoleteFile = Path.Combine(filepath, "session.9.log.txt");
+                    if(File.Exists(obsoleteFile)) File.Delete(obsoleteFile);
 
-                    if (File.Exists(oldFilename))
+                    for (int i = 8; i >= 0; i--)
                     {
-                        File.Move(oldFilename, newFilename);
+                        string oldFile = Path.Combine(filepath, String.Format("session.{0}.log.txt", i));
+                        string newFile = Path.Combine(filepath, String.Format("session.{0}.log.txt", i + 1));
+
+                        if (File.Exists(oldFile))
+                        {
+                            File.Move(oldFile, newFile);
+                        }
                     }
                 }
+                catch { }
 
                 return "session.0.log.txt";
             }
