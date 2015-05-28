@@ -281,7 +281,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 node.Attributes.First(
                     a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]).Value.ToString();
 
-            // set
+            // inititalise reference use case node 
             INode referenceUseCaseNode = null;
 
 
