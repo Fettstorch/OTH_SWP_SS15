@@ -139,25 +139,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 LoggingFunctions.Trace("UseCase : " + nameAttribute.Value + " was selected.");
 
             //  REDRAW (NEW GRAPH)
-            try
-            {
-                visualizer.VisualiseNodes();
-            }
-            catch
-            {
-                LoggingFunctions.Error("Error while calculating visualisation of use case nodes occured.");
-                throw;
-            }
-
-            try
-            {
-                visualizer.VisualiseEdges();
-            }
-            catch
-            {
-                LoggingFunctions.Error("Error while calculating visualisation of use case egdes occured.");
-                throw;
-            }
+            visualizer.VisualiseNodesInStandardPos();
         }
 
         #endregion
@@ -176,8 +158,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// </summary>
         public void RedrawGraph()
         {
-            //  TODO: REDRAW THE CURRENT GRAPH
-            throw new NotImplementedException("Die Methode ist noch nicht implementiert! Auf auf Shinji und Patrick!");
+            VisualiseNodesInStandardPos();
         }
 
         /// <summary>
@@ -196,6 +177,56 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
             mNodes.Clear();
             DrawingCanvas.Children.Clear();
+        }
+
+        /// <summary>
+        /// Visiualise all Nodes in Standard Position and redraw edges 
+        /// </summary>
+        private void VisualiseNodesInStandardPos()
+        {
+            //delete all nodes
+            while (mNodes.Count>0)
+            {
+                //remove node from cache dictionary
+                if (mNodePosDict.ContainsKey(mNodes[0].Node))
+                    mNodePosDict.Remove(mNodes[0].Node);
+
+                //remove node from canvas
+                if(DrawingCanvas.Children.Contains(mNodes[0]))
+                    DrawingCanvas.Children.Remove(mNodes[0]);
+
+                //remove all edges of this node from canvas
+                foreach (UseCaseEdge edge in mNodes[0].mEdges)
+                {
+                    if (DrawingCanvas.Children.Contains(edge))
+                        DrawingCanvas.Children.Remove(edge);
+                }
+
+                //TODO: @Shinji: Sollten wir noch irgendwas machen beim löschen --> Speicheroptimierung?
+                
+                //Remove node from node list
+                mNodes.Remove(mNodes[0]);
+            }
+
+            try
+            {
+                VisualiseNodes();
+            }
+            catch
+            {
+                LoggingFunctions.Error("Error while calculating visualisation of use case nodes occured.");
+                throw;
+            }
+
+            try
+            {
+                VisualiseEdges();
+            }
+            catch
+            {
+                LoggingFunctions.Error("Error while calculating visualisation of use case egdes occured.");
+                throw;
+            }
         }
 
         /// <summary>

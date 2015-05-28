@@ -122,7 +122,6 @@ namespace UseCaseAnalyser.Model.Model
                 {
                     if(! currentNode.Equals(FindSourceNode(edgeList[i])))
                      continue;
-                    //Todo: Patrick please check if this is now correct, the order of the Nodes was the other way round before
                     INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node2 : edgeList[i].Node1; 
                     internalGraph.AddNode(destNode);
                     internalGraph.AddEdge(currentNode, destNode,edgeList[i].Attributes.ToArray());

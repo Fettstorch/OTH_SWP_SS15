@@ -31,7 +31,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// <summary>
         /// List of UseCaseEdge that either start or end in this UseCaseNode
         /// </summary>
-        private readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
+        public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
 
         /// <summary>
         /// Wrapper class for GraphFrameworks's INode which is used to define how a node will be displayed in UseCaseGraphVisualiser.
