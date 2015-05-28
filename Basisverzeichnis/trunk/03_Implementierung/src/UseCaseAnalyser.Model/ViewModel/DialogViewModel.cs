@@ -39,6 +39,7 @@ namespace UseCaseAnalyser.Model.ViewModel
         private ICommand mOpenWordFile;
         private ICommand mOpenLogfile;
         private ICommand mOpenReportView;
+        private ICommand mRefreshGraph;
         //private IGraphElement mSelectedGraphElement;
 
         /// <summary>
@@ -119,7 +120,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                     UseCaseGraphs = WordImporter.ImportUseCases(file, out newReport);
                     LatestWordImportReport = newReport;
 
-                    if (LatestWordImportReport.ErrorReportEntries.Any() || LatestWordImportReport.WarningReportEntries.Any())
+                    if (LatestWordImportReport.ErrorReportEntries.Any())// || LatestWordImportReport.WarningReportEntries.Any())
                     {
                         mViewAbstraction.OpenReportResult(LatestWordImportReport); 
                     }
@@ -181,6 +182,20 @@ namespace UseCaseAnalyser.Model.ViewModel
                     mViewAbstraction.OpenReportResult(LatestWordImportReport);
                 }, o => LatestWordImportReport != null, e => OnError(e)));
                 //  condtion to run the command (always true)
+            }
+        }
+
+        /// <summary>
+        /// refreshes the current use case graph visualization
+        /// </summary>
+        public ICommand RefreshGraph
+        {
+            get
+            {
+                return mRefreshGraph ?? (mRefreshGraph = new AsyncCommand(o =>
+                {
+                    mViewAbstraction.RedrawGraph();
+                }, o => true, e => OnError(e)));
             }
         }
 

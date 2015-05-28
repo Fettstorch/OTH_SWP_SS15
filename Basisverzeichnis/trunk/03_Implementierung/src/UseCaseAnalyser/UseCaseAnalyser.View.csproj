@@ -61,9 +61,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\AttributeToBoolConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EntryTypeToColorConverter.cs" />
+    <Compile Include="Converters\EntryTypeToImageConverter.cs" />
     <Compile Include="Converters\GraphElementToStringConverter.cs" />
     <Compile Include="Converters\ReportToEntriesConverter.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="View\ReportView.xaml.cs">
       <DependentUpon>ReportView.xaml</DependentUpon>
     </Compile>
@@ -102,6 +109,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -129,6 +140,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="graph_Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\refresh_64px.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -43,6 +43,11 @@ namespace UseCaseAnalyser.Model.ViewModel
         /// </summary>
         /// <param name="viewModel">the report which is used as viewmodel of the report view</param>
         void OpenReportResult(Report viewModel);
+
+        /// <summary>
+        /// lets the graph visualizer redraw the graph
+        /// </summary>
+        void RedrawGraph();
     }
 
     /// <summary>
