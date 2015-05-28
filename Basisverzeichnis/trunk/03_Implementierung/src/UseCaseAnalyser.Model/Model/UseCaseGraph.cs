@@ -41,10 +41,6 @@ namespace UseCaseAnalyser.Model.Model
         public enum NodeAttributes
         {
             /// <summary>
-            /// The index [obsulete]
-            /// </summary>
-            Index = 0,
-            /// <summary>
             /// the index of the normal routine, e.g. "2"
             /// </summary>
             NormalIndex,

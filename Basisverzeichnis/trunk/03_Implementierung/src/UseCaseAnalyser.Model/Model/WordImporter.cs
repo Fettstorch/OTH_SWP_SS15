@@ -356,16 +356,14 @@ namespace UseCaseAnalyser.Model.Model
                         UseCaseGraph.NodeTypeAttribute.NormalNode);
                 }
 
-                IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index],
-                    (i + 1).ToString()); // obsulete!!
                 IAttribute normalIndex = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex],
                     (i + 1).ToString());
                 IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description],
                     paragraphList[i].InnerText);
                 // Create the node:
-                INode node = new Node(indexAttribute, normalIndex, descAttribute, nodeType);
+                INode node = new Node(normalIndex, descAttribute, nodeType);
                 useCaseGraph.AddNode(node);
-                nodes.Add(indexAttribute.Value.ToString(), node);
+                nodes.Add(normalIndex.Value.ToString(), node);
                 // Create edge
                 if (oldNode != null) useCaseGraph.AddEdge(oldNode, node);
                 oldNode = node;
@@ -400,8 +398,6 @@ namespace UseCaseAnalyser.Model.Model
                     // Get all sequence nodes:
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index],
-                            variantIndex + (j + 1)); // obsulete
                         IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description],
                             paragraphList[j].InnerText);
                         IAttribute normIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex],
@@ -411,7 +407,7 @@ namespace UseCaseAnalyser.Model.Model
                         IAttribute varStepAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep],
                                     (j + 1).ToString());
 
-                        INode node = new Node(indexAttribute, descAttribute, normIndexAttribute, varIndexAttribute, varStepAttribute);
+                        INode node = new Node(descAttribute, normIndexAttribute, varIndexAttribute, varStepAttribute);
                         if (j < paragraphList.Count - 2)
                         {
                             node.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
