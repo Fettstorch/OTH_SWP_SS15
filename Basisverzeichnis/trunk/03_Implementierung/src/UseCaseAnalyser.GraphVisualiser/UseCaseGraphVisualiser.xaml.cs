@@ -139,7 +139,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 LoggingFunctions.Trace("UseCase : " + nameAttribute.Value + " was selected.");
 
             //  REDRAW (NEW GRAPH)
-            visualizer.VisualiseNodesInStandardPos();
+            visualizer.VisualiseGraph();
         }
 
         #endregion
@@ -155,26 +155,42 @@ namespace UseCaseAnalyser.GraphVisualiser
 
         /// <summary>
         /// redraws the current usecasegraph --> nodes + edges are redrawn
+        /// and the cache positon will be deleted
         /// </summary>
         public void RedrawGraph()
         {
-            VisualiseNodesInStandardPos();
+            Clear(true);
+            VisualiseGraph();
         }
 
         /// <summary>
         /// Creates cache entries (current position) for all INode objects within the UseCaseNodes.
         /// Furthermore clear Canvas and mNodes list.
         /// </summary>
-        private void Clear()
+        /// <param name="clearCache">True:clear cache of nodes | False: save old postion of nodes</param>
+        private void Clear(bool clearCache = false)
         {
-            //Save old Position in Dictionary
-            foreach (UseCaseNode node in mNodes)
+            if (clearCache)
             {
-                if (mNodePosDict.ContainsKey(node.Node))
+                foreach (UseCaseNode node in mNodes)
                 {
-                    mNodePosDict[node.Node] = new Point(Canvas.GetLeft(node), Canvas.GetTop(node));
+                    if (mNodePosDict.ContainsKey(node.Node))
+                        mNodePosDict.Remove(node.Node);
                 }
             }
+            // if the cache will not be cleared the position will be saved
+            else
+            {
+                //Save old Position in Dictionary
+                foreach (UseCaseNode node in mNodes)
+                {
+                    if (mNodePosDict.ContainsKey(node.Node))
+                    {
+                        mNodePosDict[node.Node] = new Point(Canvas.GetLeft(node), Canvas.GetTop(node));
+                    }
+                }     
+            }
+           
             mNodes.Clear();
             DrawingCanvas.Children.Clear();
         }
@@ -182,32 +198,8 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <summary>
         /// Visiualise all Nodes in Standard Position and redraw edges 
         /// </summary>
-        private void VisualiseNodesInStandardPos()
+        private void VisualiseGraph()
         {
-            //delete all nodes
-            while (mNodes.Count>0)
-            {
-                //remove node from cache dictionary
-                if (mNodePosDict.ContainsKey(mNodes[0].Node))
-                    mNodePosDict.Remove(mNodes[0].Node);
-
-                //remove node from canvas
-                if(DrawingCanvas.Children.Contains(mNodes[0]))
-                    DrawingCanvas.Children.Remove(mNodes[0]);
-
-                //remove all edges of this node from canvas
-                foreach (UseCaseEdge edge in mNodes[0].mEdges)
-                {
-                    if (DrawingCanvas.Children.Contains(edge))
-                        DrawingCanvas.Children.Remove(edge);
-                }
-
-                //TODO: @Shinji: Sollten wir noch irgendwas machen beim löschen --> Speicheroptimierung?
-                
-                //Remove node from node list
-                mNodes.Remove(mNodes[0]);
-            }
-
             try
             {
                 VisualiseNodes();
