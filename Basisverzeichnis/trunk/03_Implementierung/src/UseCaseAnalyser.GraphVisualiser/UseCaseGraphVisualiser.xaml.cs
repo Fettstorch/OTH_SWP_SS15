@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -222,49 +221,14 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         /// <summary>
-        /// Visualise all nodes in dependency property UseCaseGraph by using Index attributes to calculate their corresponding
-        /// default slotNumber (node's X-Offset). If Index is corrupted an InvalidOperationException will be thrown.
+        /// Visualise all nodes in dependency property UseCaseGraph.
         /// </summary>
         private void VisualiseNodes()
         {
-            //first add all nodes contained in UseCaseGraph to visualiser
+            //add all nodes contained in UseCaseGraph to visualiser
             foreach (INode ucNode in UseCase.Nodes)
             {
-                //get node's attribute named "Index"
-                IAttribute ucNodeAttribut =
-                    ucNode.Attributes.First(
-                        a => a.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]);
-
-                //parse Index value
-                // Todo Use NodeAttributes NormalIndex, VariantIndex, VarSeqStep instead of IndexParser()
-                List<string> results = IndexParser(ucNodeAttribut.Value.ToString());
-                switch (results.Count)
-                {
-                    case 1:
-                        //if regex returns list with one element the node is a main sequence node - add it to first row
-                        AddNode(1, ucNode);
-                        break;
-                    case 3:
-                        //if regex returns list with three elements the node is a variant sequence node
-                        //calculate row by converting character to int (only first char is converted at the moment)
-                        //furthermore first entry in list marks reference node (node where variant sequences branches
-                        AddNode((uint) (char.ToUpper(results[1][0]) - 63), ucNode,
-                            UseCase.Nodes.FirstOrDefault(
-                                node =>
-                                    node.Attributes.Any(
-                                        attr =>
-                                            attr.Name.Equals(
-                                                UseCaseGraph.AttributeNames[
-                                                    (int) UseCaseGraph.NodeAttributes.Index]) &&
-                                            ((string) attr.Value).Equals(results[0]))));
-                        break;
-                    default:
-                        InvalidOperationException invalidOperationException =
-                            new InvalidOperationException(
-                                @"Extraction of node index failed. Node position can not be determined.");
-                        LoggingFunctions.Exception(invalidOperationException);
-                        throw invalidOperationException;
-                }
+                AddNode(ucNode);
             }
         }
 
@@ -280,19 +244,9 @@ namespace UseCaseAnalyser.GraphVisualiser
                 UseCaseNode secondNode = null;
                 foreach (UseCaseNode ucNode in mNodes)
                 {
-                    IAttribute ucNodeIndexAttr =
-                        ucNode.Node.Attributes.First(
-                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]);
-
-                    if (firstNode == null &&
-                        ucNodeIndexAttr.Value == ucEdge.Node1.Attributes.First(
-                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index])
-                            .Value)
+                    if (firstNode == null && ucNode.Node.Equals(ucEdge.Node1))
                         firstNode = ucNode;
-                    if (secondNode == null && ucNodeIndexAttr.Value ==
-                        ucEdge.Node2.Attributes.First(
-                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index])
-                            .Value)
+                    if (secondNode == null && ucNode.Node.Equals(ucEdge.Node2))
                         secondNode = ucNode;
                 }
 
@@ -311,30 +265,48 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         /// <summary>
-        /// Parse index by using a regex to split it in either one (NormalNodes) or three (VariantNodes) values.
-        /// These values will be used for determine default position.
+        /// Adds a node to UseCaseGraphVisualiser canvas and node list. Furthermore adjusts default position of this node using 
+        /// NormalIndex/VariantIndex attributes if no cached value is given.
         /// </summary>
-        /// <param name="index">Index string extracted by WordImporter containg NormalIndex, (VariantIndex and VarSeqStep) concatenated.</param>
-        /// <returns>List values containing either one value (NormalIndex) for NormalNodes or three values (NormalIndex,VariantIndex,VarSeqStep) for VariantNodes)</returns>
-        private List<string> IndexParser(string index)
-        {
-            Regex regex = new Regex(@"([0-9]+)([A-z]+)([0-9]+)");
-            //split method adds empty entries in front and in the end of list - therefore remove empty entries
-            return regex.Split(index).Where(s => s != String.Empty).ToList();
-        }
-
-        /// <summary>
-        /// Adds a node to UseCaseGraphVisualiser canvas and node list. Furthermore adjusts default position of this node if no cached value is given.
-        /// </summary>
-        /// <param name="slotNumber">Used to determine X-Offset for node (column).</param>
         /// <param name="node">INode object that should be wrapped within a UseCaseNode.</param>
-        /// <param name="referenceUseCaseNode">Used if node is a variant node. Corrensponding reference node is normal node where the variant was branched. Used to determine Y-Offset.</param>
-        private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)
+        private void AddNode(INode node)
         {
             UseCaseNode useCaseNode = new UseCaseNode(node);
             useCaseNode.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             DrawingCanvas.Children.Add(useCaseNode);
             Panel.SetZIndex(useCaseNode, 10);
+
+            // get node's attribute named "NormalIndex"
+            string normalIndex =
+                node.Attributes.First(
+                    a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]).Value.ToString();
+
+            // set
+            INode referenceUseCaseNode = null;
+
+
+            //determine if node is a variant node (node type cannot be used)
+            IAttribute variantIndexAttribute = node.Attributes.FirstOrDefault(
+                a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]);
+
+            uint slotNumber = 1;
+
+            if (variantIndexAttribute != null)
+            {
+                // determine slotnumber (X-Offset) indicator using variant index (character) which is
+                // "casted" to an integer with offset
+                slotNumber = (uint) (char.ToUpper(variantIndexAttribute.Value.ToString()[0]) - 63);
+
+                // determine reference use case node 
+                referenceUseCaseNode = UseCase.Nodes.FirstOrDefault(
+                    ucNode =>
+                        ucNode.Attributes.Any(
+                            attr =>
+                                attr.Name.Equals(
+                                    UseCaseGraph.AttributeNames[
+                                        (int) UseCaseGraph.NodeAttributes.NormalIndex]) &&
+                                ((string) attr.Value).Equals(normalIndex)));
+            }
 
 
             // If the node is already in the Dictionary the old value will be loaded
