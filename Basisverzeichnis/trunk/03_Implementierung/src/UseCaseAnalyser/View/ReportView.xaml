@@ -9,8 +9,7 @@
         Title="Word import result" Height="400" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="SingleBorderWindow" >
     <Window.Resources>
         <converters:ReportToEntriesConverter x:Key="ReportToEntriesConverter" />
-        <converters:EntryTypeToColorConverter x:Key="EntryTypeToColorConverter" />
-        <!--<converters:EntryTypeToImageConverter x:Key="EntryTypeToImageConverter" />-->
+        <converters:EntryTypeToImageConverter x:Key="EntryTypeToImageConverter" />
     </Window.Resources>
         <GroupBox Margin="3" Header="Results" Padding="5">
             <ListBox ItemsSource="{Binding Converter={StaticResource ReportToEntriesConverter}}"
@@ -19,15 +18,19 @@
                     <DataTemplate DataType="{x:Type model:Report+ReportEntry}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.8*" />
-                                <ColumnDefinition Width="0.2*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            
-                            <TextBlock Padding="5" Text="{Binding Path=Content}" ToolTip="{Binding Path=Heading}"
-                                       Background="{Binding Path=Type, Converter={StaticResource EntryTypeToColorConverter}}" />
-                            <!--<Image Grid.Column="1" Stretch="Uniform" Height="30" Width="30" VerticalAlignment="Center"
-                                   Source="{Binding Path=Type, Converter={StaticResource EntryTypeToImageConverter}}">-->
-                            <!--</Image>-->
+
+                            <Border Padding="5" BorderThickness="0.5" BorderBrush="DarkGray">
+                                <Image Stretch="Uniform" Height="20" Width="20" VerticalAlignment="Center"
+                                       Source="{Binding Path=Type, Converter={StaticResource EntryTypeToImageConverter}}" />
+                            </Border>
+                        <Border Grid.Column="1" BorderThickness="0.5" BorderBrush="DarkGray">
+                                <TextBlock Padding="5" Text="{Binding Path=Content}"
+                                           ToolTip="{Binding Path=Heading}" />
+                            </Border>
+                                       <!--Background="{Binding Path=Type, Converter={StaticResource EntryTypeToColorConverter}}" />-->
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

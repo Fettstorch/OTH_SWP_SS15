@@ -27,9 +27,9 @@ namespace UseCaseAnalyser.Converters
 
             Report.Entrytype actualType = entrytype.Value;
             Uri uri = actualType == Report.Entrytype.ERROR
-                ? new Uri(@"UseCaseAnalyser.View;component/Resources/Error.png")
-                : actualType == Report.Entrytype.WARNING ? new Uri(@"UseCaseAnalyser.View;component/Resources/Warning.png") :
-                new Uri(@"UseCaseAnalyser.View;component/Resources/Information.png");
+                ? new Uri(@"/Resources/Error.png", UriKind.Relative)
+                : actualType == Report.Entrytype.WARNING ? new Uri(@"/Resources/Warning.png", UriKind.Relative) :
+                new Uri(@"/Resources/Information.png", UriKind.Relative);
 
             return new BitmapImage(uri);
         }
