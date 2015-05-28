@@ -5,6 +5,8 @@
         xmlns:viewModel="clr-namespace:UseCaseAnalyser.Model.ViewModel;assembly=UseCaseAnalyser.Model"
         xmlns:interfaces="clr-namespace:GraphFramework.Interfaces;assembly=GraphFramework"
         xmlns:converters="clr-namespace:UseCaseAnalyser.Converters"
+        xmlns:model="clr-namespace:UseCaseAnalyser.Model.Model;assembly=UseCaseAnalyser.Model"
+        xmlns:view="clr-namespace:UseCaseAnalyser.View"
         Title="DialogView" MinWidth="300" MinHeight="300">
     <Window.Resources>
         <converters:GraphElementToStringConverter x:Key="GraphElementToStringConverter" />
@@ -12,6 +14,8 @@
             <Setter Property="Padding" Value="3" />
         </Style>
         <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
+        <BitmapImage x:Key="RefreshImage" UriSource="../Resources/refresh_64px.png" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -52,7 +56,27 @@
         <TabControl Grid.Column="2" Grid.Row="1">
             <TabItem Header="UseCases">
                 <ListBox Name="UseCases" ItemsSource="{Binding Path=UseCaseGraphs, Mode=OneWay}" SelectedItem="{Binding Path=SelectedUseCaseGraph, Mode=OneWayToSource}"
-                         HorizontalContentAlignment="Stretch" />
+                         HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type model:UseCaseGraph}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="{Binding Mode=OneWay}" />
+                                <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type view:DialogView}},
+                                    Mode=OneWay, Path=DataContext.(viewModel:DialogViewModel.RefreshGraph)}" Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                    AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                        Background="White">
+                                    
+                                    <Image Width="20" Height="20" Source="{StaticResource RefreshImage}" />
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </TabItem>
             <TabItem Header="Scenarios">
                 <ListBox Name="Scenarios" ItemsSource="{Binding Path=SelectedUseCaseGraph.Scenarios, Mode=OneWay}" SelectedItem="{Binding Path=SelectedScenario, 

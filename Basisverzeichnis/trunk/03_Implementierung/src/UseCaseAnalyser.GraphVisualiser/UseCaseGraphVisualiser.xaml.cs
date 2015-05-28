@@ -170,6 +170,16 @@ namespace UseCaseAnalyser.GraphVisualiser
             InitializeComponent();
         }
 
+
+        /// <summary>
+        /// redraws the current usecasegraph --> nodes + edges are redrawn
+        /// </summary>
+        public void RedrawGraph()
+        {
+            //  TODO: REDRAW THE CURRENT GRAPH
+            throw new NotImplementedException("Die Methode ist noch nicht implementiert! Auf auf Shinji und Patrick!");
+        }
+
         /// <summary>
         /// Creates cache entries (current position) for all INode objects within the UseCaseNodes.
         /// Furthermore clear Canvas and mNodes list.

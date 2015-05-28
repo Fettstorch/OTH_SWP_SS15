@@ -76,6 +76,11 @@ namespace UseCaseAnalyser.View
             mView.ShowDialog();
         }
 
+        public void RedrawGraph()
+        {
+            UseCaseGraphViewer.RedrawGraph();
+        }
+
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown(0);

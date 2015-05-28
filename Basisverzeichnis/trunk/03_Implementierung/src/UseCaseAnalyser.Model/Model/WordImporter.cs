@@ -69,23 +69,23 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         private enum ImportStep
         {
-            Name = 0, 
-            Id,  
-            Priority, 
-            Description, 
-            PreCondition, 
-            PostCondition, 
+            Name = 0,
+            Id,
+            Priority,
+            Description,
+            PreCondition,
+            PostCondition,
             NormalRoutine,
-            SequenceVariation, 
-            SpecialRequirements, 
+            SequenceVariation,
+            SpecialRequirements,
             OpenPoints
-        }        
+        }
 
         /// <summary>
         /// The report of the actual import process
         /// </summary>
         private static Report wordImporteReport;
-        
+
         /// <summary>
         /// The use case ID of the actual use case
         /// </summary>
@@ -101,7 +101,7 @@ namespace UseCaseAnalyser.Model.Model
             Report temp;
             return WordImporter.ImportUseCases(file, out temp);
         }
-        
+
         /// <summary>
         /// Imports all use cases that can be found in the file. It also generates a report für errors, warnings and log entries
         /// </summary>
@@ -120,7 +120,7 @@ namespace UseCaseAnalyser.Model.Model
                 WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("ERROR", "File not found!", Report.Entrytype.ERROR));
                 return useCaseList;
             }
-            
+
             // Try to open the document
             WordprocessingDocument doc;
             try
@@ -146,10 +146,8 @@ namespace UseCaseAnalyser.Model.Model
                 {
                     // Valid Use Case found:
                     useCaseList.Add(useCaseGraph);
-                    IAttribute nameAtribute =
-                        useCaseGraph.Attributes.ToList()
-                            .Find(x => string.Equals(x.Name, ImportStepNames[(int) ImportStep.Id]));
-                    WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry(nameAtribute.Value as string , "Use Case " + " successfully imported!", Report.Entrytype.LOG));
+                    WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("Success!",
+                        "Use Case " + actUseCaseId + " successfully imported!", Report.Entrytype.LOG, actUseCaseId));
                     numberOfUseCases++;
                 }
             }
@@ -157,13 +155,14 @@ namespace UseCaseAnalyser.Model.Model
             if (numberOfUseCases == 0)
             {
                 // No Use Cases were imported
-                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING", "No use cases found", Report.Entrytype.WARNING));
+                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING",
+                    "No use cases found", Report.Entrytype.WARNING));
             }
-            
+
             doc.Close();
             doc.Dispose();
 
-            return useCaseList; 
+            return useCaseList;
         }
 
         /// <summary>
@@ -191,7 +190,8 @@ namespace UseCaseAnalyser.Model.Model
                 return true;
             }
 
-            wordImporteReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Use Case doesn't have a name", Report.Entrytype.ERROR));
+            wordImporteReport.AddReportEntry(new Report.ReportEntry("Invalid format!", "Use Case doesn't have a name",
+                Report.Entrytype.ERROR, actUseCaseId));
             return false;
         }
 
@@ -212,13 +212,13 @@ namespace UseCaseAnalyser.Model.Model
 
             string prio, desc, precon, postcon, spec, open;
 
-            if (TryGetHorizontalContent(rows[1], out actUseCaseId, ImportStepNames[(int)ImportStep.Id]) &&                
+            if (TryGetHorizontalContent(rows[1], out actUseCaseId, ImportStepNames[(int)ImportStep.Id]) &&
                 TryGetHorizontalContent(rows[2], out prio, ImportStepNames[(int)ImportStep.Priority]) &&
                 TryGetVerticalContent(rows, 3, out desc, ImportStepNames[(int)ImportStep.Description]) &&
                 TryGetVerticalContent(rows, 5, out precon, ImportStepNames[(int)ImportStep.PreCondition]) &&
                 TryGetVerticalContent(rows, 7, out postcon, ImportStepNames[(int)ImportStep.PostCondition]) &&
-                TryGetVerticalContent(rows, rows.Count-4, out spec, ImportStepNames[(int)ImportStep.SpecialRequirements]) &&
-                TryGetVerticalContent(rows, rows.Count-2, out open, ImportStepNames[(int)ImportStep.OpenPoints]) &&
+                TryGetVerticalContent(rows, rows.Count - 4, out spec, ImportStepNames[(int)ImportStep.SpecialRequirements]) &&
+                TryGetVerticalContent(rows, rows.Count - 2, out open, ImportStepNames[(int)ImportStep.OpenPoints]) &&
                 TryGetUseCaseName(rows[0], useCaseGraph))
             {
                 IAttribute idAttribute = new Attribute(ImportStepNames[(int)ImportStep.Id], actUseCaseId);
@@ -234,11 +234,11 @@ namespace UseCaseAnalyser.Model.Model
                 useCaseGraph.AddAttribute(preconAttribute);
                 useCaseGraph.AddAttribute(posconAttribute);
                 useCaseGraph.AddAttribute(specAttribute);
-                useCaseGraph.AddAttribute(openAttribute);                
+                useCaseGraph.AddAttribute(openAttribute);
 
                 // Get normal routine and sequence variants
                 if (TryGetNormalRoutineAndSeqVars(useCaseGraph, rows, 9)) return true;
-            }            
+            }
 
             return false;
         }
@@ -254,14 +254,23 @@ namespace UseCaseAnalyser.Model.Model
         {
             result = null;
             List<TableCell> cells = row.Descendants<TableCell>().ToList();
-            if (cells.Count != 2) return false;
-            if (!string.Equals(cells[0].InnerText, heading)) return false;
-            result = cells[1].InnerText;
-            return true;
+            if (cells.Count == 2)
+            {
+                if (string.Equals(cells[0].InnerText, heading))
+                {
+                    result = cells[1].InnerText;
+                    return true;
+                }
+            }
+
+            wordImporteReport.AddReportEntry(new Report.ReportEntry("Invalid format!", "Could not read '" + heading + "'!",
+                Report.Entrytype.WARNING, actUseCaseId));
+            return false;
         }
 
         /// <summary>
-        /// Returns true or false if success
+        /// This function tries to fetch the content from a use case table, that is declared underneeth each other,
+        /// e.g. "Kurzbeschreibung", "Vorbedingung", etc.
         /// </summary>
         /// <param name="rows">List of the table rows of this use case</param>
         /// <param name="actRowIndex">index of the row the heading is located</param>
@@ -270,16 +279,28 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns></returns>
         private static bool TryGetVerticalContent(IReadOnlyList<TableRow> rows, int actRowIndex, out string result, string heading)
         {
-            result = null;            
-            if (rows == null) return false;
-            if (actRowIndex < 0) return false;
+            result = null;
+            if (rows == null) throw new NullReferenceException("rows");
+            if (actRowIndex < 0) throw new InvalidOperationException("actRowIndex < 0!!");
+            // Get content in the first row
             List<TableCell> cells = rows[actRowIndex].Descendants<TableCell>().ToList();
-            if (cells.Count != 1 || ++actRowIndex >= rows.Count) return false;
-            if (!string.Equals(cells[0].InnerText, heading)) return false;
-            cells = rows[actRowIndex].Descendants<TableCell>().ToList();
-            if (cells.Count != 1) return false;
-            result = cells[0].InnerText;
-            return true;
+            if (cells.Count == 1 && ++actRowIndex < rows.Count)
+            {
+                if (string.Equals(cells[0].InnerText, heading))
+                {
+                    // Get content in the second row
+                    cells = rows[actRowIndex].Descendants<TableCell>().ToList();
+                    if (cells.Count == 1)
+                    {
+                        result = cells[0].InnerText;
+                        return true;
+                    }
+                }
+            }
+
+            wordImporteReport.AddReportEntry(new Report.ReportEntry("Invalid format!",
+                "the content of '" + heading + "' could not be interpreted", Report.Entrytype.ERROR, actUseCaseId));
+            return false;
         }
 
         /// <summary>
@@ -292,19 +313,19 @@ namespace UseCaseAnalyser.Model.Model
         private static bool TryGetNormalRoutineAndSeqVars(UseCaseGraph useCaseGraph, IReadOnlyList<TableRow> rows, int rowIndex)
         {
             // Defensive programming
-            if (rows == null) return false;
-            if (rowIndex < 0) return false;
-            if (useCaseGraph == null) return false;
+            if (rows == null) throw new NullReferenceException("rows");
+            if (rowIndex < 0) throw new InvalidOperationException("rowIndex < 0 !!");
+            if (useCaseGraph == null) throw new NullReferenceException("useCaseGraph");
 
             // Initializing
-            Dictionary<string, INode> nodes = new Dictionary<string, INode>();            
+            Dictionary<string, INode> nodes = new Dictionary<string, INode>();
             List<TableCell> cells = rows[rowIndex].Descendants<TableCell>().ToList();
             string variantIndex = " ", previousVariantIndex = "";
             Regex rgx = new Regex("[^0-9]");
-            
+
             // Check the heading ("Normaler Ablauf")
-            if (cells.Count != 1|| rowIndex + 1 >= rows.Count) return false;
-            if (!string.Equals(cells[0].InnerText, ImportStepNames[(int)ImportStep.NormalRoutine])) 
+            if (cells.Count != 1 || rowIndex + 1 >= rows.Count) return false;
+            if (!string.Equals(cells[0].InnerText, ImportStepNames[(int)ImportStep.NormalRoutine]))
                 return false;
 
             // Try to get the normal use case routine
@@ -319,28 +340,28 @@ namespace UseCaseAnalyser.Model.Model
                 if (i == 0)
                 {
                     // Type = Start Node
-                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], 
+                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                         UseCaseGraph.NodeTypeAttribute.StartNode);
                 }
                 else if (i == paragraphList.Count - 2)
                 {
                     // Type = End Node
-                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], 
+                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                         UseCaseGraph.NodeTypeAttribute.EndNode);
                 }
                 else
                 {
                     // Type = Normal Node
-                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], 
+                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                         UseCaseGraph.NodeTypeAttribute.NormalNode);
                 }
 
-                IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index], 
+                IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index],
                     (i + 1).ToString()); // obsulete!!
                 IAttribute normalIndex = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex],
-                    (i + 1).ToString()); 
-                IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], 
-                    paragraphList[i].InnerText);                
+                    (i + 1).ToString());
+                IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description],
+                    paragraphList[i].InnerText);
                 // Create the node:
                 INode node = new Node(indexAttribute, normalIndex, descAttribute, nodeType);
                 useCaseGraph.AddNode(node);
@@ -365,7 +386,7 @@ namespace UseCaseAnalyser.Model.Model
                 if (cells.Count != 2) return false; // invalid format
                 if (!cells[0].InnerText.Equals(""))
                 {
-                    variantIndex = cells[0].InnerText; 
+                    variantIndex = cells[0].InnerText;
                     previousVariantIndex = "";
                     varDesc = cells[1].InnerText;
                 }
@@ -373,22 +394,22 @@ namespace UseCaseAnalyser.Model.Model
                 {
                     paragraphList = cells[1].Descendants<Paragraph>().ToList();
                     if (paragraphList.Count == 0) continue; // Sequence variant is invalid, because it has no nodes
-                    
+
                     Dictionary<string, INode> sequenceVarNodes = new Dictionary<string, INode>();
                     string lastCondition = paragraphList[paragraphList.Count - 1].InnerText;
                     // Get all sequence nodes:
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index], 
+                        IAttribute indexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Index],
                             variantIndex + (j + 1)); // obsulete
-                        IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], 
+                        IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description],
                             paragraphList[j].InnerText);
-                        IAttribute normIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex], 
+                        IAttribute normIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex],
                             rgx.Replace(variantIndex, ""));
-                        IAttribute varIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex], 
-                            variantIndex[variantIndex.Length-1]);
+                        IAttribute varIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex],
+                            variantIndex[variantIndex.Length - 1]);
                         IAttribute varStepAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep],
-                                    (j+1).ToString());
+                                    (j + 1).ToString());
 
                         INode node = new Node(indexAttribute, descAttribute, normIndexAttribute, varIndexAttribute, varStepAttribute);
                         if (j < paragraphList.Count - 2)
@@ -405,11 +426,11 @@ namespace UseCaseAnalyser.Model.Model
 
                         INode searchedNode;
                         if (nodes.TryGetValue(previousVariantIndex, out searchedNode))
-                        {                            
+                        {
                             if (j == 0)
                             {
                                 useCaseGraph.AddEdge(searchedNode, node,
-                                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], varDesc));    
+                                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], varDesc));
                             }
                             else
                                 useCaseGraph.AddEdge(searchedNode, node);
@@ -421,13 +442,19 @@ namespace UseCaseAnalyser.Model.Model
                     }
 
                     // Sequence Jump Node
-                    if (lastCondition.StartsWith(WordImporter.SequenceJump)) 
+                    if (lastCondition.StartsWith(WordImporter.SequenceJump))
                     {
                         string lastConditionId = lastCondition.Replace(WordImporter.SequenceJump, "").Replace(" ", "");
                         INode indexNode;
                         if (!nodes.TryGetValue(lastConditionId, out indexNode)) continue;
                         INode lastNode;
-                        if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode)) continue;
+                        if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
+                        {
+                            // Node to jump back not found in use case
+                            wordImporteReport.AddReportEntry(new Report.ReportEntry("Node not found", "Node (" + previousVariantIndex + ") to jump back was not found",
+                                Report.Entrytype.WARNING, actUseCaseId));
+                            continue;
+                        }
                         // make a edge between the normal routine node and the first node of the sequence variant
                         useCaseGraph.AddEdge(lastNode, indexNode);
                         lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
@@ -441,7 +468,7 @@ namespace UseCaseAnalyser.Model.Model
                         lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                             UseCaseGraph.NodeTypeAttribute.EndNode));
                     }
-                                       
+
                 }
             }
 
@@ -469,7 +496,7 @@ namespace UseCaseAnalyser.Model.Model
             {
                 //try to fix
                 if (!e.ToString().Contains("Ungültiger URI"))
-                { 
+                {
                     throw;
                 }
 
@@ -508,7 +535,7 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         /// <param name="fs">Stream that should be checked and fixed regarding invalid URIs.</param>
         /// <param name="invalidUriHandler">Function that should be called if URI is invalid.</param>
-        private static void FixInvalidUri(Stream fs, Func<string,Uri> invalidUriHandler)
+        private static void FixInvalidUri(Stream fs, Func<string, Uri> invalidUriHandler)
         {
             XNamespace relNs = "http://schemas.openxmlformats.org/package/2006/relationships";
             using (ZipArchive za = new ZipArchive(fs, ZipArchiveMode.Update))
