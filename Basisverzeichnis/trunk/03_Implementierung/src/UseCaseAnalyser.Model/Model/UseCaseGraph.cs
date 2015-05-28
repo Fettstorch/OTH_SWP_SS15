@@ -27,7 +27,6 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         public static readonly string[] AttributeNames = 
         {
-            "Index",
             "Normal Index",
             "Variant Index",
             "Variant Sequnce Step",
