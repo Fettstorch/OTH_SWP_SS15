@@ -10,12 +10,26 @@
         Title="DialogView" MinWidth="300" MinHeight="300">
     <Window.Resources>
         <converters:GraphElementToStringConverter x:Key="GraphElementToStringConverter" />
+        <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <BitmapImage x:Key="RefreshImage" UriSource="../Resources/refresh_64px.png" />
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="Padding" Value="3" />
         </Style>
-        <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
-        <BitmapImage x:Key="RefreshImage" UriSource="../Resources/refresh_64px.png" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <Style TargetType="{x:Type ListBoxItem}" x:Key="NoSelectionStyle" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Style.Resources>
+                <!-- With focus -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="Transparent" />
+                <!-- Without focus -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                 Color="Transparent" />
+                <!-- Text foreground -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                 Color="Black" />
+            </Style.Resources>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -99,7 +113,7 @@
                     </StackPanel>
                 </TabItem.Header>
                 <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement.Attributes, 
-                    Mode=OneWay}" HorizontalContentAlignment="Stretch">
+                    Mode=OneWay}" HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource NoSelectionStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">
                                 <Expander IsExpanded="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" IsEnabled="{Binding Mode=OneWay, 
