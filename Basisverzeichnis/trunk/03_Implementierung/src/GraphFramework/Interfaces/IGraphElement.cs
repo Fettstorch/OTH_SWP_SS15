@@ -43,5 +43,12 @@ namespace GraphFramework.Interfaces
         /// </summary>
         /// <param name="attributeToRemove">reference of the IAttribute to remove</param>
         void RemoveAttribute(IAttribute attributeToRemove);
+
+        /// <summary>
+        /// Returns the attribute with the given name. Warning: can be also null
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>null or the attribute with the given name</returns>
+        IAttribute GetAttributeByName(string name);
     }
 }

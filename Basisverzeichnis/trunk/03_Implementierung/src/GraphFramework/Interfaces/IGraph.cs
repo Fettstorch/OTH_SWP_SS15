@@ -46,12 +46,18 @@ namespace GraphFramework.Interfaces
         void RemoveNode(params INode[] nodesToRemove);
 
         /// <summary>
-        /// Adds the IEdge to the property Edges of the IGraph.
+        /// Adds a new IEdge to the property Edges of the IGraph.
         /// </summary>
         /// <param name="node1">first INode to which the IEdge is connected</param>
         /// <param name="node2">second INode to which the IEdge is connected</param>
         /// <param name="attributes">IAttribute objects of the IEdge</param>
         void AddEdge(INode node1, INode node2, params IAttribute[] attributes);
+
+        /// <summary>
+        /// Adds the IEdge edge to the property Edges of the IGraph.
+        /// </summary>
+        /// <param name="edge">IEdge to add to IGraph</param>
+        void AddEdge(IEdge edge);
 
         /// <summary>
         /// Removes the IEdge from the property Edges of the IGraph.

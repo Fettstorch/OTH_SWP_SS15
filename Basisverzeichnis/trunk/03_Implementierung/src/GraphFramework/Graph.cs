@@ -109,6 +109,29 @@ namespace GraphFramework
         }
 
         /// <summary>
+        /// adds the edge to the edge collection of the graph
+        /// </summary>
+        /// <param name="edge">edge to add to graph</param>
+        public void AddEdge(IEdge edge)
+        {
+            CheckForNull(edge, "edge");
+
+            if (this.Edges.Contains(edge))
+            {
+                throw new InvalidOperationException("The parameter edge is already part of Graph.");
+            }
+            if (!this.Nodes.Contains(edge.Node1))
+            {
+                throw new InvalidOperationException("The parameter edge.Node1 is not part of Graph.");
+            }
+            if (!this.Nodes.Contains(edge.Node2))
+            {
+                throw new InvalidOperationException("The parameter edge.Node2 is not part of Graph.");
+            }
+            mEdges.Add(edge);
+        }
+
+        /// <summary>
         /// removes the edge identified by its reference from the graph
         /// </summary>
         /// <param name="edgesToRemove">reference of the edges to remove</param>
