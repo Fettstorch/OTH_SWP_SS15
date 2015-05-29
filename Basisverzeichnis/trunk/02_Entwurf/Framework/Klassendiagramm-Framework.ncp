@@ -28,7 +28,7 @@
         <Name>Graph</Name>
         <Access>Public</Access>
         <Location left="1128" top="18" />
-        <Size width="803" height="332" />
+        <Size width="803" height="349" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private readonly List&lt;INode&gt; mNodes</Member>
         <Member type="Field">private readonly List&lt;IEdge&gt; mEdges</Member>
@@ -38,6 +38,7 @@
         <Member type="Method">public void AddNode(INode node)</Member>
         <Member type="Method">public void RemoveNode(params INode[] nodesToRemove)</Member>
         <Member type="Method">public void AddEdge(INode node1, INode node2, params IAttribute[] attributes)</Member>
+        <Member type="Method">public void AddEdge(IEdge edge)</Member>
         <Member type="Method">public void RemoveEdge(params IEdge[] edgesToRemove)</Member>
         <Member type="Method">public IEnumerable&lt;INode&gt; GetSingleNodes()</Member>
         <Member type="Method">public void AddGraph(IGraph graphToAdd)</Member>
@@ -51,7 +52,7 @@
         <Name>GraphElement</Name>
         <Access>Public</Access>
         <Location left="798" top="450" />
-        <Size width="318" height="179" />
+        <Size width="318" height="196" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private List&lt;IAttribute&gt; mAttributes</Member>
         <Member type="Constructor">protected GraphElement(params IAttribute[] attributes)</Member>
@@ -59,6 +60,7 @@
         <Member type="Method">public void AddAttribute(IAttribute attribute)</Member>
         <Member type="Method">public void RemoveAttribute(IAttribute attributeToRemove)</Member>
         <Member type="Method">public void RemoveAttribute(string nameOfAttributeToRemove)</Member>
+        <Member type="Method">public IAttribute GetAttributeByName(string name)</Member>
         <Modifier>Abstract</Modifier>
       </Entity>
       <Entity type="Class">
@@ -78,13 +80,14 @@
         <Name>IGraph</Name>
         <Access>Public</Access>
         <Location left="1628" top="516" />
-        <Size width="730" height="231" />
+        <Size width="730" height="248" />
         <Collapsed>False</Collapsed>
         <Member type="Property">IEnumerable&lt;INode&gt; Nodes { get; }</Member>
         <Member type="Property">IEnumerable&lt;IEdge&gt; Edges { get; }</Member>
         <Member type="Method">void AddNode(INode node)</Member>
         <Member type="Method">void RemoveNode(params INode[] nodesToRemove)</Member>
         <Member type="Method">void AddEdge(INode n1, INode n2, params IAttribute[] attributes)</Member>
+        <Member type="Method">void AddEdge(IEdge edge)</Member>
         <Member type="Method">void RemoveEdge(params IEdge[] edgesToRemove)</Member>
         <Member type="Method">IEnumerable&lt;INode&gt; GetSingleNodes()</Member>
         <Member type="Method">void AddGraph(IGraph graphToAdd)</Member>
@@ -120,13 +123,14 @@
       <Entity type="Interface">
         <Name>IGraphElement</Name>
         <Access>Public</Access>
-        <Location left="825" top="732" />
-        <Size width="318" height="129" />
+        <Location left="825" top="733" />
+        <Size width="318" height="146" />
         <Collapsed>False</Collapsed>
         <Member type="Property">IEnumerable&lt;IAttribute&gt; Attributes { get; }</Member>
         <Member type="Method">void AddAttribute(IAttribute attribute)</Member>
         <Member type="Method">void RemoveAttribute(IAttribute attributeToRemove)</Member>
         <Member type="Method">void RemoveAttribute(string nameOfAttributeToRemove)</Member>
+        <Member type="Method">IAttribute GetAttributeByName(string name)</Member>
       </Entity>
     </Entities>
     <Relationships>
@@ -151,7 +155,7 @@
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>1707</X>
-          <Y>375</Y>
+          <Y>392</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
           <X>1707</X>
@@ -179,7 +183,7 @@
         </BendPoint>
         <BendPoint relativeToStartShape="False">
           <X>799</X>
-          <Y>829</Y>
+          <Y>830</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="5" second="9">
@@ -187,14 +191,16 @@
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>1744</X>
-          <Y>772</Y>
+          <Y>789</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
           <X>1175</X>
-          <Y>807</Y>
+          <Y>808</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -243,6 +249,8 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="3" second="4">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Bidirectional</Direction>
@@ -251,6 +259,8 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="2" second="1">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
