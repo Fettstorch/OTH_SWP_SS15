@@ -35,79 +35,48 @@ namespace UseCaseAnalyser.Model.Model
     /// class to create the scenarios for a use case graph
     /// </summary>
     public static class ScenarioMatrixCreator
-    {       
-        private static INode FindStartingNode(IGraph graph)
-        {          
-            foreach (INode node in graph.Nodes)
-            {
-                foreach (IAttribute attribute in node.Attributes)
-                {
-                    if (!attribute.Name.Equals(
-                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]))
-                        continue;
-                    if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode))
-                    {
-                        return node;
-                    }
-                }
-            }
+    {
+        private const string COrder = "Order of Visit";
 
-            return null;
-        }
-
-        private static IEnumerable<INode> FindEndNodes(IGraph graph)
+        private static string ExtendOrderAttribute(string attributeValue, INode nextNode)
         {
-            List<INode> endNodes = new List<INode>();
-            foreach (INode node in graph.Nodes)
-            {
-                foreach (IAttribute attribute in node.Attributes)
-                {
-                    if (!attribute.Name.Equals(
-                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]))
-                        continue;
-                    if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.EndNode))
-                    {
-                        endNodes.Add(node);
-                    }
-                }
-            }
-            return endNodes;
+            return attributeValue + nextNode.GetAttributeByName(
+                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]);
         }
 
-        private static INode FindSourceNode(IEdge edge)
+        private static INode FindStartNode(IGraph graph)
         {
-            //Todo: Im UseCaseGraph/WordImporter muss die Richtung von edges implementiert werden
-            //foreach (INode node in new[] {edge.Node1, edge.Node2})
-            //{
-            //    foreach (IAttribute attribute in node.Attributes)
-            //    {
-            //        if (!attribute.Name.Equals(
-            //            UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Direction]))
-            //            continue;
-            //        if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.SourceNode))
-            //        {
-            //            return node;
-            //        }
-            //    }
-            //}
-            throw new NotImplementedException();
+            return
+                graph.Nodes.FirstOrDefault(
+                    node =>
+                        node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType])
+                            .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode));
         }
 
-        private static List<IGraph> CreateScenario(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph, params INode[] endNodes)
+        private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
         {
             List<IGraph> retScenario = new List<IGraph>();
-            UseCaseGraph internalGraph = new UseCaseGraph(useCaseGraph.Attributes.ToArray());
-           
+            UseCaseGraph internalGraph = new UseCaseGraph();
+
             if (existingScenario != null)
+            {
                 internalGraph.AddGraph(existingScenario);
-            
+                internalGraph.AddAttribute(existingScenario.GetAttributeByName(COrder));
+            }
+
             if (!useCaseGraph.Nodes.Contains(currentNode))
                 return retScenario;
 
             if (!internalGraph.Nodes.Contains(currentNode))
+            {
                 internalGraph.AddNode(currentNode);
+                internalGraph.GetAttributeByName(COrder).Value =
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, currentNode);
 
-            if (endNodes.Contains(currentNode))
+            }
+
+            if (currentNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
+                    .Equals(UseCaseGraph.NodeTypeAttribute.EndNode))
             {
                 retScenario.Add(internalGraph);
                 return retScenario;
@@ -118,24 +87,32 @@ namespace UseCaseAnalyser.Model.Model
             
             for (int i = 0; i < edgeList.Count(); i++)
             {
-                if (!internalGraph.Edges.Contains(edgeList[i]))
+                if (!internalGraph.Edges.Contains(edgeList[i]))//passt so nicht kann mehrmals vorkommen
                 {
-                    if(! currentNode.Equals(FindSourceNode(edgeList[i])))
-                     continue;
-                    INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node2 : edgeList[i].Node1; 
+                    if (!edgeList[i].GetAttributeByName("SourceNode").Value.Equals(currentNode))//Änderung in UseCaseGraph und WordImporter fehlt
+                        continue;
+                    INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node2 : edgeList[i].Node1;
                     internalGraph.AddNode(destNode);
-                    internalGraph.AddEdge(currentNode, destNode,edgeList[i].Attributes.ToArray());
+                    internalGraph.AddEdge(edgeList[i]);
 
-                    retScenario.AddRange(CreateScenario(destNode,internalGraph,useCaseGraph, endNodes));
+                    //Save Order
+                    IAttribute orderAttribute = new GraphFramework.Attribute(internalGraph.GetAttributeByName(COrder).Name, internalGraph.GetAttributeByName(COrder).Value);
+                    
+                    //Set Order for recursive call
+                    internalGraph.GetAttributeByName(COrder).Value =
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode);
+
+                    retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
+
+                    //Restore Order
+                    internalGraph.RemoveAttribute(COrder);
+                    internalGraph.AddAttribute(orderAttribute);
 
                     //Remove last node 
                     internalGraph.RemoveNode(destNode);
                 }
-
             }
-
             return retScenario;
-
         }
 
         /// <summary>
@@ -144,15 +121,19 @@ namespace UseCaseAnalyser.Model.Model
         /// <param name="useCaseGraph">Use-Case graph to get its scenarios from</param>
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
         public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
-        {           
-            INode startNode = FindStartingNode(useCaseGraph);
+        {
+            if (useCaseGraph == null)
+            {
+                throw new ArgumentNullException("useCaseGraph");
+            }
 
-            IEnumerable<INode> endNodes = FindEndNodes(useCaseGraph);
-
-            IEnumerable<IGraph> allScenarios = CreateScenario(startNode, new Graph(), useCaseGraph, endNodes.ToArray());
+            INode startNode = FindStartNode(useCaseGraph);
+            if (startNode == null)
+            {
+                throw new InvalidOperationException("No StartNode found.");
+            }
             
-            //  EMPTY ENUMERABLE SO THE VIEW CAN BE TESTED WITHOUT CRASHES
-            return Enumerable.Empty<IGraph>();
+            return CreateScenarioMatrix(startNode, new Graph(), useCaseGraph);
         }
 
 
