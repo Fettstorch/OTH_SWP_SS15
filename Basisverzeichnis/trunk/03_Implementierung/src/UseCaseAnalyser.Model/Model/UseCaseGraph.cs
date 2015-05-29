@@ -104,7 +104,7 @@ namespace UseCaseAnalyser.Model.Model
         public IEnumerable<IGraph> Scenarios
         {
             //  lazy initialization of the scenarios
-            get { return mScenarios ?? (mScenarios = /*ScenarioMatrixCreator.CreateScenarios(this)*/ CreateScenarios(this)); }
+            get { return mScenarios ?? (mScenarios = ScenarioMatrixCreator.CreateScenarios(this)); }
         }
 
         /// <summary>

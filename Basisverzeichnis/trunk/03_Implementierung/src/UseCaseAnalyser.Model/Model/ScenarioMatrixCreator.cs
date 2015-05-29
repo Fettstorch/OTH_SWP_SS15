@@ -37,11 +37,22 @@ namespace UseCaseAnalyser.Model.Model
     public static class ScenarioMatrixCreator
     {
         private const string COrder = "Order of Visit";
+        private const string CScenarioName = "Scenario Name";
 
         private static string ExtendOrderAttribute(string attributeValue, INode nextNode)
         {
-            return attributeValue + nextNode.GetAttributeByName(
-                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]);
+            string stepNumber = "";
+            string variantName = "";
+            string variantNumber = "";
+
+            if (nextNode.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]))
+                stepNumber = nextNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]).Value.ToString();
+            if (nextNode.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]))
+                variantName = nextNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]).Value.ToString();
+            if (nextNode.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]))
+                variantNumber = nextNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]).Value.ToString();
+
+            return attributeValue + " " + stepNumber + variantName + variantNumber;
         }
 
         private static INode FindStartNode(IGraph graph)
@@ -58,12 +69,16 @@ namespace UseCaseAnalyser.Model.Model
             List<IGraph> retScenario = new List<IGraph>();
             UseCaseGraph internalGraph = new UseCaseGraph();
 
+            //Copy Scenario from last recursion
             if (existingScenario != null)
             {
                 internalGraph.AddGraph(existingScenario);
-                internalGraph.AddAttribute(existingScenario.GetAttributeByName(COrder));
+                internalGraph.AddAttribute(existingScenario.Attributes.Any(t => t.Name == COrder)
+                    ? existingScenario.GetAttributeByName(COrder)
+                    : new GraphFramework.Attribute(COrder, ""));
             }
 
+            //fault: currentNode not part of useCaseGraph, returns empty List
             if (!useCaseGraph.Nodes.Contains(currentNode))
                 return retScenario;
 
@@ -75,6 +90,7 @@ namespace UseCaseAnalyser.Model.Model
 
             }
 
+            //end of recursion, EndNode found
             if (currentNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
                     .Equals(UseCaseGraph.NodeTypeAttribute.EndNode))
             {
@@ -82,35 +98,48 @@ namespace UseCaseAnalyser.Model.Model
                 return retScenario;
             }
 
-            IEnumerable<IEdge> edges = internalGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
+            IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
             IList<IEdge> edgeList= edges as IList<IEdge> ?? edges.ToList();
             
             for (int i = 0; i < edgeList.Count(); i++)
             {
-                if (!internalGraph.Edges.Contains(edgeList[i]))//passt so nicht kann mehrmals vorkommen
+                //check if destinationNode variant and already visited
+                //Todo: was passiert wenn AlternativeNode gleichzeitig EndNode
+                if (edgeList[i].Node2.GetAttributeByName(
+                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
+                        .Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
+                    ||
+                    edgeList[i].Node2.GetAttributeByName(
+                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
+                        .Equals(UseCaseGraph.NodeTypeAttribute.JumpNode))
                 {
-                    if (!edgeList[i].GetAttributeByName("SourceNode").Value.Equals(currentNode))//Änderung in UseCaseGraph und WordImporter fehlt
+                    if (internalGraph.Edges.Contains(edgeList[i]))
                         continue;
-                    INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node2 : edgeList[i].Node1;
+                }
+
+                if (!edgeList[i].Node1.Equals(currentNode))//SourceNode != currentNode
+                    continue;
+                INode destNode = edgeList[i].Node2;
+                if(!internalGraph.Nodes.Contains(destNode))
                     internalGraph.AddNode(destNode);
+                if(!internalGraph.Edges.Contains(edgeList[i]))
                     internalGraph.AddEdge(edgeList[i]);
 
-                    //Save Order
-                    IAttribute orderAttribute = new GraphFramework.Attribute(internalGraph.GetAttributeByName(COrder).Name, internalGraph.GetAttributeByName(COrder).Value);
+                //Save Order
+                IAttribute orderAttribute = new GraphFramework.Attribute(internalGraph.GetAttributeByName(COrder).Name, internalGraph.GetAttributeByName(COrder).Value);
                     
-                    //Set Order for recursive call
-                    internalGraph.GetAttributeByName(COrder).Value =
-                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode);
+                //Set Order for recursive call
+                internalGraph.GetAttributeByName(COrder).Value =
+                ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode);
 
-                    retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
+                retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
 
-                    //Restore Order
-                    internalGraph.RemoveAttribute(COrder);
-                    internalGraph.AddAttribute(orderAttribute);
+                //Restore Order
+                internalGraph.RemoveAttribute(COrder);
+                internalGraph.AddAttribute(orderAttribute);
 
-                    //Remove last node 
-                    internalGraph.RemoveNode(destNode);
-                }
+                //Remove last node 
+                internalGraph.RemoveNode(destNode);
             }
             return retScenario;
         }
@@ -133,7 +162,24 @@ namespace UseCaseAnalyser.Model.Model
                 throw new InvalidOperationException("No StartNode found.");
             }
             
-            return CreateScenarioMatrix(startNode, new Graph(), useCaseGraph);
+            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph);
+            IList<IGraph> scenarioList = allScenarios as IList<IGraph>;
+
+            //Name Scenarios
+            if (allScenarios != null)
+            {
+                int count = 0;
+                if (scenarioList != null)
+                {
+                    count += scenarioList.Count();
+                    for (int i = 0; i < count; i++)
+                    {
+                        scenarioList[i].AddAttribute(new GraphFramework.Attribute(CScenarioName, "Scenario " + i));
+                    }
+                }
+            }
+
+            return allScenarios;
         }
 
 
