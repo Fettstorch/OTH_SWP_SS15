@@ -195,6 +195,29 @@ namespace GraphFramework.Tests
                 setNode2 ? mTestNodelist[1] : null, setAttributes ? new IAttribute[0] : null);
         }
 
+        [TestCase(null, ExpectedException = typeof(ArgumentNullException))]
+        public void AddEdgeV2Test_Null(IEdge edge)
+        {
+            IGraph testGraph = new Graph();
+            testGraph.AddEdge(edge);
+        }
+
+        [TestCase(true, true, false, TestName = "DefaultTest")]
+        [TestCase(false, true, false, TestName = "Node1NotPartOfGraph", ExpectedException = typeof(InvalidOperationException))]
+        [TestCase(true, false, false, TestName = "Node2NotPartOfGraph", ExpectedException = typeof(InvalidOperationException))]
+        [TestCase(true, true, true, TestName = "EdgeAlreadyPartOfGraph", ExpectedException = typeof(InvalidOperationException))]
+        public void AddEdgeV2Test_Exceptions(bool hasNode1, bool hasNode2, bool isPartOfGraph)
+        {
+            IGraph newTestGraph = new Graph();
+            newTestGraph.AddNode(mTestNodelist[0]);
+            newTestGraph.AddNode(mTestNodelist[1]);
+            IEdge testEdge = new Edge(hasNode1 ? mTestNodelist[0] : new Node(), hasNode2 ? mTestNodelist[1] : new Node());
+            if(isPartOfGraph)
+                newTestGraph.AddEdge(testEdge);
+            newTestGraph.AddEdge(testEdge);
+            Assert.IsTrue(newTestGraph.Edges.Count(t => t.Equals(testEdge)) == 1);
+        }
+
         [Test, Description("This is a test to check if it is possible to remove one Edge from the Graph. " +
                            "It is expected that the Edge is not part of the Graph afterwards.\r\n\r\n")]
         public void RemoveEdgeTest()
