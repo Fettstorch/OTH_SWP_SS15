@@ -18,26 +18,14 @@ using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Model.Model
 {
-    //[Serializable]
-    //public class SourceNodeNotFoundException : Exception
-    //{
-    //    public SourceNodeNotFoundException() { }
-    //    public SourceNodeNotFoundException(string message) : base(message) { }
-    //    public SourceNodeNotFoundException(string message, Exception inner) : base(message, inner) { }
-
-    //    // A constructor is needed for serialization when an
-    //    // exception propagates from a remoting server to the client. 
-    //    protected SourceNodeNotFoundException(System.Runtime.Serialization.SerializationInfo info,
-    //        System.Runtime.Serialization.StreamingContext context) { }
-    //}
-
     /// <summary>
     /// class to create the scenarios for a use case graph
     /// </summary>
     public static class ScenarioMatrixCreator
     {
+        private const string CUseCase = "Scenario of UseCase";
         private const string COrder = "Order of Visit";
-        private const string CScenarioName = "Scenario Name";
+        private const string CScenarioName = "Name";
 
         private static string ExtendOrderAttribute(string attributeValue, INode nextNode)
         {
@@ -69,19 +57,33 @@ namespace UseCaseAnalyser.Model.Model
             List<IGraph> retScenario = new List<IGraph>();
             UseCaseGraph internalGraph = new UseCaseGraph();
 
+            if (currentNode == null)
+            {
+                throw new ArgumentNullException("currentNode");
+            }
+            if (useCaseGraph == null)
+            {
+                throw new ArgumentNullException("useCaseGraph");
+            }
+
             //Copy Scenario from last recursion
             if (existingScenario != null)
             {
                 internalGraph.AddGraph(existingScenario);
                 internalGraph.AddAttribute(existingScenario.Attributes.Any(t => t.Name == COrder)
-                    ? existingScenario.GetAttributeByName(COrder)
-                    : new GraphFramework.Attribute(COrder, ""));
+                    ? existingScenario.GetAttributeByName(COrder) //take Order of visits from existingScenario 
+                    : new GraphFramework.Attribute(COrder, "")); // initialize empty new Scenario if existingScenario == new Graph()
+            }
+            else //initialize empty new Scenario if existingScenario == null
+            {
+                internalGraph.AddAttribute(new GraphFramework.Attribute(COrder, ""));
             }
 
             //fault: currentNode not part of useCaseGraph, returns empty List
             if (!useCaseGraph.Nodes.Contains(currentNode))
                 return retScenario;
 
+            //include currentNode to Scenario
             if (!internalGraph.Nodes.Contains(currentNode))
             {
                 internalGraph.AddNode(currentNode);
@@ -98,13 +100,13 @@ namespace UseCaseAnalyser.Model.Model
                 return retScenario;
             }
 
+            //visit all connected Nodes
             IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
             IList<IEdge> edgeList= edges as IList<IEdge> ?? edges.ToList();
             
             for (int i = 0; i < edgeList.Count(); i++)
             {
-                //check if destinationNode variant and already visited
-                //Todo: was passiert wenn AlternativeNode gleichzeitig EndNode
+                //check if destinationNode is variant and already visited
                 if (edgeList[i].Node2.GetAttributeByName(
                     UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
                         .Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
@@ -126,7 +128,8 @@ namespace UseCaseAnalyser.Model.Model
                     internalGraph.AddEdge(edgeList[i]);
 
                 //Save Order
-                IAttribute orderAttribute = new GraphFramework.Attribute(internalGraph.GetAttributeByName(COrder).Name, internalGraph.GetAttributeByName(COrder).Value);
+                IAttribute orderAttribute = new GraphFramework.Attribute(internalGraph.GetAttributeByName(COrder).Name, 
+                    internalGraph.GetAttributeByName(COrder).Value);
                     
                 //Set Order for recursive call
                 internalGraph.GetAttributeByName(COrder).Value =
@@ -168,21 +171,21 @@ namespace UseCaseAnalyser.Model.Model
             //Name Scenarios
             if (allScenarios != null)
             {
+                string useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
                 int count = 0;
                 if (scenarioList != null)
                 {
                     count += scenarioList.Count();
                     for (int i = 0; i < count; i++)
                     {
-                        scenarioList[i].AddAttribute(new GraphFramework.Attribute(CScenarioName, "Scenario " + i));
+                        scenarioList[i].AddAttribute(new GraphFramework.Attribute(CScenarioName,
+                            string.Format("Scenario No. '{0}' of use case '{1}'", i+1, useCaseName)));
+                        scenarioList[i].AddAttribute(new GraphFramework.Attribute(CUseCase, useCaseName));
                     }
                 }
             }
 
             return allScenarios;
         }
-
-
-
     }
 }
