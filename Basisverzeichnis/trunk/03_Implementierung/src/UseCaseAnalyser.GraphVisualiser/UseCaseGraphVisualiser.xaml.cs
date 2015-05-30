@@ -112,6 +112,8 @@ namespace UseCaseAnalyser.GraphVisualiser
                 LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
             if (visualizer.Scenario != null)
                 visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
+
+            visualizer.GraphElement = visualizer.Scenario;
         }
 
         /// <summary>
