@@ -42,18 +42,14 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             InitializeComponent();
 
             //initalize member
-            LblIndex.Content =
-                node.Attributes.First(
-                    attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NormalIndex]).Value;
-
-            IAttribute indexAttribute = node.Attributes.FirstOrDefault(
-                attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.VariantIndex]);
-
+            IAttribute indexAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]);
+            IAttribute variantAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]);
+            IAttribute varSeqStepAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]);
+           
             if (indexAttribute != null)
-                //this could rise NullReferenceException if use cases where imported corrupted
-                LblIndex.Content = LblIndex.Content + indexAttribute.Value.ToString() + node.Attributes.First(
-                    attr => attr.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]).Value;
-
+                LblIndex.Content = indexAttribute.Value.ToString();
+            if (varSeqStepAttribute != null && variantAttribute != null)
+                LblIndex.Content += variantAttribute.Value.ToString() + varSeqStepAttribute.Value;
 
             Node = node;
             mUnselectDrawingBrush = Brushes.Black;

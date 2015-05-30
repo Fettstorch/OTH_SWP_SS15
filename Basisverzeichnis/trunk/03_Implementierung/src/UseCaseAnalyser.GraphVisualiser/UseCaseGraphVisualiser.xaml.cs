@@ -46,13 +46,13 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// Binding configuration for a dependecy property which is setting UseCaseGraph to display
         /// </summary>
         public static readonly DependencyProperty UseCaseProperty = DependencyProperty.Register("UseCase",
-            typeof (UseCaseGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(UseCase_PropertyChanged));
+            typeof (UseCaseGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(UseCasePropertyChanged));
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting a scenario graph (which will be highlighted by UseCaseGraphVisualiser)
         /// </summary>
         public static readonly DependencyProperty ScenarioProperty = DependencyProperty.Register("Scenario",
-            typeof (IGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(Scenario_PropertyChanged));
+            typeof (IGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(ScenarioPropertyChanged));
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting the currently selected IGraphElement (INode/IEdge/IGraph) in UseCaseGraphVisualiser
@@ -94,7 +94,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// </summary>
         /// <param name="d">Dependency object that was changed</param>
         /// <param name="e">Event args containing information about the changes of the Scenario property</param>
-        private static void Scenario_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void ScenarioPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //  MARK THE NODES WITHIN THE SCENARIO
 
@@ -107,12 +107,11 @@ namespace UseCaseAnalyser.GraphVisualiser
                 LoggingFunctions.Trace("Scenario unselected.");
                 return;
             }
-            IAttribute nameAttribute = visualizer.Scenario.Attributes.FirstOrDefault(attr => attr.Name == "Name");
+            IAttribute nameAttribute = visualizer.Scenario.GetAttributeByName("Name");
             if (nameAttribute != null)
                 LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
-            if (visualizer.Scenario != null)
-                visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
-
+            
+            visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
             visualizer.GraphElement = visualizer.Scenario;
         }
 
@@ -124,7 +123,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// </summary>
         /// <param name="d">Dependency object that was changed</param>
         /// <param name="e">Event args containing information about the changes of the UseCase property</param>
-        private static void UseCase_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void UseCasePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             UseCaseGraphVisualiser visualizer = (UseCaseGraphVisualiser) d;
@@ -135,7 +134,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 LoggingFunctions.Trace("UseCase unselected.");
                 return;
             }
-            IAttribute nameAttribute = visualizer.UseCase.Attributes.FirstOrDefault(attr => attr.Name == "Name");
+            IAttribute nameAttribute = visualizer.UseCase.GetAttributeByName("Name");
             if (nameAttribute != null)
                 LoggingFunctions.Trace("UseCase : " + nameAttribute.Value + " was selected.");
 
@@ -194,6 +193,7 @@ namespace UseCaseAnalyser.GraphVisualiser
            
             mNodes.Clear();
             DrawingCanvas.Children.Clear();
+            DrawingCanvas.Height = DrawingCanvas.Width = 100;
         }
 
         /// <summary>
@@ -279,17 +279,13 @@ namespace UseCaseAnalyser.GraphVisualiser
             Panel.SetZIndex(useCaseNode, 10);
 
             // get node's attribute named "NormalIndex"
-            string normalIndex =
-                node.Attributes.First(
-                    a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]).Value.ToString();
+            IAttribute normalAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NormalIndex]);
 
             // inititalise reference use case node 
             INode referenceUseCaseNode = null;
-
-
+            
             //determine if node is a variant node (node type cannot be used)
-            IAttribute variantIndexAttribute = node.Attributes.FirstOrDefault(
-                a => a.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]);
+            IAttribute variantIndexAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]);
 
             uint slotNumber = 1;
 
@@ -301,13 +297,9 @@ namespace UseCaseAnalyser.GraphVisualiser
 
                 // determine reference use case node 
                 referenceUseCaseNode = UseCase.Nodes.FirstOrDefault(
-                    ucNode =>
-                        ucNode.Attributes.Any(
-                            attr =>
-                                attr.Name.Equals(
-                                    UseCaseGraph.AttributeNames[
-                                        (int) UseCaseGraph.NodeAttributes.NormalIndex]) &&
-                                ((string) attr.Value).Equals(normalIndex)));
+                    ucNode => ucNode.Attributes.Any( attr =>
+                                attr.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NormalIndex]) &&
+                                ((string)attr.Value).Equals(normalAttribute.Value)));
             }
 
 

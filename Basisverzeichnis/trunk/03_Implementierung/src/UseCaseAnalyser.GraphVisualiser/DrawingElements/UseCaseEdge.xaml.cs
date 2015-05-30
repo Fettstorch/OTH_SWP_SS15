@@ -13,7 +13,6 @@
 
 #endregion
 
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -57,14 +56,11 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             mSourceUseCaseNode.AddEdge(this);
             mDestUseCaseNode.AddEdge(this);
 
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            // [Patrick Schießl] Better readable with if statement
-            if (source.Node.Attributes.Any(attribute =>
-                attribute.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]) &&
-                attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)))
-                ProcessType = EdgeProcessType.BackwardEdge;
-            else
-                ProcessType = EdgeProcessType.ForwardEdge;
+            IAttribute nameAttribute = source.Node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]);
+
+            ProcessType = nameAttribute != null && nameAttribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)
+                ? EdgeProcessType.BackwardEdge
+                : EdgeProcessType.ForwardEdge;
 
             //Set properties for visual appearience
             Stroke = mUnselectDrawingBrush = new SolidColorBrush(Colors.Black);
