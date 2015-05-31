@@ -48,6 +48,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GraphFramework\GraphFramework.csproj">
+      <Project>{6d580afa-c172-4bfc-9c43-e79b2c44b44f}</Project>
+      <Name>GraphFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UseCaseAnalyser.Model\UseCaseAnalyser.Model.csproj">
       <Project>{f2c3ffb2-22a0-4a2b-aea9-dfd360310630}</Project>
       <Name>UseCaseAnalyser.Model</Name>

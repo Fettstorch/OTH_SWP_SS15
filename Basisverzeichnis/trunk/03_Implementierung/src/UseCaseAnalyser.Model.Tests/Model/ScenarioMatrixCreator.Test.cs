@@ -1,19 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GraphFramework;
+using GraphFramework.Interfaces;
 using NUnit.Framework;
+using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.Model.Tests.Model
 {
     [TestFixture]
-    class ScenarioMatrixCreator
+    class ScenarioMatrixCreatorTests
     {
+        private INode[] mTestNodes;
+        private UseCaseGraph mTestGraph;
+
         [SetUp]
         public virtual void OnTestStarted()
         {
+            const string name = "Name";
+            IAttribute[][] testAttributes =
+            {
+                new IAttribute[]{new Attribute(name, "A"), 
+                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.StartNode), },
+                new IAttribute[]{new Attribute(name, "B"), 
+                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.NormalNode) },
+                new IAttribute[]{new Attribute(name, "C"), 
+                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.NormalNode) },
+                new IAttribute[]{new Attribute(name, "D"), 
+                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.VariantNode) },
+                new IAttribute[]{new Attribute(name, "E"), 
+                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.JumpNode) },
+                new IAttribute[]{new Attribute(name, "F"), 
+                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.EndNode) },
+            };
 
+            mTestNodes = new INode[]
+            {
+                new Node(testAttributes[0]),
+                new Node(testAttributes[1]),
+                new Node(testAttributes[2]),
+                new Node(testAttributes[3]),
+                new Node(testAttributes[4]),
+                new Node(testAttributes[5])
+            };
+
+            mTestGraph = new UseCaseGraph(new Attribute(name, "testGraph"));
+            foreach (INode node in mTestNodes)
+            {
+                mTestGraph.AddNode(node);
+            }
+
+            mTestGraph.AddEdge(mTestNodes[0], mTestNodes[1]);//A->B
+            mTestGraph.AddEdge(mTestNodes[1], mTestNodes[2]);//B->C
+            mTestGraph.AddEdge(mTestNodes[2], mTestNodes[5]);//C->F
+            mTestGraph.AddEdge(mTestNodes[2], mTestNodes[3]);//C->D
+            mTestGraph.AddEdge(mTestNodes[3], mTestNodes[4]);//D->E
+            mTestGraph.AddEdge(mTestNodes[4], mTestNodes[0]);//E->A
+        }
+
+        [Test, Description("DefaultTest to check if method is generally working.")]
+        public void CreateScenarioMatrix_DefaultTest()
+        {
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            Assert.AreEqual(scenarios.Count(), 2);
         }
 
         [TearDown]
