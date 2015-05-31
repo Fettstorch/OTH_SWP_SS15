@@ -32,8 +32,11 @@ namespace UseCaseAnalyser.Model.Model
     /// </summary>
     public static class WordImporter
     {
+
+        #region EXPRESSIONS
         /// <summary>
         /// The expression which initiates a jump to another use case
+        /// ToDo: Use this expression for use case jumps
         /// </summary>
         private const string UseCaseJump = "Weiter mit:";
 
@@ -80,6 +83,8 @@ namespace UseCaseAnalyser.Model.Model
             SpecialRequirements,
             OpenPoints
         }
+
+        #endregion
 
         /// <summary>
         /// The report of the actual import process
