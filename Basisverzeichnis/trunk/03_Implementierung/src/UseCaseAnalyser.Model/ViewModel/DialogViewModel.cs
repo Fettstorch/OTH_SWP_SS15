@@ -143,7 +143,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                     FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save);
 
                     ScenarioMatrixExporter.ExportScenarioMatrix(SelectedUseCaseGraph, file);
-                }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler.")));
+                }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler: " + e.Message)));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
