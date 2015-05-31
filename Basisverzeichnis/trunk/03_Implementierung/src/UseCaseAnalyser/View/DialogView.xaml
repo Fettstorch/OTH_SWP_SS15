@@ -48,15 +48,36 @@
 
         <Menu Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0">
             <MenuItem Header="File">
-                <MenuItem Header="Import word file" Command="{Binding Path=OpenWordFile}" />
-                <MenuItem Header="Export scenario matrix" Command="{Binding Path=ExportScenarioMatrix}" />
-                <Separator />
+                <MenuItem Header="Import word file" Command="{Binding Path=OpenWordFile}">
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/word_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export scenario matrix" Command="{Binding Path=ExportScenarioMatrix}" >
+                <MenuItem.Icon>
+                    <Image Source="../Resources/excel_64.png" Width="20" Height="20" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
                 <MenuItem Header="Exit" Name="ExitMenuItem" Click="ExitMenuItem_OnClick"/>
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem Header="Open Logfile" Command="{Binding Path=OpenLogfile}" />
-                <MenuItem Header="Open latest import report" Command="{Binding Path=OpenReportView}" />
-                <MenuItem Header="About" />
+                <MenuItem Header="Open Logfile" Command="{Binding Path=OpenLogfile}" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/log_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open latest import report" Command="{Binding Path=OpenReportView}" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/report_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="About" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/about_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
         
