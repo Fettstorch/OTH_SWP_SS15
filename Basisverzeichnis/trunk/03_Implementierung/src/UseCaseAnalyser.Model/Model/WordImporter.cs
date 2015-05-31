@@ -127,16 +127,8 @@ namespace UseCaseAnalyser.Model.Model
             }
 
             // Try to open the document
-            WordprocessingDocument doc;
-            try
-            {
-                doc = FixedOpen(file.FullName, false);
-            }
-            catch (Exception ex)
-            {
-                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("ERROR", ex.Message, Report.Entrytype.ERROR));
-                return useCaseList;
-            }
+            WordprocessingDocument doc = FixedOpen(file.FullName, false);
+
 
             // Fetch all tables in the document
             IEnumerable<Table> tables = doc.MainDocumentPart.Document.Descendants<Table>();
