@@ -439,17 +439,36 @@ namespace UseCaseAnalyser.Model.Model
                     {
                         string lastConditionId = lastCondition.Replace(WordImporter.SequenceJump, "").Replace(" ", "");
                         INode indexNode;
-                        if (!nodes.TryGetValue(lastConditionId, out indexNode)) continue;
+                        if (!nodes.TryGetValue(lastConditionId, out indexNode))
+                        {
+                            // Node refers to a node not included in the graph
+                            wordImporteReport.AddReportEntry(new Report.ReportEntry("Wrong reference!", "'" + lastCondition 
+                                + "' leads to a node which is not in the graph! " + "If you wanted the node to refer to an use case, write '" + WordImporter.UseCaseJump + "' instead!",
+                                Report.Entrytype.WARNING, actUseCaseId));
+                            INode node;
+                            if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out node)) continue;
+                            node.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                                UseCaseGraph.NodeTypeAttribute.JumpNode));
+                            continue;
+                        }
+
                         INode lastNode;
                         if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
                         {
-                            // Node to jump back not found in use case
-                            wordImporteReport.AddReportEntry(new Report.ReportEntry("Node not found", "Node (" + previousVariantIndex + ") to jump back was not found",
+                            // Should never be happened!
+                            wordImporteReport.AddReportEntry(new Report.ReportEntry("Weird error!", "This should never be happen!",
                                 Report.Entrytype.WARNING, actUseCaseId));
                             continue;
                         }
                         // make a edge between the normal routine node and the first node of the sequence variant
                         useCaseGraph.AddEdge(lastNode, indexNode);
+                        lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                            UseCaseGraph.NodeTypeAttribute.JumpNode));
+                    }
+                    else if (lastCondition.StartsWith(WordImporter.UseCaseJump))
+                    {
+                        INode lastNode;
+                        if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode)) continue;
                         lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
                             UseCaseGraph.NodeTypeAttribute.JumpNode));
                     }

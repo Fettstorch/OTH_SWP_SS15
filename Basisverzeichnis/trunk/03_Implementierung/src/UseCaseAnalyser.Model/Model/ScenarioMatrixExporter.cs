@@ -87,6 +87,8 @@ namespace UseCaseAnalyser.Model.Model
 
             sheets.Append(sheet);
 
+            int varColCount = GetNumberOfVariants(useCaseGraph);
+
             workbookPart.Workbook.Save();
         }
 
@@ -94,26 +96,28 @@ namespace UseCaseAnalyser.Model.Model
         {
             int number = 0;
             int lastNumber = 0;
-            IGraph scenario;
             IGraph[] scenarios = useCaseGraph.Scenarios.ToArray();                       
             for (int i = 0; i < scenarios.Length; i++)
             {
                 INode[] nodes = scenarios[i].Nodes.ToArray();
-                IAttribute lastNodeType = nodes[0].GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]);
-                if (lastNodeType == null) throw new NotImplementedException();
+                UseCaseGraph.NodeTypeAttribute lastNodeType = (UseCaseGraph.NodeTypeAttribute) nodes[0].GetAttributeByName(
+                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value;
 
                 foreach (var node in scenarios[i].Nodes)
                 {
                     IAttribute attr = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]);
                     if(attr == null) throw new NotImplementedException();
-                    if ((UseCaseGraph.NodeTypeAttribute) attr.Value == UseCaseGraph.NodeTypeAttribute.VariantNode
-                        && lastNodeType.Value != attr.Value)
+                    if ((UseCaseGraph.NodeTypeAttribute) attr.Value == UseCaseGraph.NodeTypeAttribute.VariantNode)
                     {
-                        number++;
+                        if (lastNodeType != (UseCaseGraph.NodeTypeAttribute)attr.Value)
+                            number++;
                     }
+
+                    lastNodeType = (UseCaseGraph.NodeTypeAttribute)attr.Value;
                 }
 
                 lastNumber = (number > lastNumber) ? number : lastNumber;
+                number = 0;
             }
 
             return lastNumber;
