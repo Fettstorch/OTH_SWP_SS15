@@ -5,9 +5,13 @@
     <Grid Background ="Transparent"  PreviewMouseLeftButtonDown="Background_OnPreviewMouseLeftButtonDown" >
         <Border BorderThickness="1" BorderBrush="Black" >
             <ScrollViewer Name="CanvasScrollViewer" HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Auto">
+                          VerticalScrollBarVisibility="Auto" PreviewMouseWheel="CanvasScrollViewer_OnMouseWheel">
                 <Canvas Name="DrawingCanvas" Margin="10" Height="100" Width="100"
-                        VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        VerticalAlignment="Top" HorizontalAlignment="Left" >
+                    <Canvas.RenderTransform>
+                        <ScaleTransform x:Name="st"/>
+                    </Canvas.RenderTransform>
+                </Canvas>
             </ScrollViewer>
         </Border>
 

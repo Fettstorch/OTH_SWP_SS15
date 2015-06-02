@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Lifetime;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -442,17 +443,17 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             if (mSelectedElement == null)
                 return;
-
+            
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
             double maxHeight = 0, maxWidth = 0;
             foreach (FrameworkElement frameworkElement in DrawingCanvas.Children)
             {
-                if (maxHeight < frameworkElement.Height + Canvas.GetTop(frameworkElement) + 50)
-                    maxHeight = frameworkElement.Height + Canvas.GetTop(frameworkElement) + 50;
+                if (maxHeight < frameworkElement.Height + Canvas.GetTop(frameworkElement) + 20)
+                    maxHeight = frameworkElement.Height + Canvas.GetTop(frameworkElement) + 20;
 
-                if (maxWidth < frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 50)
-                    maxWidth = frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 50;
+                if (maxWidth < frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 20)
+                    maxWidth = frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 20;
 
 
                 if (!frameworkElement.Equals(mSelectedElement))
@@ -465,12 +466,40 @@ namespace UseCaseAnalyser.GraphVisualiser
                     node.RenderEdges();
             }
 
-            DrawingCanvas.Height = maxHeight;
-            DrawingCanvas.Width = maxWidth;
-            if (Canvas.GetLeft(mSelectedElement) + 300 > DrawingCanvas.Width)
-                CanvasScrollViewer.ScrollToRightEnd();
-            if (Canvas.GetTop(mSelectedElement) + 300 > DrawingCanvas.Height)
-                CanvasScrollViewer.ScrollToBottom();
+            
+
+            Point currPoint = Mouse.GetPosition(CanvasScrollViewer);
+            if (currPoint.X > CanvasScrollViewer.ActualWidth - 100)
+            {
+                DrawingCanvas.Width = st.ScaleX*(maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X);
+                CanvasScrollViewer.LineRight();
+
+            }
+            else if (currPoint.X < 100)
+            {
+                if (CanvasScrollViewer.HorizontalOffset< 0.1)
+                    DrawingCanvas.Width = st.ScaleX*(maxWidth);
+                else
+                    DrawingCanvas.Width = st.ScaleX*(maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X);
+                CanvasScrollViewer.LineLeft();
+
+            }
+      
+            if (currPoint.Y > CanvasScrollViewer.ActualHeight - 100)
+            {
+                DrawingCanvas.Height = st.ScaleY*(maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y);
+                CanvasScrollViewer.LineDown();
+            
+            }
+            else if (currPoint.Y < 100)
+            {
+                if (CanvasScrollViewer.VerticalOffset < 0.1)
+                    DrawingCanvas.Height = st.ScaleY*(maxHeight);
+                else
+                    DrawingCanvas.Height = st.ScaleY*(maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y);
+                CanvasScrollViewer.LineUp();
+
+            }
         }
 
         /// <summary>
@@ -482,8 +511,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             if (mSelectedElement == null)
                 return;
-
-
+            
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
             foreach (FrameworkElement element in DrawingCanvas.Children)
@@ -501,5 +529,29 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         #endregion
+
+        private const double mScaleRate = 1.05;
+        private void CanvasScrollViewer_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+                return;
+
+            if (e.Delta > 0)
+            {
+                st.ScaleX *= mScaleRate;
+                st.ScaleY *= mScaleRate;
+                DrawingCanvas.Height *= mScaleRate;
+                DrawingCanvas.Width*= mScaleRate;
+            }
+            else
+            {
+                st.ScaleX /= mScaleRate;
+                st.ScaleY /= mScaleRate;
+                DrawingCanvas.Height /= mScaleRate;
+                DrawingCanvas.Width /= mScaleRate;
+
+            }
+            e.Handled = true;
+        }
     }
 }
