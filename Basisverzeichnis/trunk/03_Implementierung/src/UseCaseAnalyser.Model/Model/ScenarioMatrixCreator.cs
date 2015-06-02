@@ -27,20 +27,26 @@ namespace UseCaseAnalyser.Model.Model
         private const string COrder = "Order of Visit";
         private const string CScenarioName = "Name";
 
-        private static string ExtendOrderAttribute(string attributeValue, INode nextNode)
+        private static string GetNodeNumber(INode node)
         {
-            string stepNumber = "";
-            string variantName = "";
-            string variantNumber = "";
+            string nodeNumber = "";
+            if (node.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]))
+                nodeNumber += node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]).Value.ToString();
+            else
+            {
+                throw new NullReferenceException("No NodeIndex found.");
+            }
+            if (node.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]))
+                nodeNumber += node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]).Value.ToString();
+            if (node.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]))
+                nodeNumber += node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]).Value.ToString();
+            return nodeNumber;
 
-            if (nextNode.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]))
-                stepNumber = nextNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]).Value.ToString();
-            if (nextNode.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]))
-                variantName = nextNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]).Value.ToString();
-            if (nextNode.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]))
-                variantNumber = nextNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]).Value.ToString();
+        }
 
-            return attributeValue + " " + stepNumber + variantName + variantNumber;
+        private static string ExtendOrderAttribute(string attributeValue, INode nextNode)
+        {           
+            return attributeValue + " " + GetNodeNumber(nextNode);
         }
 
         private static INode FindStartNode(IGraph graph)
@@ -168,6 +174,23 @@ namespace UseCaseAnalyser.Model.Model
             if (startNode == null)
             {
                 throw new InvalidOperationException("No StartNode found.");
+            }
+
+            foreach (INode node in useCaseGraph.Nodes)
+            {
+                if (
+                    node.Attributes.Any(
+                        t => t.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]))
+                    continue;
+                try
+                {
+                    throw new InvalidOperationException(string.Format("No NodeType attribute found at node {0}",
+                        GetNodeNumber(node)));
+                }
+                catch (NullReferenceException)
+                {
+                    throw new InvalidOperationException("No NodeType and no NormalIndex attribute found");
+                }
             }
             
             IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph);
