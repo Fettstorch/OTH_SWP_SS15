@@ -142,7 +142,12 @@ namespace UseCaseAnalyser.Model.Model
                 internalGraph.AddAttribute(orderAttribute);
 
                 //Remove last node 
-                internalGraph.RemoveNode(destNode);
+                if (!edgeList[i].Node2.GetAttributeByName(
+                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
+                        .Equals(UseCaseGraph.NodeTypeAttribute.NormalNode))
+                {
+                    internalGraph.RemoveNode(destNode);
+                }
             }
             return retScenario;
         }
