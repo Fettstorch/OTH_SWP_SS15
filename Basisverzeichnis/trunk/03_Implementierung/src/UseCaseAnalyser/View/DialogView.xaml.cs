@@ -76,6 +76,9 @@ namespace UseCaseAnalyser.View
             mView.ShowDialog();
         }
 
+        /// <summary>
+        /// lets the use case graph viewer redraw the graph, which is currently represented
+        /// </summary>
         public void RedrawGraph()
         {
             UseCaseGraphViewer.RedrawGraph();
