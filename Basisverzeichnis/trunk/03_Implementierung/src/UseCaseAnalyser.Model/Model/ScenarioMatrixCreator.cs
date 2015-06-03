@@ -46,24 +46,39 @@ namespace UseCaseAnalyser.Model.Model
 
         }
 
-        private static string ExtendOrderAttribute(string attributeValue, INode nextNode, UseCaseGraph useCaseGraph)
+        private static string ExtendOrderAttribute(string attributeValue, INode nextNode, UseCaseGraph useCaseGraph, IEdge correspondingEdge = null)
         {           
             IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node2 == nextNode);
+            IEdge[] edgeArray = correspondingEdge == null ? edges as IEdge[] ?? edges.ToArray() : new IEdge[]{correspondingEdge};
 
             string seperator = (string.IsNullOrEmpty(attributeValue) ? string.Empty : " ");
             if (IsAlternativeNode(nextNode))
             {
-                if (edges.Any(edge => !IsAlternativeNode(edge.Node1)))
+                //if (edgeArray.Any(edge => !IsAlternativeNode(edge.Node1)))
+                //{
+                //    seperator = "\r\n  ";
+                //}
+                foreach (IEdge edge in edgeArray)
                 {
-                    seperator = "\r\n  ";
+                    if (!IsAlternativeNode(edge.Node1))
+                    {
+                        seperator = "\r\n  ";
+                    }
                 }
             }
             else
             {
-                if (edges.Any(edge => IsAlternativeNode(edge.Node1)))
+                //if (edgeArray.Any(edge => IsAlternativeNode(edge.Node1)))
+                //{
+                //    seperator = "\r\n";
+                //}  
+                foreach (IEdge edge in edgeArray)
                 {
-                    seperator = "\r\n";
-                }              
+                    if (IsAlternativeNode(edge.Node1))
+                    {
+                        seperator = "\r\n";
+                    }
+                }
             }
             return attributeValue + seperator + GetNodeNumber(nextNode);
         }
@@ -145,7 +160,7 @@ namespace UseCaseAnalyser.Model.Model
 
             //visit all connected Nodes
             IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
-            IList<IEdge> edgeList= edges as IList<IEdge> ?? edges.ToList();
+            IList<IEdge> edgeList = edges as IList<IEdge> ?? edges.ToList();
             
             for (int i = 0; i < edgeList.Count(); i++)
             {
@@ -171,7 +186,7 @@ namespace UseCaseAnalyser.Model.Model
                     
                 //Set Order for recursive call
                 internalGraph.GetAttributeByName(COrder).Value =
-                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, internalGraph);
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, internalGraph, edgeList[i]);
 
                 retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
 
