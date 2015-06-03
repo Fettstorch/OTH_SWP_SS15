@@ -196,6 +196,9 @@ namespace UseCaseAnalyser.GraphVisualiser
             DrawingCanvas.Children.Clear();
             DrawingCanvas.Height = DrawingCanvas.Width = 100;
             CanvaScaleTransform.ScaleX = CanvaScaleTransform.ScaleY = 1;
+            CanvasScrollViewer.ScrollToLeftEnd();
+            CanvasScrollViewer.ScrollToTop();
+
         }
 
         /// <summary>
