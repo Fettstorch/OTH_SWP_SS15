@@ -375,10 +375,10 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         /// <summary>
-        /// Calculates additional offset corresponding to previous node's variant count
+        /// Calculates additional offset corresponding to previous node's variant sequence count.
         /// </summary>
-        /// <param name="ucNode"></param>
-        /// <returns>Count of previous normal node - if ucNode is not a normal node itself return 0</returns>
+        /// <param name="ucNode">UseCaseNode which predecessor's variant sequence count should be determined.</param>
+        /// <returns>Count of previous normal node - if ucNode is not a normal node itself or previous could not be determined count is 0.</returns>
         private int GetPreviousNodeVariantCount(UseCaseNode ucNode)
         {
             // get node's attribute named "NormalIndex"
