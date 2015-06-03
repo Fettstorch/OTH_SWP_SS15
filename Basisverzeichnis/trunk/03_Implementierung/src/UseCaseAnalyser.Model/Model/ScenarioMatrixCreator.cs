@@ -45,18 +45,23 @@ namespace UseCaseAnalyser.Model.Model
         }
 
         private static string ExtendOrderAttribute(string attributeValue, INode nextNode, UseCaseGraph useCaseGraph)
-        {
-            string seperator = " ";
+        {           
+            IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node2 == nextNode);
+
+            string seperator = (string.IsNullOrEmpty(attributeValue) ? string.Empty : " ");
             if (IsAlternativeNode(nextNode))
             {
-                IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node2 == nextNode);
-                foreach (IEdge edge in edges)
+                if (edges.Any(edge => !IsAlternativeNode(edge.Node1)))
                 {
-                    if (!IsAlternativeNode(edge.Node1))
-                    {
-                        seperator = "\r\n";
-                    }
-                }                
+                    seperator = "\r\n  ";
+                }
+            }
+            else
+            {
+                if (edges.Any(edge => IsAlternativeNode(edge.Node1)))
+                {
+                    seperator = "\r\n";
+                }
             }
             return attributeValue + seperator + GetNodeNumber(nextNode);
         }
@@ -121,7 +126,7 @@ namespace UseCaseAnalyser.Model.Model
             {
                 internalGraph.AddNode(currentNode);
                 internalGraph.GetAttributeByName(COrder).Value =
-                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, currentNode, useCaseGraph);
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, currentNode, internalGraph);
             }
 
             //end of recursion, EndNode found
@@ -163,7 +168,7 @@ namespace UseCaseAnalyser.Model.Model
                     
                 //Set Order for recursive call
                 internalGraph.GetAttributeByName(COrder).Value =
-                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, useCaseGraph);
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, internalGraph);
 
                 retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
 
