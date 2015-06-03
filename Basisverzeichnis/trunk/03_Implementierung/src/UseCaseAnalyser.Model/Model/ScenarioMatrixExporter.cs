@@ -69,7 +69,7 @@ namespace UseCaseAnalyser.Model.Model
         // ReSharper disable once UnusedParameter.Local
         // [Mathias Schneider] needed for checking for exceptions
         /// <summary>
-        /// Helper method to check if file validates preconditions.
+        /// Helper method to check if file complies with preconditions.
         /// </summary>
         /// <param name="file">FileInfo that should be checked.</param>
         private static void ValidateFile(FileInfo file)
