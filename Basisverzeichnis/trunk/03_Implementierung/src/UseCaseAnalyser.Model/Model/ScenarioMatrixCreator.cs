@@ -44,9 +44,21 @@ namespace UseCaseAnalyser.Model.Model
 
         }
 
-        private static string ExtendOrderAttribute(string attributeValue, INode nextNode)
-        {           
-            return attributeValue + " " + GetNodeNumber(nextNode);
+        private static string ExtendOrderAttribute(string attributeValue, INode nextNode, UseCaseGraph useCaseGraph)
+        {
+            string seperator = " ";
+            if (IsAlternativeNode(nextNode))
+            {
+                IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node2 == nextNode);
+                foreach (IEdge edge in edges)
+                {
+                    if (!IsAlternativeNode(edge.Node1))
+                    {
+                        seperator = "\r\n";
+                    }
+                }                
+            }
+            return attributeValue + seperator + GetNodeNumber(nextNode);
         }
 
         private static INode FindStartNode(IGraph graph)
@@ -62,6 +74,15 @@ namespace UseCaseAnalyser.Model.Model
         {
             return node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]).Value
                 .Equals(UseCaseGraph.NodeTypeAttribute.EndNode) || useCaseGraph.Edges.All(edge => edge.Node1 != node);
+        }
+
+        private static bool IsAlternativeNode(INode node)
+        {
+            return node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType])
+                        .Value.Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
+                   ||
+                   node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType])
+                       .Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode);
         }
 
         private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
@@ -100,7 +121,7 @@ namespace UseCaseAnalyser.Model.Model
             {
                 internalGraph.AddNode(currentNode);
                 internalGraph.GetAttributeByName(COrder).Value =
-                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, currentNode);
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, currentNode, useCaseGraph);
             }
 
             //end of recursion, EndNode found
@@ -121,13 +142,7 @@ namespace UseCaseAnalyser.Model.Model
             for (int i = 0; i < edgeList.Count(); i++)
             {
                 //check if destinationNode is variant and already visited
-                if (edgeList[i].Node2.GetAttributeByName(
-                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
-                        .Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
-                    ||
-                    edgeList[i].Node2.GetAttributeByName(
-                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
-                        .Equals(UseCaseGraph.NodeTypeAttribute.JumpNode))
+                if (IsAlternativeNode(edgeList[i].Node2))
                 {
                     if (internalGraph.Edges.Contains(edgeList[i]))
                         continue;
@@ -148,7 +163,7 @@ namespace UseCaseAnalyser.Model.Model
                     
                 //Set Order for recursive call
                 internalGraph.GetAttributeByName(COrder).Value =
-                ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode);
+                ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, useCaseGraph);
 
                 retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
 
