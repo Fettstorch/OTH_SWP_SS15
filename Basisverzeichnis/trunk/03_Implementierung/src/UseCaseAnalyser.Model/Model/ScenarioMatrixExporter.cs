@@ -36,7 +36,9 @@ namespace UseCaseAnalyser.Model.Model
         /// <param name="file">file info of the file to save the scenario matrix to</param>
         public static void ExportScenarioMatrix(UseCaseGraph useCaseGraph, FileInfo file)
         {
-            if (!string.Equals(file.Extension, ExcelExtension)) throw new InvalidOperationException("wrong file type!");
+            //check if given file is corrupted
+            ValidateFile(file);
+
             SpreadsheetDocument document = SpreadsheetDocument.Create(file.FullName, SpreadsheetDocumentType.Workbook);
                 ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, 1);
             document.Close();
@@ -50,6 +52,9 @@ namespace UseCaseAnalyser.Model.Model
         /// <param name="file">file info of the file to save the scenario matrix to</param>
         public static void ExportScenarioMatrix(UseCaseGraph[] useCaseGraphs, FileInfo file)
         {
+            //check if given file is corrupted
+            ValidateFile(file);
+
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(file.FullName, true))
             {
                 for (UInt32Value i = 0; i < useCaseGraphs.Length; i++)
@@ -58,6 +63,21 @@ namespace UseCaseAnalyser.Model.Model
                     ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, i);
                 }
             }
+        }
+
+        
+        // ReSharper disable once UnusedParameter.Local
+        // [Mathias Schneider] needed for checking for exceptions
+        /// <summary>
+        /// Helper method to check if file validates preconditions.
+        /// </summary>
+        /// <param name="file">FileInfo that should be checked.</param>
+        private static void ValidateFile(FileInfo file)
+        {
+            if (file == null || file.FullName.Equals(ExcelExtension))
+                throw new InvalidOperationException("Please specify an output file name.");
+            if (!string.Equals(file.Extension, ExcelExtension))
+                throw new InvalidOperationException("Wrong file type, please specify a *" + ExcelExtension + ".");
         }
 
         private static void CreateScenarioMatrix(UseCaseGraph useCaseGraph, SpreadsheetDocument spreadsheetDoc, UInt32Value index)
