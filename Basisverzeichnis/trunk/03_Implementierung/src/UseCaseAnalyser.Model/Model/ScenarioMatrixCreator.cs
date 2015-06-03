@@ -54,31 +54,17 @@ namespace UseCaseAnalyser.Model.Model
             string seperator = (string.IsNullOrEmpty(attributeValue) ? string.Empty : " ");
             if (IsAlternativeNode(nextNode))
             {
-                //if (edgeArray.Any(edge => !IsAlternativeNode(edge.Node1)))
-                //{
-                //    seperator = "\r\n  ";
-                //}
-                foreach (IEdge edge in edgeArray)
+                if (edgeArray.Any(edge => !IsAlternativeNode(edge.Node1)))
                 {
-                    if (!IsAlternativeNode(edge.Node1))
-                    {
-                        seperator = "\r\n  ";
-                    }
-                }
+                    seperator = "\r\n  ";
+                }                
             }
             else
             {
-                //if (edgeArray.Any(edge => IsAlternativeNode(edge.Node1)))
-                //{
-                //    seperator = "\r\n";
-                //}  
-                foreach (IEdge edge in edgeArray)
+                if (edgeArray.Any(edge => IsAlternativeNode(edge.Node1)))
                 {
-                    if (IsAlternativeNode(edge.Node1))
-                    {
-                        seperator = "\r\n";
-                    }
-                }
+                    seperator = "\r\n";
+                }  
             }
             return attributeValue + seperator + GetNodeNumber(nextNode);
         }
