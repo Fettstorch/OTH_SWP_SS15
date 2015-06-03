@@ -8,9 +8,9 @@
                           VerticalScrollBarVisibility="Auto" PreviewMouseWheel="CanvasScrollViewer_OnMouseWheel">
                 <Canvas Name="DrawingCanvas" Margin="10" Height="100" Width="100"
                         VerticalAlignment="Top" HorizontalAlignment="Left" >
-                    <Canvas.RenderTransform>
-                        <ScaleTransform x:Name="st"/>
-                    </Canvas.RenderTransform>
+                    <Canvas.LayoutTransform>
+                        <ScaleTransform x:Name="CanvaScaleTransform"/>
+                    </Canvas.LayoutTransform>
                 </Canvas>
             </ScrollViewer>
         </Border>
