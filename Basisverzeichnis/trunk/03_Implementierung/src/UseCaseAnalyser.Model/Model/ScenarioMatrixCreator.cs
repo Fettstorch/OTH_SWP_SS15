@@ -10,11 +10,13 @@
 // <subject>Software Projekt</subject>
 // </summary>
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using GraphFramework;
 using GraphFramework.Interfaces;
+using Attribute = GraphFramework.Attribute;
 
 namespace UseCaseAnalyser.Model.Model
 {
@@ -61,7 +63,7 @@ namespace UseCaseAnalyser.Model.Model
                 if (edges.Any(edge => IsAlternativeNode(edge.Node1)))
                 {
                     seperator = "\r\n";
-                }
+                }              
             }
             return attributeValue + seperator + GetNodeNumber(nextNode);
         }
@@ -84,10 +86,11 @@ namespace UseCaseAnalyser.Model.Model
         private static bool IsAlternativeNode(INode node)
         {
             return node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
-                        .Value.Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
+                .Value.Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
                    ||
                    node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
-                       .Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode);
+                       .Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)
+            || (node.Attributes.Any(attr1 => attr1.Name.Equals(NodeAttributes.VariantIndex.AttributeName())));
         }
 
         private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
@@ -110,11 +113,11 @@ namespace UseCaseAnalyser.Model.Model
                 internalGraph.AddGraph(existingScenario);
                 internalGraph.AddAttribute(existingScenario.Attributes.Any(t => t.Name == COrder)
                     ? existingScenario.GetAttributeByName(COrder) //take Order of visits from existingScenario 
-                    : new GraphFramework.Attribute(COrder, "")); // initialize empty new Scenario if existingScenario == new Graph()
+                    : new Attribute(COrder, "")); // initialize empty new Scenario if existingScenario == new Graph()
             }
             else //initialize empty new Scenario if existingScenario == null
             {
-                internalGraph.AddAttribute(new GraphFramework.Attribute(COrder, ""));
+                internalGraph.AddAttribute(new Attribute(COrder, ""));
             }
 
             //fault: currentNode not part of useCaseGraph, returns empty List
@@ -163,7 +166,7 @@ namespace UseCaseAnalyser.Model.Model
                     internalGraph.AddEdge(edgeList[i]);
 
                 //Save Order
-                IAttribute orderAttribute = new GraphFramework.Attribute(internalGraph.GetAttributeByName(COrder).Name, 
+                IAttribute orderAttribute = new Attribute(internalGraph.GetAttributeByName(COrder).Name, 
                     internalGraph.GetAttributeByName(COrder).Value);
                     
                 //Set Order for recursive call
@@ -233,9 +236,9 @@ namespace UseCaseAnalyser.Model.Model
                     count += scenarioList.Count();
                     for (int i = 0; i < count; i++)
                     {
-                        scenarioList[i].AddAttribute(new GraphFramework.Attribute(CScenarioName,
+                        scenarioList[i].AddAttribute(new Attribute(CScenarioName,
                             string.Format("Scenario No. '{0}' of use case '{1}'", i+1, useCaseName)));
-                        scenarioList[i].AddAttribute(new GraphFramework.Attribute(CUseCase, useCaseName));
+                        scenarioList[i].AddAttribute(new Attribute(CUseCase, useCaseName));
                     }
                 }
             }
