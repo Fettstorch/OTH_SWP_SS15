@@ -56,7 +56,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             mSourceUseCaseNode.AddEdge(this);
             mDestUseCaseNode.AddEdge(this);
 
-            IAttribute nameAttribute = source.Node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]);
+            IAttribute nameAttribute = source.Node.GetAttributeByName(NodeAttributes.NodeType.AttributeName());
 
             ProcessType = nameAttribute != null && nameAttribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)
                 ? EdgeProcessType.BackwardEdge

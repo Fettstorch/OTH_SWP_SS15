@@ -284,13 +284,13 @@ namespace UseCaseAnalyser.GraphVisualiser
             Panel.SetZIndex(useCaseNode, 10);
 
             // get node's attribute named "NormalIndex"
-            IAttribute normalAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NormalIndex]);
+            IAttribute normalAttribute = node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
 
             // inititalise reference use case node 
             INode referenceUseCaseNode = null;
             
             //determine if node is a variant node (node type cannot be used)
-            IAttribute variantIndexAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]);
+            IAttribute variantIndexAttribute = node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
 
             uint slotNumber = 1;
 
@@ -303,7 +303,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 // determine reference use case node 
                 referenceUseCaseNode = UseCase.Nodes.FirstOrDefault(
                     ucNode => ucNode.Attributes.Any( attr =>
-                                attr.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NormalIndex]) &&
+                                attr.Name.Equals(NodeAttributes.NormalIndex.AttributeName()) &&
                                 ((string)attr.Value).Equals(normalAttribute.Value)));
             }
 

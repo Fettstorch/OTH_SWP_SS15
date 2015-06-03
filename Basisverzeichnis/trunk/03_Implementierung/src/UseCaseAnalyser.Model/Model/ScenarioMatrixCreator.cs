@@ -30,16 +30,16 @@ namespace UseCaseAnalyser.Model.Model
         private static string GetNodeNumber(INode node)
         {
             string nodeNumber = "";
-            if (node.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]))
-                nodeNumber += node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]).Value.ToString();
+            if (node.Attributes.Any(t => t.Name == NodeAttributes.NormalIndex.AttributeName()))
+                nodeNumber += node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName()).Value.ToString();
             else
             {
                 throw new NullReferenceException("No NodeIndex found.");
             }
-            if (node.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]))
-                nodeNumber += node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]).Value.ToString();
-            if (node.Attributes.Any(t => t.Name == UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]))
-                nodeNumber += node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]).Value.ToString();
+            if (node.Attributes.Any(t => t.Name == NodeAttributes.VariantIndex.AttributeName()))
+                nodeNumber += node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName()).Value.ToString();
+            if (node.Attributes.Any(t => t.Name == NodeAttributes.VarSeqStep.AttributeName()))
+                nodeNumber += node.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName()).Value.ToString();
             return nodeNumber;
 
         }
@@ -66,22 +66,22 @@ namespace UseCaseAnalyser.Model.Model
             return
                 graph.Nodes.FirstOrDefault(
                     node =>
-                        node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType])
+                        node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
                             .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode));
         }
 
         private static bool IsEndNode(INode node, UseCaseGraph useCaseGraph)
         {
-            return node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]).Value
+            return node.GetAttributeByName(NodeAttributes.NodeType.AttributeName()).Value
                 .Equals(UseCaseGraph.NodeTypeAttribute.EndNode) || useCaseGraph.Edges.All(edge => edge.Node1 != node);
         }
 
         private static bool IsAlternativeNode(INode node)
         {
-            return node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType])
+            return node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
                         .Value.Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
                    ||
-                   node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType])
+                   node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
                        .Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode);
         }
 
@@ -163,7 +163,7 @@ namespace UseCaseAnalyser.Model.Model
                     
                 //Set Order for recursive call
                 internalGraph.GetAttributeByName(COrder).Value =
-                ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, useCaseGraph);
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, useCaseGraph);
 
                 retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
 
@@ -202,7 +202,7 @@ namespace UseCaseAnalyser.Model.Model
             {
                 if (
                     node.Attributes.Any(
-                        t => t.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]))
+                        t => t.Name == NodeAttributes.NodeType.AttributeName()))
                     continue;
                 try
                 {

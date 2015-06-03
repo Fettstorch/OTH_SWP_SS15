@@ -17,21 +17,21 @@ namespace UseCaseAnalyser.Model.Tests.Model
         public virtual void OnTestStarted()
         {
             const string name = "Name";
-            string index = UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NormalIndex];
+            string index = NodeAttributes.NormalIndex.AttributeName();
             IAttribute[][] testAttributes =
             {
                 new IAttribute[]{new Attribute(name, "A"), new Attribute(index, "A"),  
-                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.StartNode), },
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.StartNode), },
                 new IAttribute[]{new Attribute(name, "B"), new Attribute(index, "B"),
-                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.NormalNode) },
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.NormalNode) },
                 new IAttribute[]{new Attribute(name, "C"), new Attribute(index, "C"),
-                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.NormalNode) },
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.NormalNode) },
                 new IAttribute[]{new Attribute(name, "D"), new Attribute(index, "D"),
-                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.VariantNode) },
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.VariantNode) },
                 new IAttribute[]{new Attribute(name, "E"), new Attribute(index, "E"),
-                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.JumpNode) },
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.JumpNode) },
                 new IAttribute[]{new Attribute(name, "F"), new Attribute(index, "F"),
-                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType], UseCaseGraph.NodeTypeAttribute.EndNode) },
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.EndNode) },
             };
 
             mTestNodes = new INode[]

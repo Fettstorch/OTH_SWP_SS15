@@ -50,40 +50,6 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         private const string UseCaseEnd = "Ende.";
 
-        /// <summary>
-        /// The expressions in the use case table
-        /// </summary>
-        private static readonly string[] ImportStepNames = 
-        {
-            "Name",
-            "Kennung",
-            "Priorität",
-            "Kurzbeschreibung:",
-            "Vorbedingung(en):",
-            "Nachbedingung(en):",
-            "Normaler Ablauf:",
-            "Ablauf-Varianten:",
-            "Spezielle Anforderungen:",
-            "Zu klärende Punkte:"
-        };
-
-        /// <summary>
-        /// The access enum to the array ImportStepNames
-        /// </summary>
-        private enum ImportStep
-        {
-            Name = 0,
-            Id,
-            Priority,
-            Description,
-            PreCondition,
-            PostCondition,
-            NormalRoutine,
-            SequenceVariation,
-            SpecialRequirements,
-            OpenPoints
-        }
-
         #endregion
 
         /// <summary>
@@ -104,7 +70,7 @@ namespace UseCaseAnalyser.Model.Model
         public static List<UseCaseGraph> ImportUseCases(FileInfo file)
         {
             Report temp;
-            return WordImporter.ImportUseCases(file, out temp);
+            return ImportUseCases(file, out temp);
         }
 
         /// <summary>
@@ -117,12 +83,12 @@ namespace UseCaseAnalyser.Model.Model
         {
             // Initialize
             List<UseCaseGraph> useCaseList = new List<UseCaseGraph>();
-            WordImporter.wordImporteReport = report = new Report();
+            wordImporteReport = report = new Report();
 
             // Check if the file exists
             if (!file.Exists)
             {
-                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("ERROR", "File not found!", Report.Entrytype.ERROR));
+                wordImporteReport.AddReportEntry(new Report.ReportEntry("ERROR", "File not found!", Report.Entrytype.ERROR));
                 return useCaseList;
             }
 
@@ -139,11 +105,11 @@ namespace UseCaseAnalyser.Model.Model
                 IEnumerable<TableRow> rows = table.Descendants<TableRow>();
                 UseCaseGraph useCaseGraph;
                 // Try interpret table 
-                if (WordImporter.TryReadInUseCase(rows, out useCaseGraph))
+                if (TryReadInUseCase(rows, out useCaseGraph))
                 {
                     // Valid Use Case found:
                     useCaseList.Add(useCaseGraph);
-                    WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("Success!",
+                    wordImporteReport.AddReportEntry(new Report.ReportEntry("Success!",
                         "Use Case " + actUseCaseId + " successfully imported!", Report.Entrytype.LOG, actUseCaseId));
                     numberOfUseCases++;
                 }
@@ -152,7 +118,7 @@ namespace UseCaseAnalyser.Model.Model
             if (numberOfUseCases == 0)
             {
                 // No Use Cases were imported
-                WordImporter.wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING",
+                wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING",
                     "No use cases found", Report.Entrytype.WARNING));
             }
 
@@ -182,7 +148,7 @@ namespace UseCaseAnalyser.Model.Model
                     return false;
                 }
 
-                IAttribute nameAttribute = new Attribute(ImportStepNames[0], useCaseName);
+                IAttribute nameAttribute = new Attribute(UseCaseAttributes.Name.AttributeName(), useCaseName);
                 useCaseGraph.AddAttribute((nameAttribute));
                 return true;
             }
@@ -209,22 +175,22 @@ namespace UseCaseAnalyser.Model.Model
 
             string prio, desc, precon, postcon, spec, open;
 
-            if (TryGetHorizontalContent(rows[1], out actUseCaseId, ImportStepNames[(int)ImportStep.Id]) &&
-                TryGetHorizontalContent(rows[2], out prio, ImportStepNames[(int)ImportStep.Priority]) &&
-                TryGetVerticalContent(rows, 3, out desc, ImportStepNames[(int)ImportStep.Description]) &&
-                TryGetVerticalContent(rows, 5, out precon, ImportStepNames[(int)ImportStep.PreCondition]) &&
-                TryGetVerticalContent(rows, 7, out postcon, ImportStepNames[(int)ImportStep.PostCondition]) &&
-                TryGetVerticalContent(rows, rows.Count - 4, out spec, ImportStepNames[(int)ImportStep.SpecialRequirements]) &&
-                TryGetVerticalContent(rows, rows.Count - 2, out open, ImportStepNames[(int)ImportStep.OpenPoints]) &&
+            if (TryGetHorizontalContent(rows[1], out actUseCaseId, UseCaseAttributes.Id.AttributeName()) &&
+                TryGetHorizontalContent(rows[2], out prio, UseCaseAttributes.Priority.AttributeName()) &&
+                TryGetVerticalContent(rows, 3, out desc, UseCaseAttributes.Description.AttributeName()) &&
+                TryGetVerticalContent(rows, 5, out precon, UseCaseAttributes.PreCondition.AttributeName()) &&
+                TryGetVerticalContent(rows, 7, out postcon, UseCaseAttributes.PostCondition.AttributeName()) &&
+                TryGetVerticalContent(rows, rows.Count - 4, out spec, UseCaseAttributes.SpecialRequirements.AttributeName()) &&
+                TryGetVerticalContent(rows, rows.Count - 2, out open, UseCaseAttributes.OpenPoints.AttributeName()) &&
                 TryGetUseCaseName(rows[0], useCaseGraph))
             {
-                IAttribute idAttribute = new Attribute(ImportStepNames[(int)ImportStep.Id], actUseCaseId);
-                IAttribute prioAttribute = new Attribute(ImportStepNames[(int)ImportStep.Priority], prio);
-                IAttribute descAttribute = new Attribute(ImportStepNames[(int)ImportStep.Description], desc);
-                IAttribute preconAttribute = new Attribute(ImportStepNames[(int)ImportStep.PreCondition], precon);
-                IAttribute posconAttribute = new Attribute(ImportStepNames[(int)ImportStep.PostCondition], postcon);
-                IAttribute specAttribute = new Attribute(ImportStepNames[(int)ImportStep.SpecialRequirements], spec);
-                IAttribute openAttribute = new Attribute(ImportStepNames[(int)ImportStep.OpenPoints], open);
+                IAttribute idAttribute = new Attribute(UseCaseAttributes.Id.AttributeName(), actUseCaseId);
+                IAttribute prioAttribute = new Attribute(UseCaseAttributes.Priority.AttributeName(), prio);
+                IAttribute descAttribute = new Attribute(UseCaseAttributes.Description.AttributeName(), desc);
+                IAttribute preconAttribute = new Attribute(UseCaseAttributes.PreCondition.AttributeName(), precon);
+                IAttribute posconAttribute = new Attribute(UseCaseAttributes.PostCondition.AttributeName(), postcon);
+                IAttribute specAttribute = new Attribute(UseCaseAttributes.SpecialRequirements.AttributeName(), spec);
+                IAttribute openAttribute = new Attribute(UseCaseAttributes.OpenPoints.AttributeName(), open);
                 useCaseGraph.AddAttribute(idAttribute);
                 useCaseGraph.AddAttribute(prioAttribute);
                 useCaseGraph.AddAttribute(descAttribute);
@@ -322,7 +288,7 @@ namespace UseCaseAnalyser.Model.Model
 
             // Check the heading ("Normaler Ablauf")
             if (cells.Count != 1 || rowIndex + 1 >= rows.Count) return false;
-            if (!string.Equals(cells[0].InnerText, ImportStepNames[(int)ImportStep.NormalRoutine]))
+            if (!string.Equals(cells[0].InnerText, UseCaseAttributes.NormalRoutine.AttributeName()))
                 return false;
 
             // Try to get the normal use case routine
@@ -337,25 +303,25 @@ namespace UseCaseAnalyser.Model.Model
                 if (i == 0)
                 {
                     // Type = Start Node
-                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                    nodeType = new Attribute(NodeAttributes.NodeType.AttributeName(),
                         UseCaseGraph.NodeTypeAttribute.StartNode);
                 }
                 else if (i == paragraphList.Count - 2)
                 {
                     // Type = End Node
-                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                    nodeType = new Attribute(NodeAttributes.NodeType.AttributeName(),
                         UseCaseGraph.NodeTypeAttribute.EndNode);
                 }
                 else
                 {
                     // Type = Normal Node
-                    nodeType = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                    nodeType = new Attribute(NodeAttributes.NodeType.AttributeName(),
                         UseCaseGraph.NodeTypeAttribute.NormalNode);
                 }
 
-                IAttribute normalIndex = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex],
+                IAttribute normalIndex = new Attribute(NodeAttributes.NormalIndex.AttributeName(),
                     (i + 1).ToString());
-                IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description],
+                IAttribute descAttribute = new Attribute(NodeAttributes.Description.AttributeName(),
                     paragraphList[i].InnerText);
                 // Create the node:
                 INode node = new Node(normalIndex, descAttribute, nodeType);
@@ -371,7 +337,7 @@ namespace UseCaseAnalyser.Model.Model
             cells = rows[rowIndex].Descendants<TableCell>().ToList();
 
             if (cells.Count != 1 || rowIndex + 1 >= rows.Count) return false;
-            if (!string.Equals(cells[0].InnerText, WordImporter.ImportStepNames[(int)ImportStep.SequenceVariation]))
+            if (!string.Equals(cells[0].InnerText, UseCaseAttributes.SequenceVariation.AttributeName()))
                 return false; // invalid format
 
             string varDesc = "";
@@ -395,19 +361,19 @@ namespace UseCaseAnalyser.Model.Model
                     // Get all sequence nodes:
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute descAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description],
+                        IAttribute descAttribute = new Attribute(NodeAttributes.Description.AttributeName(),
                             paragraphList[j].InnerText);
-                        IAttribute normIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex],
+                        IAttribute normIndexAttribute = new Attribute(NodeAttributes.NormalIndex.AttributeName(),
                             rgx.Replace(variantIndex, ""));
-                        IAttribute varIndexAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex],
+                        IAttribute varIndexAttribute = new Attribute(NodeAttributes.VariantIndex.AttributeName(),
                             variantIndex[variantIndex.Length - 1]);
-                        IAttribute varStepAttribute = new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep],
+                        IAttribute varStepAttribute = new Attribute(NodeAttributes.VarSeqStep.AttributeName(),
                                     (j + 1).ToString());
 
                         INode node = new Node(descAttribute, normIndexAttribute, varIndexAttribute, varStepAttribute);
                         if (j < paragraphList.Count - 2)
                         {
-                            node.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                            node.AddAttribute(new Attribute(NodeAttributes.NodeType.AttributeName(),
                                 UseCaseGraph.NodeTypeAttribute.VariantNode));
                         }
                         useCaseGraph.AddNode(node);
@@ -423,7 +389,7 @@ namespace UseCaseAnalyser.Model.Model
                             if (j == 0)
                             {
                                 useCaseGraph.AddEdge(searchedNode, node,
-                                    new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.Description], varDesc));
+                                    new Attribute(NodeAttributes.Description.AttributeName(), varDesc));
                             }
                             else
                                 useCaseGraph.AddEdge(searchedNode, node);
@@ -435,19 +401,19 @@ namespace UseCaseAnalyser.Model.Model
                     }
 
                     // Sequence Jump Node
-                    if (lastCondition.StartsWith(WordImporter.SequenceJump))
+                    if (lastCondition.StartsWith(SequenceJump))
                     {
-                        string lastConditionId = lastCondition.Replace(WordImporter.SequenceJump, "").Replace(" ", "");
+                        string lastConditionId = lastCondition.Replace(SequenceJump, "").Replace(" ", "");
                         INode indexNode;
                         if (!nodes.TryGetValue(lastConditionId, out indexNode))
                         {
                             // Node refers to a node not included in the graph
                             wordImporteReport.AddReportEntry(new Report.ReportEntry("Wrong reference!", "'" + lastCondition 
-                                + "' leads to a node which is not in the graph! " + "If you wanted the node to refer to an use case, write '" + WordImporter.UseCaseJump + "' instead!",
+                                + "' leads to a node which is not in the graph! " + "If you wanted the node to refer to an use case, write '" + UseCaseJump + "' instead!",
                                 Report.Entrytype.WARNING, actUseCaseId));
                             INode node;
                             if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out node)) continue;
-                            node.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                            node.AddAttribute(new Attribute(NodeAttributes.NodeType.AttributeName(),
                                 UseCaseGraph.NodeTypeAttribute.JumpNode));
                             continue;
                         }
@@ -462,22 +428,22 @@ namespace UseCaseAnalyser.Model.Model
                         }
                         // make a edge between the normal routine node and the first node of the sequence variant
                         useCaseGraph.AddEdge(lastNode, indexNode);
-                        lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                        lastNode.AddAttribute(new Attribute(NodeAttributes.NodeType.AttributeName(),
                             UseCaseGraph.NodeTypeAttribute.JumpNode));
                     }
-                    else if (lastCondition.StartsWith(WordImporter.UseCaseJump))
+                    else if (lastCondition.StartsWith(UseCaseJump))
                     {
                         INode lastNode;
                         if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode)) continue;
-                        lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                        lastNode.AddAttribute(new Attribute(NodeAttributes.NodeType.AttributeName(),
                             UseCaseGraph.NodeTypeAttribute.JumpNode));
                     }
                     // End Node
-                    else if (lastCondition.StartsWith(WordImporter.UseCaseEnd))
+                    else if (lastCondition.StartsWith(UseCaseEnd))
                     {
                         INode lastNode;
                         if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode)) continue;
-                        lastNode.AddAttribute(new Attribute(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType],
+                        lastNode.AddAttribute(new Attribute(NodeAttributes.NodeType.AttributeName(),
                             UseCaseGraph.NodeTypeAttribute.EndNode));
                     }
 

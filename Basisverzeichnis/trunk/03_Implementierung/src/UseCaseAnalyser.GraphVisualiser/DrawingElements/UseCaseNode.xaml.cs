@@ -42,9 +42,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             InitializeComponent();
 
             //initalize member
-            IAttribute indexAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NormalIndex]);
-            IAttribute variantAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VariantIndex]);
-            IAttribute varSeqStepAttribute = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.VarSeqStep]);
+            IAttribute indexAttribute = node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+            IAttribute variantAttribute = node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
+            IAttribute varSeqStepAttribute = node.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName());
            
             if (indexAttribute != null)
                 LblIndex.Content = indexAttribute.Value.ToString();

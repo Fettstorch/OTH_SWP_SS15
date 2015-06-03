@@ -101,11 +101,11 @@ namespace UseCaseAnalyser.Model.Model
             {
                 INode[] nodes = scenarios[i].Nodes.ToArray();
                 UseCaseGraph.NodeTypeAttribute lastNodeType = (UseCaseGraph.NodeTypeAttribute) nodes[0].GetAttributeByName(
-                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value;
+                    NodeAttributes.NodeType.AttributeName()).Value;
 
                 foreach (var node in scenarios[i].Nodes)
                 {
-                    IAttribute attr = node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]);
+                    IAttribute attr = node.GetAttributeByName(NodeAttributes.NodeType.AttributeName());
                     if(attr == null) throw new NotImplementedException();
                     if ((UseCaseGraph.NodeTypeAttribute) attr.Value == UseCaseGraph.NodeTypeAttribute.VariantNode)
                     {

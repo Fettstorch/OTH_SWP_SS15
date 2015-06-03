@@ -17,49 +17,114 @@ using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Model.Model
 {
+
+    /// <summary>
+    /// The access enum to the array UseCaseGraphAttributeNames
+    /// </summary>
+    public enum UseCaseAttributes
+    {
+        /// <summary>
+        /// the name of the use case, e.g. "UseCase-Dokument Importieren"
+        /// </summary>
+        Name = 0,
+        /// <summary>
+        /// the id of the use case, e.g. "UC-1"
+        /// </summary>
+        Id,
+        /// <summary>
+        /// the priority of the use case, e.g. "hoch"
+        /// </summary>
+        Priority,
+        /// <summary>
+        /// the description of the use case, e.g. "Der Anwender möchte ein vorliegendes Word Dokument, welches UseCases beinhaltet in das Tool importieren."
+        /// </summary>
+        Description,
+        /// <summary>
+        /// the pre condition of the use case, e.g. "Das Dokument (.docx) hat das richtige Format und ist nicht beschaedigt."
+        /// </summary>
+        PreCondition,
+        /// <summary>
+        /// the post condition of the use case, e.g. "Die UseCases existieren als Datenstruktur und können weiterverarbeitet werden."
+        /// </summary>
+        PostCondition,
+        /// <summary>
+        /// the normal routine of the use case
+        /// </summary>
+        NormalRoutine,
+        /// <summary>
+        /// the sequence variation of the use case
+        /// </summary>
+        SequenceVariation,
+        /// <summary>
+        /// the special requirements of the use case, e.g. "keine"
+        /// </summary>
+        SpecialRequirements,
+        /// <summary>
+        /// the open points of the use case, e.g. "Soll der Anwender mehrere Dateien auswählen können, die eingelesen werden sollen?"
+        /// </summary>
+        OpenPoints
+    }
+    
+    /// <summary>
+    /// This enum is used to access the attribute names of the string array NodeAttributeNames
+    /// </summary>
+    public enum NodeAttributes
+    {
+        /// <summary>
+        /// the index of the normal routine, e.g. "2"
+        /// </summary>
+        NormalIndex,
+        /// <summary>
+        /// the variant identifier, e.g. "a"
+        /// </summary>
+        VariantIndex,
+        /// <summary>
+        /// the variant sequence step, e.g. "1."
+        /// </summary>
+        VarSeqStep,
+        /// <summary>
+        /// The description of the node
+        /// </summary>
+        Description,
+        /// <summary>
+        /// The type of the node which are start, end, jump nodes, etc.
+        /// </summary>
+        NodeType
+    }
+
     /// <summary>
     /// class to represent a use case. 
     /// </summary>
     public class UseCaseGraph : Graph
     {
         /// <summary>
-        /// The attribute names of the graph nodes. You can access this array with the enum NodeAttributes
+        /// The expressions in the use case table
         /// </summary>
-        public static readonly string[] AttributeNames = 
+        public static readonly string[] UseCaseGraphAttributeNames = 
         {
-            "Normal Index",
-            "Variant Index",
-            "Variant Sequnce Step",
-            "Description",
-            "NodeType"
+            "Name",
+            "Kennung",
+            "Priorität",
+            "Kurzbeschreibung:",
+            "Vorbedingung(en):",
+            "Nachbedingung(en):",
+            "Normaler Ablauf:",
+            "Ablauf-Varianten:",
+            "Spezielle Anforderungen:",
+            "Zu klärende Punkte:"
         };
 
         /// <summary>
-        /// This enum is used to access the attribute names of the string array AttributeNames
+        /// The attribute names of the graph nodes. You can access this array with the enum NodeAttributes
         /// </summary>
-        public enum NodeAttributes
+        public static readonly string[] NodeAttributeNames = 
         {
-            /// <summary>
-            /// the index of the normal routine, e.g. "2"
-            /// </summary>
-            NormalIndex,
-            /// <summary>
-            /// the variant identifier, e.g. "a"
-            /// </summary>
-            VariantIndex,
-            /// <summary>
-            /// the variant sequence step, e.g. "1."
-            /// </summary>
-            VarSeqStep,
-            /// <summary>
-            /// The description of the node
-            /// </summary>
-            Description,
-            /// <summary>
-            /// The type of the node which are start, end, jump nodes, etc.
-            /// </summary>
-            NodeType
-        }
+            "Normal Index",
+            "Variant Index",
+            "Variant Sequence Step",
+            "Description",
+            "NodeType"
+        };
 
         /// <summary>
         /// The nodes are sorted in their different node types
@@ -115,20 +180,5 @@ namespace UseCaseAnalyser.Model.Model
         {
             return (string) Attributes.Single(a => a.Name == "Name").Value;
         }
-
-        #region BindingTest
-
-        private IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCase)
-        {
-            int i = 0;
-            foreach (INode node in useCase.Nodes)
-            {
-                Graph scenario = new Graph(new Attribute("Name", string.Format("Scenario No. '{0}' of use case '{1}'", ++i, useCase)));
-                scenario.AddNode(node);
-
-                yield return scenario;
-            }
-        }
-        #endregion
     }
 }
