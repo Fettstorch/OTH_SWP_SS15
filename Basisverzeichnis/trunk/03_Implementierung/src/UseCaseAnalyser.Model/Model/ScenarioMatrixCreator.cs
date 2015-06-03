@@ -58,6 +58,12 @@ namespace UseCaseAnalyser.Model.Model
                             .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode));
         }
 
+        private static bool IsEndNode(INode node, UseCaseGraph useCaseGraph)
+        {
+            return node.GetAttributeByName(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]).Value
+                .Equals(UseCaseGraph.NodeTypeAttribute.EndNode) || useCaseGraph.Edges.All(edge => edge.Node1 != node);
+        }
+
         private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
         {
             List<IGraph> retScenario = new List<IGraph>();
@@ -95,16 +101,18 @@ namespace UseCaseAnalyser.Model.Model
                 internalGraph.AddNode(currentNode);
                 internalGraph.GetAttributeByName(COrder).Value =
                     ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, currentNode);
-
             }
 
             //end of recursion, EndNode found
-            if (currentNode.GetAttributeByName(UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
-                    .Equals(UseCaseGraph.NodeTypeAttribute.EndNode))
+            if (IsEndNode(currentNode, useCaseGraph))
             {
                 retScenario.Add(internalGraph);
                 return retScenario;
             }
+
+            //Save old Scenario for comparison
+            IGraph saveGraph = new Graph(internalGraph.Attributes.ToArray());
+            saveGraph.AddGraph(internalGraph);
 
             //visit all connected Nodes
             IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
@@ -127,6 +135,7 @@ namespace UseCaseAnalyser.Model.Model
 
                 if (!edgeList[i].Node1.Equals(currentNode))//SourceNode != currentNode
                     continue;
+
                 INode destNode = edgeList[i].Node2;
                 if(!internalGraph.Nodes.Contains(destNode))
                     internalGraph.AddNode(destNode);
@@ -147,10 +156,8 @@ namespace UseCaseAnalyser.Model.Model
                 internalGraph.RemoveAttribute(COrder);
                 internalGraph.AddAttribute(orderAttribute);
 
-                //Remove last node 
-                if (!edgeList[i].Node2.GetAttributeByName(
-                    UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]).Value
-                        .Equals(UseCaseGraph.NodeTypeAttribute.NormalNode))
+                //Remove last node if necessary
+                if(!saveGraph.Nodes.Contains(edgeList[i].Node2))
                 {
                     internalGraph.RemoveNode(destNode);
                 }
