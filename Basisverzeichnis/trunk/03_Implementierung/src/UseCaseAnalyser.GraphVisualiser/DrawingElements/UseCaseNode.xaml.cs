@@ -98,13 +98,20 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// <param name="newEdge">UseCaseEgde that should be added to the UseCaseNode</param>
         public void AddEdge(UseCaseEdge newEdge)
         {
-            if (!mEdges.Contains(newEdge) &&
-                (Equals(newEdge.mDestUseCaseNode, this) || Equals(newEdge.mSourceUseCaseNode, this)))
+            if (mEdges.Contains(newEdge)) 
+                return;
+
+            if (Equals(newEdge.mSourceUseCaseNode, this))
             {
                 if(mEdges.Count<=1)
                     mEdges.Add(newEdge);
                 else
                     mEdges.Insert(2,newEdge);
+            }
+
+            if(Equals(newEdge.mDestUseCaseNode, this))
+            {
+                mEdges.Insert(0, newEdge);
             }
         }
 
