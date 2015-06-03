@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Lifetime;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -38,6 +37,7 @@ namespace UseCaseAnalyser.GraphVisualiser
 
         private const double ElementWidth = 150;
         private const double ElementHeight = 120;
+        private const double ScaleRateZoom = 1.05;
         private readonly List<UseCaseNode> mNodes = new List<UseCaseNode>();
         private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>();
         private Point mOffsetElementPosition;
@@ -195,6 +195,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             mNodes.Clear();
             DrawingCanvas.Children.Clear();
             DrawingCanvas.Height = DrawingCanvas.Width = 100;
+            CanvaScaleTransform.ScaleX = CanvaScaleTransform.ScaleY = 1;
         }
 
         /// <summary>
@@ -466,39 +467,42 @@ namespace UseCaseAnalyser.GraphVisualiser
                     node.RenderEdges();
             }
 
-            
+            const double borderToStartScroll = 100;
+            Point currMousePos = Mouse.GetPosition(CanvasScrollViewer);
 
-            Point currPoint = Mouse.GetPosition(CanvasScrollViewer);
-            if (currPoint.X > CanvasScrollViewer.ActualWidth - 100)
+            //Mouse is moving with an element on the right side of the canvas -> Increase canvas size and scroll right
+            if (currMousePos.X > CanvasScrollViewer.ActualWidth - borderToStartScroll)
             {
-                DrawingCanvas.Width = st.ScaleX*(maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X);
+                DrawingCanvas.Width = maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X;
                 CanvasScrollViewer.LineRight();
-
             }
-            else if (currPoint.X < 100)
+            // Is Mouse pos in the left side of the canvas -> decrease Canvas size
+            else if (currMousePos.X < borderToStartScroll)
             {
+                //Scroll viewer is completly left -> set standard value of drawing canvas size
                 if (CanvasScrollViewer.HorizontalOffset< 0.1)
-                    DrawingCanvas.Width = st.ScaleX*(maxWidth);
+                    DrawingCanvas.Width = maxWidth;
+                //set max pos of element as canvas size and add Mouse Offset
                 else
-                    DrawingCanvas.Width = st.ScaleX*(maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X);
+                    DrawingCanvas.Width = maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X;
                 CanvasScrollViewer.LineLeft();
-
             }
-      
-            if (currPoint.Y > CanvasScrollViewer.ActualHeight - 100)
+            //Mouse is moving with an element on the bottom side of the canvas -> Increase canvas size and scroll down
+            if (currMousePos.Y > CanvasScrollViewer.ActualHeight - borderToStartScroll)
             {
-                DrawingCanvas.Height = st.ScaleY*(maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y);
+                DrawingCanvas.Height = maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y;
                 CanvasScrollViewer.LineDown();
-            
             }
-            else if (currPoint.Y < 100)
+            // Is Mouse pos in the up side of the canvas -> decrease Canvas size
+            else if (currMousePos.Y < borderToStartScroll)
             {
+                //Scroll viewer is completly up -> set standard value of drawing canvas size
                 if (CanvasScrollViewer.VerticalOffset < 0.1)
-                    DrawingCanvas.Height = st.ScaleY*(maxHeight);
+                    DrawingCanvas.Height = maxHeight;
+                //set max pos of element as canvas size and add Mouse Offset
                 else
-                    DrawingCanvas.Height = st.ScaleY*(maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y);
+                    DrawingCanvas.Height = maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y;
                 CanvasScrollViewer.LineUp();
-
             }
         }
 
@@ -518,8 +522,6 @@ namespace UseCaseAnalyser.GraphVisualiser
             {
                 if (!element.Equals(mSelectedElement))
                     continue;
-                //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
-                //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
                 UseCaseNode node = element as UseCaseNode;
                 if (node != null)
                     node.RenderEdges();
@@ -528,9 +530,11 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
-        #endregion
-
-        private const double mScaleRate = 1.05;
+        /// <summary>
+        /// Event handler for CanvasScrollViewer. If left Ctrl Key is pressed Canvas Zoom starts
+        /// </summary>
+        /// <param name="sender">Sender of CanvasScrollViewer_OnMouseWheel event</param>
+        /// <param name="e">CanvasScrollViewer_OnMouseWheel mouse wheel event arguments</param>
         private void CanvasScrollViewer_OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl))
@@ -538,20 +542,19 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             if (e.Delta > 0)
             {
-                st.ScaleX *= mScaleRate;
-                st.ScaleY *= mScaleRate;
-                DrawingCanvas.Height *= mScaleRate;
-                DrawingCanvas.Width*= mScaleRate;
+                CanvaScaleTransform.ScaleX *= ScaleRateZoom;
+                CanvaScaleTransform.ScaleY *= ScaleRateZoom;
             }
             else
             {
-                st.ScaleX /= mScaleRate;
-                st.ScaleY /= mScaleRate;
-                DrawingCanvas.Height /= mScaleRate;
-                DrawingCanvas.Width /= mScaleRate;
-
+                CanvaScaleTransform.ScaleX /= ScaleRateZoom;
+                CanvaScaleTransform.ScaleY /= ScaleRateZoom;
             }
             e.Handled = true;
         }
+
+        #endregion
+
+
     }
 }
