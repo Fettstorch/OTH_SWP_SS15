@@ -100,7 +100,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         {
             if (!mEdges.Contains(newEdge) &&
                 (Equals(newEdge.mDestUseCaseNode, this) || Equals(newEdge.mSourceUseCaseNode, this)))
-                mEdges.Add(newEdge);
+            {
+                if(mEdges.Count<=1)
+                    mEdges.Add(newEdge);
+                else
+                    mEdges.Insert(2,newEdge);
+            }
         }
 
         /// <summary>

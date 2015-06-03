@@ -90,8 +90,15 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     //Source node over destination node
                     if (Canvas.GetTop(mSourceUseCaseNode) + mSourceUseCaseNode.Height < Canvas.GetTop(mDestUseCaseNode))
                     {
+                        double posDest = Canvas.GetLeft(mDestUseCaseNode);
+                        double posSource = Canvas.GetLeft(mSourceUseCaseNode);
+
+                        if (Canvas.GetLeft(mSourceUseCaseNode) + mSourceUseCaseNode.Width < Canvas.GetLeft(mDestUseCaseNode))
+                            DockPosDestElement = DockedStatus.Left;
+                        else
+                            DockPosDestElement = DockedStatus.Top;
+                        
                         DockPosSourceElement = DockedStatus.Bottom;
-                        DockPosDestElement = DockedStatus.Top;
                     }
                     //Source node under destination node
                     else if (Canvas.GetTop(mDestUseCaseNode) + mDestUseCaseNode.Height <
@@ -151,15 +158,31 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         Canvas.GetLeft(mSourceUseCaseNode) +
                         (mSourceUseCaseNode.Width/amountIndexStart)*indexStartElement,
                         Canvas.GetTop(mSourceUseCaseNode));
-                    endpoint = new Point(
-                        Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
-                        Canvas.GetTop(mDestUseCaseNode));
+                    
+
                     double heightStart = DockPosSourceElement == DockedStatus.Bottom ? mSourceUseCaseNode.Height : 0;
                     double heightEnd = DockPosDestElement == DockedStatus.Bottom ? mDestUseCaseNode.Height : 0;
 
+                    if (DockPosDestElement == DockedStatus.Left)
+                    {
+                        endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) , Canvas.GetTop(mDestUseCaseNode) + (mDestUseCaseNode.Height / amountIndexEnd) * indexDestElement);
+                        bzSeg.Point1 = new Point(startpoint.X, startpoint.Y + (startpoint.Y - endpoint.Y) / 2 + heightStart);
+
+                        bzSeg.Point2 = new Point(endpoint.X - (endpoint.X - startpoint.X) / 2, endpoint.Y + heightEnd);
+                    }
+                    else
+                    {
+                        endpoint = new Point(
+                            Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
+                            Canvas.GetTop(mDestUseCaseNode));
+                        bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
+                        bzSeg.Point2 = new Point(endpoint.X, startpoint.Y + heightStart);
+                    
+                    }
+                    
                     pthFigure.StartPoint = new Point(startpoint.X, startpoint.Y + heightStart);
                     bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
-                    bzSeg.Point2 = new Point(endpoint.X, startpoint.Y + heightStart);
+              
                     bzSeg.Point3 = new Point(endpoint.X, endpoint.Y + heightEnd);
                     break;
 

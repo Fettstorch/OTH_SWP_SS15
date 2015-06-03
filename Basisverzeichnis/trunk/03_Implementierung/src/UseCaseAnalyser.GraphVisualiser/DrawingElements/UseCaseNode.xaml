@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             Height="70" Width="105" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             Height="50" Width="75" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
         <Border Name="NodeBorder" BorderThickness="2">
             <Rectangle>

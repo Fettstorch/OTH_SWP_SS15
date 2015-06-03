@@ -35,8 +35,8 @@ namespace UseCaseAnalyser.GraphVisualiser
     {
         #region properties
 
-        private const double ElementWidth = 150;
-        private const double ElementHeight = 120;
+        private const double ElementWidth = 110;
+        private const double ElementHeight = 70;
         private const double ScaleRateZoom = 1.05;
         private readonly List<UseCaseNode> mNodes = new List<UseCaseNode>();
         private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>();
@@ -283,31 +283,6 @@ namespace UseCaseAnalyser.GraphVisualiser
             DrawingCanvas.Children.Add(useCaseNode);
             Panel.SetZIndex(useCaseNode, 10);
 
-            // get node's attribute named "NormalIndex"
-            IAttribute normalAttribute = node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
-
-            // inititalise reference use case node 
-            INode referenceUseCaseNode = null;
-            
-            //determine if node is a variant node (node type cannot be used)
-            IAttribute variantIndexAttribute = node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
-
-            uint slotNumber = 1;
-
-            if (variantIndexAttribute != null)
-            {
-                // determine slotnumber (X-Offset) indicator using variant index (character) which is
-                // "casted" to an integer with offset
-                slotNumber = (uint) (char.ToUpper(variantIndexAttribute.Value.ToString()[0]) - 63);
-
-                // determine reference use case node 
-                referenceUseCaseNode = UseCase.Nodes.FirstOrDefault(
-                    ucNode => ucNode.Attributes.Any( attr =>
-                                attr.Name.Equals(NodeAttributes.NormalIndex.AttributeName()) &&
-                                ((string)attr.Value).Equals(normalAttribute.Value)));
-            }
-
-
             // If the node is already in the Dictionary the old value will be loaded
             // otherwise default value will be calculated
             if (mNodePosDict.ContainsKey(node))
@@ -317,26 +292,74 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
             else
             {
-                double leftPos = ElementWidth*(slotNumber - 1) + 40;
+                double leftPos = 40;
                 double topPos = 0;
+                uint yOffsetMultiplier;
 
-                if (referenceUseCaseNode != null)
+                // get node's attribute named "NormalIndex"
+                IAttribute normalAttribute = node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+
+                // determine if node is a variant node (node type cannot be used)
+                IAttribute variantIndexAttribute = node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
+
+                // check if node is a variant sequence node
+                if (variantIndexAttribute != null)
                 {
+                    // determine y-Offset using variant index (character) which is
+                    // "casted" to an integer with offset
+                    yOffsetMultiplier = (uint) (char.ToUpper(variantIndexAttribute.Value.ToString()[0]) - 64);
+
+                    // determine reference use case node 
+                    INode referenceUseCaseNode = UseCase.Nodes.FirstOrDefault(
+                        ucNode => ucNode.Attributes.Any(attr =>
+                            attr.Name.Equals(NodeAttributes.NormalIndex.AttributeName()) &&
+                            ((string) attr.Value).Equals(normalAttribute.Value)));
+                    // get correspronding UseCaseNode
                     UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
-                    topPos = Canvas.GetTop(referencenode);
-                }
 
-                foreach (UseCaseNode ucNode in mNodes)
+                    // determine x-Offset using variant sequence step
+                    uint xOffsetMultiplier;
+                    IAttribute varSeqStepAttribute = node.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName());
+                    uint.TryParse(varSeqStepAttribute.Value.ToString(), out xOffsetMultiplier);
+
+                    //top is calculated by using reference node y-offset added to y-offset corresponding to its variant number
+                    topPos = Canvas.GetTop(referencenode) + yOffsetMultiplier*ElementHeight;
+                    //left only depends on variant sequence number
+                    leftPos += xOffsetMultiplier*ElementWidth;
+                }
+                //otherwise it's a normal sequence node
+                else
                 {
-                    if (Math.Abs(Canvas.GetLeft(ucNode) - leftPos) < 0.1f && Canvas.GetTop(ucNode) > topPos)
-                        topPos = Canvas.GetTop(ucNode);
+                    // normal index is used to determine default y-Position
+                    uint.TryParse(normalAttribute.Value.ToString(), out yOffsetMultiplier);
+                    topPos += (yOffsetMultiplier - 1) * ElementHeight;
+
+                    //skip calculation of variant sequence offset for first node (with index 1)
+                    //note: if node are inserted in an wrong order rendering would become corrupted!
+                    if (mNodes.Count > 0)
+                    {
+                        //determine index of previous normal node
+                        int ucNodeIndexPrevious;
+                        int.TryParse(normalAttribute.Value.ToString(), out ucNodeIndexPrevious);
+                        ucNodeIndexPrevious--;
+
+                        //determine reference use case node (previous normal node)
+                        INode previousNode = UseCase.Nodes.FirstOrDefault(n => n.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName()).Value.Equals(ucNodeIndexPrevious.ToString()));
+                        UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(previousNode));
+                        topPos = Canvas.GetTop(referencenode) + ElementHeight;
+                    }
+                    //get previous normal node's variant count used to calculate additional offset
+                    int variantCount = GetPreviousNodeVariantCount(useCaseNode);
+
+                    //add element height for all elements except first (otherwise margin would be too large)
+                    if (mNodes.Count > 0)
+                        topPos += (ElementHeight * (variantCount));
                 }
 
-                //add element height for all elements except first (otherwise margin would be too large)
-                if (mNodes.Count > 0)
-                    topPos += ElementHeight;
-
+                // finally add calculated position to cache
                 mNodePosDict.Add(node, new Point(leftPos, topPos));
+
+                //assign calculated position
                 Canvas.SetTop(useCaseNode, topPos);
                 Canvas.SetLeft(useCaseNode, leftPos);
             }
@@ -349,6 +372,55 @@ namespace UseCaseAnalyser.GraphVisualiser
                 DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
             if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
                 DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
+        }
+
+        /// <summary>
+        /// Calculates additional offset corresponding to previous node's variant count
+        /// </summary>
+        /// <param name="ucNode"></param>
+        /// <returns>Count of previous normal node - if ucNode is not a normal node itself return 0</returns>
+        private int GetPreviousNodeVariantCount(UseCaseNode ucNode)
+        {
+            // get node's attribute named "NormalIndex"
+            IAttribute normalIndexAttribute = ucNode.Node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+
+            //determine if node is a variant node (node type cannot be used)
+            IAttribute variantIndexAttribute = ucNode.Node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
+
+            //if a variant node was specified return 0
+            if (variantIndexAttribute != null) 
+                return 0;
+
+            //determine index of previous normal node
+            int ucNodeIndexPrevious;
+            int.TryParse(normalIndexAttribute.Value.ToString(), out ucNodeIndexPrevious);
+            ucNodeIndexPrevious--;
+
+            //get previous node
+            INode previousNode = UseCase.Nodes.FirstOrDefault(n => n.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName()).Value.Equals(ucNodeIndexPrevious.ToString()));
+            if (previousNode == null) return 0;
+
+            //calculate previous node's variant count
+            int variantCount = 0;
+            foreach (INode orgNode in UseCase.Nodes)
+            {
+                IAttribute ucNodeVarSeqStepIndexAttribute = orgNode.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName());
+
+                //check if there are variant by using normal index as compare and only increase count if there exist an edge between normal node and variant node
+                //otherwise all variant sequence node would increase amount of variants
+                if (ucNodeVarSeqStepIndexAttribute != null)
+                {
+                    IAttribute ucNodeNormalIndexAttribute = orgNode.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+
+                    int nodeIndex;
+                    int.TryParse(ucNodeNormalIndexAttribute.Value.ToString(), out nodeIndex);
+
+                    if (ucNodeIndexPrevious == nodeIndex && UseCase.GetEdges(previousNode, orgNode).ToList().Any())
+                        variantCount++;
+                }
+            }
+
+            return variantCount;
         }
 
         /// <summary>
