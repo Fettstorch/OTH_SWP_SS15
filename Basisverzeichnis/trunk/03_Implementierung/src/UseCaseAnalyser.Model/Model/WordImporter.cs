@@ -50,6 +50,11 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         private const string UseCaseEnd = "Ende.";
 
+        /// <summary>
+        /// The expression which is used as the description for the last node, the end node
+        /// </summary>
+        private const string EndDescription = "Der Use Case endet.";
+
         #endregion
 
         /// <summary>
@@ -118,8 +123,8 @@ namespace UseCaseAnalyser.Model.Model
             if (numberOfUseCases == 0)
             {
                 // No Use Cases were imported
-                wordImporteReport.AddReportEntry(new Report.ReportEntry("WARNING",
-                    "No use cases found", Report.Entrytype.WARNING));
+                wordImporteReport.AddReportEntry(new Report.ReportEntry("Warning!",
+                    "No use cases found", Report.Entrytype.ERROR));
             }
 
             doc.Close();
@@ -297,20 +302,14 @@ namespace UseCaseAnalyser.Model.Model
             List<Paragraph> paragraphList = cells[1].Descendants<Paragraph>().ToList();
             INode oldNode = null;
             if (paragraphList.Count < 1) return false; // no normal routine found
-            for (int i = 0; i < paragraphList.Count - 1; i++) // last paragraph is the end tag: "Ende"
-            {
-                IAttribute nodeType;
+            IAttribute nodeType, normalIndex, descAttribute;
+            for (int i = 0; i < paragraphList.Count; i++)
+            {                
                 if (i == 0)
                 {
                     // Type = Start Node
                     nodeType = new Attribute(NodeAttributes.NodeType.AttributeName(),
                         UseCaseGraph.NodeTypeAttribute.StartNode);
-                }
-                else if (i == paragraphList.Count - 2)
-                {
-                    // Type = End Node
-                    nodeType = new Attribute(NodeAttributes.NodeType.AttributeName(),
-                        UseCaseGraph.NodeTypeAttribute.EndNode);
                 }
                 else
                 {
@@ -319,9 +318,9 @@ namespace UseCaseAnalyser.Model.Model
                         UseCaseGraph.NodeTypeAttribute.NormalNode);
                 }
 
-                IAttribute normalIndex = new Attribute(NodeAttributes.NormalIndex.AttributeName(),
+                normalIndex = new Attribute(NodeAttributes.NormalIndex.AttributeName(),
                     (i + 1).ToString());
-                IAttribute descAttribute = new Attribute(NodeAttributes.Description.AttributeName(),
+                descAttribute = new Attribute(NodeAttributes.Description.AttributeName(),
                     paragraphList[i].InnerText);
                 // Create the node:
                 INode node = new Node(normalIndex, descAttribute, nodeType);
@@ -331,6 +330,14 @@ namespace UseCaseAnalyser.Model.Model
                 if (oldNode != null) useCaseGraph.AddEdge(oldNode, node);
                 oldNode = node;
             }
+
+            // Add Endnode:
+            INode endNode = new Node(new Attribute(NodeAttributes.NormalIndex.AttributeName(),
+                    (paragraphList.Count).ToString()), new Attribute(NodeAttributes.Description.AttributeName(),
+                EndDescription), new Attribute(NodeAttributes.NodeType.AttributeName(),
+                UseCaseGraph.NodeTypeAttribute.EndNode));
+            useCaseGraph.AddNode(endNode);
+            useCaseGraph.AddEdge(oldNode, endNode);
 
             // Try to get the sequence variants
             rowIndex += 2;
@@ -361,7 +368,7 @@ namespace UseCaseAnalyser.Model.Model
                     // Get all sequence nodes:
                     for (int j = 0; j < paragraphList.Count - 1; j++)
                     {
-                        IAttribute descAttribute = new Attribute(NodeAttributes.Description.AttributeName(),
+                        descAttribute = new Attribute(NodeAttributes.Description.AttributeName(),
                             paragraphList[j].InnerText);
                         IAttribute normIndexAttribute = new Attribute(NodeAttributes.NormalIndex.AttributeName(),
                             rgx.Replace(variantIndex, ""));
