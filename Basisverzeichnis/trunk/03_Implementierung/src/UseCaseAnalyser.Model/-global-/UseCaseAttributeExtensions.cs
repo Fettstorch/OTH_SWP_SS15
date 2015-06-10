@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using GraphFramework;
 using GraphFramework.Interfaces;
 using UseCaseAnalyser.Model.Model;
+using Attribute = GraphFramework.Attribute;
 
 // ReSharper disable once CheckNamespace
 /// <summary>
@@ -17,11 +18,15 @@ public static class UseCaseAttributeExtensions
     /// <param name="source">the node which contains the attributes</param>
     /// <param name="useCaseAttribute">the attribute type which should be read</param>
     /// <returns>the attribute value of type T</returns>
-    public static object AttributeValue(this UseCaseGraph source, UseCaseAttributes useCaseAttribute)
+    public static T AttributeValue<T>(this UseCaseGraph source, UseCaseAttributes useCaseAttribute)
     {
         IAttribute attribute = source.Attribute(useCaseAttribute);
+        if (typeof (T) != attribute.Type)
+        {
+            throw new NotSupportedException(string.Format("The given type parameter '{0}' is not the type of the attribute.", typeof(T).Name));
+        }
 
-        return attribute.Value;
+        return (T) attribute.Value;
     }
 
     /// <summary>
@@ -31,11 +36,15 @@ public static class UseCaseAttributeExtensions
     /// <param name="source">the node which contains the attributes</param>
     /// <param name="nodeAttribute">the attribute type which should be read</param>
     /// <returns>the attribute value of type T</returns>
-    public static object AttributeValue(this INode source, NodeAttributes nodeAttribute)
+    public static T AttributeValue<T>(this INode source, NodeAttributes nodeAttribute)
     {
-        IAttribute attribute = source.Attribute(nodeAttribute);
+        IAttribute attribute = source.Attribute(nodeAttribute); 
+        if (typeof(T) != attribute.Type)
+        {
+            throw new NotSupportedException(string.Format("The given type parameter '{0}' is not the type of the attribute.", typeof(T).Name));
+        }
 
-        return attribute.Value;
+        return (T) attribute.Value;
     }
 
     /// <summary>
@@ -48,7 +57,7 @@ public static class UseCaseAttributeExtensions
     /// <returns>the attribute value of type T</returns>
     public static IAttribute Attribute(this UseCaseGraph source, UseCaseAttributes usecaseAttribute,  bool throwException = true)
     {
-        string attributeName = UseCaseGraph.NodeAttributeNames[(int)NodeAttributes.NormalIndex];
+        string attributeName = UseCaseGraph.UseCaseGraphAttributeNames[(int)usecaseAttribute];
         IAttribute attribute = source.Attributes.ByName(attributeName, throwException);
 
         return attribute;
@@ -64,7 +73,7 @@ public static class UseCaseAttributeExtensions
     /// <returns>the attribute value of type T</returns>
     public static IAttribute Attribute(this INode source, NodeAttributes nodeAttribute, bool throwException = true)
     {
-        string attributeName = UseCaseGraph.NodeAttributeNames[(int)NodeAttributes.NormalIndex];
+        string attributeName = UseCaseGraph.NodeAttributeNames[(int)nodeAttribute];
         IAttribute attribute = source.Attributes.ByName(attributeName, throwException);
 
         return attribute;

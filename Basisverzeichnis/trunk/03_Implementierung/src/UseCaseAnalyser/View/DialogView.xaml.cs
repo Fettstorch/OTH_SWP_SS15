@@ -40,11 +40,13 @@ namespace UseCaseAnalyser.View
         /// </summary>
         /// <param name="filter">filter of the files</param>
         /// <param name="dialogType">dialog type (open or save)</param>
+        /// <param name="predefinedName">the default file name</param>
         /// <returns>the file which has been selected</returns>
-        public FileInfo OpenFileDialog(string filter, FileDialogType dialogType)
+        public FileInfo OpenFileDialog(string filter, FileDialogType dialogType, string predefinedName = null)
         {
             FileDialog dialog = dialogType == FileDialogType.Open ? (FileDialog) new OpenFileDialog() : new SaveFileDialog();
             dialog.Filter = filter;
+            dialog.FileName = predefinedName;
 
             if (dialog.ShowDialog() != true) return null;
 

@@ -124,7 +124,7 @@ namespace UseCaseAnalyser.Model.ViewModel
                     {
                         mViewAbstraction.OpenReportResult(LatestWordImportReport); 
                     }
-                }, o => true, e => OnError(e, "Das Einlesen der Word Datei ergab einen Fehler.")));
+                }, o => true, e => OnError(e, "Das Einlesen der Word Datei ergab einen Fehler. For more info check the logfile.")));
             }
         }
 
@@ -140,10 +140,14 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mExportScenarioMatrix ?? (mExportScenarioMatrix = new AsyncCommand(o =>
                 {
-                    FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save);
+                    FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save, SelectedUseCaseGraph.AttributeValue<string>(UseCaseAttributes.Name));
 
-                    ScenarioMatrixExporter.ExportScenarioMatrix(SelectedUseCaseGraph, file);
-                }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler: " + e.Message)));
+                    if (file != null)
+                    {
+                        ScenarioMatrixExporter.ExportScenarioMatrix(SelectedUseCaseGraph, file); 
+                    }
+
+                }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler. For more info check the logfile.")));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
