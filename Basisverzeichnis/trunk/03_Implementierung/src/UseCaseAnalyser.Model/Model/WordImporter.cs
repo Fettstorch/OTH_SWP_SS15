@@ -333,7 +333,7 @@ namespace UseCaseAnalyser.Model.Model
 
             // Add Endnode:
             INode endNode = new Node(new Attribute(NodeAttributes.NormalIndex.AttributeName(),
-                    (paragraphList.Count).ToString()), new Attribute(NodeAttributes.Description.AttributeName(),
+                    (paragraphList.Count+1).ToString()), new Attribute(NodeAttributes.Description.AttributeName(),
                 EndDescription), new Attribute(NodeAttributes.NodeType.AttributeName(),
                 UseCaseGraph.NodeTypeAttribute.EndNode));
             useCaseGraph.AddNode(endNode);
