@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="-global-\UseCaseAttributeExtensions.cs" />
+    <Compile Include="Model\HiddenAttribute.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\ScenarioMatrixCreator.cs" />
     <Compile Include="Model\ScenarioMatrixExporter.cs" />

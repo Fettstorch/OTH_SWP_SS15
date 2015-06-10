@@ -30,6 +30,7 @@
             </Style.Resources>
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         </Style>
+        <converters:AttributesConverter x:Key="AttributesConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -134,7 +135,7 @@
                     </StackPanel>
                 </TabItem.Header>
                 <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement.Attributes, 
-                    Mode=OneWay}" HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource NoSelectionStyle}">
+                    Mode=OneWay, Converter={StaticResource AttributesConverter}}" HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource NoSelectionStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">
                                 <Expander IsExpanded="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" IsEnabled="{Binding Mode=OneWay, 
