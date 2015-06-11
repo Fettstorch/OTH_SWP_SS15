@@ -11,6 +11,7 @@
 // </summary>
 #endregion
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml;
@@ -28,6 +29,7 @@ namespace UseCaseAnalyser.Model.Model
     {
 
         private const string ExcelExtension = ".xlsx";
+        private const string COrder = "Order of Visit";
 
         /// <summary>
         /// exports the scenario matrix of the use case graph to the specfified file (.xlsx) 
@@ -40,32 +42,43 @@ namespace UseCaseAnalyser.Model.Model
             ValidateFile(file);
 
             SpreadsheetDocument document = SpreadsheetDocument.Create(file.FullName, SpreadsheetDocumentType.Workbook);
-                ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, 1);
+            ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, 1);
             document.Close();
+        }
+
+        private static INode FindStartNode(IGraph graph)
+        {
+            return
+                graph.Nodes.FirstOrDefault(
+                    node =>
+                        node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
+                            .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode));
         }
 
         /// <summary>
         /// Exports the scenario matrix of all use case graphs to the specfified file (.xlsx)
         /// Each Use Case is a new excel sheet 
         /// </summary>
-        /// <param name="useCaseGraphs"></param>
+        /// <param name="scenarios"></param>
         /// <param name="file">file info of the file to save the scenario matrix to</param>
-        public static void ExportScenarioMatrix(UseCaseGraph[] useCaseGraphs, FileInfo file)
+        public static void ExportScenarioMatrix(IEnumerable<IGraph> scenarios, FileInfo file)
         {
-            //check if given file is corrupted
-            ValidateFile(file);
+            
 
-            using (SpreadsheetDocument document = SpreadsheetDocument.Open(file.FullName, true))
-            {
-                for (UInt32Value i = 0; i < useCaseGraphs.Length; i++)
-                {
-                    var useCaseGraph = useCaseGraphs[i];
-                    ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, i);
-                }
-            }
+            //check if given file is corrupted
+            //ValidateFile(file);
+            //
+            //using (SpreadsheetDocument document = SpreadsheetDocument.Open(file.FullName, true))
+            //{
+            //    for (UInt32Value i = 0; i < useCaseGraphs.Length; i++)
+            //    {
+            //        var useCaseGraph = useCaseGraphs[i];
+            //        ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, i);
+            //    }
+            //}
         }
 
-        
+
         // ReSharper disable once UnusedParameter.Local
         // [Mathias Schneider] needed for checking for exceptions
         /// <summary>
@@ -97,50 +110,134 @@ namespace UseCaseAnalyser.Model.Model
             Sheets sheets = spreadsheetDoc.WorkbookPart.Workbook.AppendChild(new Sheets());
 
             // Append a new worksheet and associate it with the workbook.
-            Sheet sheet = new Sheet()
-            {
-                Id = spreadsheetDoc.WorkbookPart.
-                    GetIdOfPart(worksheetPart),
-                SheetId = index,
-                Name = ucName
-            };
+            //Sheet sheet = new Sheet()
+            //{
+            //    Id = spreadsheetDoc.WorkbookPart.GetIdOfPart(worksheetPart),
+            //    SheetId = index,
+            //    Name = ucName
+            //};
+            //
+            //sheets.Append(sheet);
 
-            sheets.Append(sheet);
+            // TODO: Excel
+            Worksheet ws = worksheetPart.Worksheet;
+            WriteScenarios(useCaseGraph.Scenarios, ws);
 
-            int varColCount = GetNumberOfVariants(useCaseGraph);
+            sheets.Append(ws);
 
             workbookPart.Workbook.Save();
         }
 
-        private static int GetNumberOfVariants(UseCaseGraph useCaseGraph)
+        private static void WriteScenarios(IEnumerable<IGraph> scenarios, Worksheet ws)
         {
-            int number = 0;
-            int lastNumber = 0;
-            IGraph[] scenarios = useCaseGraph.Scenarios.ToArray();                       
-            for (int i = 0; i < scenarios.Length; i++)
+            for(int scenario = 0; scenario < scenarios.Count(); scenario++)
             {
-                INode[] nodes = scenarios[i].Nodes.ToArray();
-                UseCaseGraph.NodeTypeAttribute lastNodeType = (UseCaseGraph.NodeTypeAttribute) nodes[0].GetAttributeByName(
-                    NodeAttributes.NodeType.AttributeName()).Value;
+                var order = (string)scenarios.ElementAt(scenario).GetAttributeByName(COrder).Value;
+                var knotenNamen = order.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var node in scenarios[i].Nodes)
+                if (!knotenNamen.Any(knoten => knoten.Length > 1)) continue; // das scenario durchläuft keine abzweigungen
+
+                int abzweigungenGefunden = 0;
+                for (int i = 1; i < knotenNamen.Length; i++)
                 {
-                    IAttribute attr = node.GetAttributeByName(NodeAttributes.NodeType.AttributeName());
-                    if(attr == null) throw new NotImplementedException();
-                    if ((UseCaseGraph.NodeTypeAttribute) attr.Value == UseCaseGraph.NodeTypeAttribute.VariantNode)
+                    if (knotenNamen[i].Length > knotenNamen[i - 1].Length)
                     {
-                        if (lastNodeType != (UseCaseGraph.NodeTypeAttribute)attr.Value)
-                            number++;
+                        abzweigungenGefunden++;
+
+                        string adresse = ((char)('C' + scenario)).ToString() + (scenario + 1).ToString();
+                        var cell = InsertCellInWorksheet(ws, adresse);
+
+                        cell.CellValue = new CellValue(knotenNamen[i]);
+
+
                     }
-
-                    lastNodeType = (UseCaseGraph.NodeTypeAttribute)attr.Value;
                 }
+            }
+        }
 
-                lastNumber = (number > lastNumber) ? number : lastNumber;
-                number = 0;
+        private static Cell InsertCellInWorksheet(Worksheet ws, string addressName)
+        {
+            SheetData sheetData = ws.GetFirstChild<SheetData>();
+            Cell cell = null;
+
+            UInt32 rowNumber = GetRowIndex(addressName);
+            Row row = GetRow(sheetData, rowNumber);
+
+            // If the cell you need already exists, return it.
+            // If there is not a cell with the specified column name, insert one.  
+            Cell refCell = row.Elements<Cell>().
+                Where(c => c.CellReference.Value == addressName).FirstOrDefault();
+            if (refCell != null)
+            {
+                cell = refCell;
+            }
+            else
+            {
+                cell = CreateCell(row, addressName);
+            }
+            return cell;
+        } // Add a cell with the specified address to a row.
+
+        private static Cell CreateCell(Row row, String address)
+        {
+            Cell cellResult;
+            Cell refCell = null;
+
+            // Cells must be in sequential order according to CellReference. 
+            // Determine where to insert the new cell.
+            foreach (Cell cell in row.Elements<Cell>())
+            {
+                if (string.Compare(cell.CellReference.Value, address, true) > 0)
+                {
+                    refCell = cell;
+                    break;
+                }
             }
 
-            return lastNumber;
+            cellResult = new Cell();
+            cellResult.CellReference = address;
+
+            row.InsertBefore(cellResult, refCell);
+            return cellResult;
+        }
+
+        // Return the row at the specified rowIndex located within
+        // the sheet data passed in via wsData. If the row does not
+        // exist, create it.
+        private static Row GetRow(SheetData wsData, UInt32 rowIndex)
+        {
+            var row = wsData.Elements<Row>().
+            Where(r => r.RowIndex.Value == rowIndex).FirstOrDefault();
+            if (row == null)
+            {
+                row = new Row();
+                row.RowIndex = rowIndex;
+                wsData.Append(row);
+            }
+            return row;
+        }
+
+        // Given an Excel address such as E5 or AB128, GetRowIndex
+        // parses the address and returns the row index.
+        private static UInt32 GetRowIndex(string address)
+        {
+            string rowPart;
+            UInt32 l;
+            UInt32 result = 0;
+
+            for (int i = 0; i < address.Length; i++)
+            {
+                if (UInt32.TryParse(address.Substring(i, 1), out l))
+                {
+                    rowPart = address.Substring(i, address.Length - i);
+                    if (UInt32.TryParse(rowPart, out l))
+                    {
+                        result = l;
+                        break;
+                    }
+                }
+            }
+            return result;
         }
     }
 }
