@@ -17,6 +17,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using LogManager;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 {
@@ -100,15 +101,22 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             // [Mathias Schneider] keep original code
             if (EndCap != null)
             {
-                LinePath.GetPointAtFractionLength(0.99, out pos, out tangent);
-                angleInRadians = Math.Atan2(tangent.Y, tangent.X) + Math.PI;
-                angleInDegrees = angleInRadians*180/Math.PI;
-                tg = new TransformGroup();
-                tg.Children.Add(new RotateTransform(angleInDegrees));
-                LinePath.GetPointAtFractionLength(1, out pos, out tangent);
-                tg.Children.Add(new TranslateTransform(pos.X, pos.Y));
-                dc.PushTransform(tg);
-                dc.DrawGeometry(Stroke, pen, EndCap);
+                try
+                {
+                    LinePath.GetPointAtFractionLength(0.99, out pos, out tangent);
+                    angleInRadians = Math.Atan2(tangent.Y, tangent.X) + Math.PI;
+                    angleInDegrees = angleInRadians * 180 / Math.PI;
+                    tg = new TransformGroup();
+                    tg.Children.Add(new RotateTransform(angleInDegrees));
+                    LinePath.GetPointAtFractionLength(1, out pos, out tangent);
+                    tg.Children.Add(new TranslateTransform(pos.X, pos.Y));
+                    dc.PushTransform(tg);
+                    dc.DrawGeometry(Stroke, pen, EndCap);
+                }
+                catch (Exception)
+                {
+                    LoggingFunctions.Error("Fehler beim Zeichnen des Graphen: Ein oder mehrere Knoten liegen zu nah zusammen, es konnte keine Kante gezeichnet werden");
+                }
             }
         }
 

@@ -126,8 +126,26 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                 ? sourceEdge.DockPosSourceElement
                 : sourceEdge.DockPosDestElement;
 
-            for (int i = 0, index = 1; i < mEdges.Count; i++)
+            IEnumerable<UseCaseEdge> normalEdges = mEdges.FindAll(edge =>
+                edge.mSourceUseCaseNode.Node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName()) == null
+                && edge.mDestUseCaseNode.Node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName()) == null);
+
+            int index = 1;
+            //find index of normal edge
+            foreach (UseCaseEdge edge in normalEdges)
             {
+                if ((!edge.mSourceUseCaseNode.Equals(this) || edge.DockPosSourceElement != currentDockedStatus) &&
+                    (!edge.mDestUseCaseNode.Equals(this) || edge.DockPosDestElement != currentDockedStatus))
+                    continue;
+                if (sourceEdge.Equals(edge))
+                    return index;
+                index++;
+            }
+            //get index of all other edges
+            for (int i = 0 ; i < mEdges.Count; i++)
+            {
+                if (normalEdges.Contains(mEdges[i]))
+                    continue;
                 if ((!mEdges[i].mSourceUseCaseNode.Equals(this) || mEdges[i].DockPosSourceElement != currentDockedStatus) &&
                     (!mEdges[i].mDestUseCaseNode.Equals(this) || mEdges[i].DockPosDestElement != currentDockedStatus))
                     continue;

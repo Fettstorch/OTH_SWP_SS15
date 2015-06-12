@@ -158,14 +158,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         Canvas.GetLeft(mSourceUseCaseNode) +
                         (mSourceUseCaseNode.Width/amountIndexStart)*indexStartElement,
                         Canvas.GetTop(mSourceUseCaseNode));
-                    
-
+                   if(double.IsNaN(startpoint.X) || double.IsNaN(startpoint.Y))
+                       startpoint = new Point(0,0);
+          
                     double heightStart = DockPosSourceElement == DockedStatus.Bottom ? mSourceUseCaseNode.Height : 0;
                     double heightEnd = DockPosDestElement == DockedStatus.Bottom ? mDestUseCaseNode.Height : 0;
 
                     if (DockPosDestElement == DockedStatus.Left)
                     {
                         endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) , Canvas.GetTop(mDestUseCaseNode) + (mDestUseCaseNode.Height / amountIndexEnd) * indexDestElement);
+                        if (double.IsNaN(endpoint.X) || double.IsNaN(endpoint.Y))
+                            endpoint = new Point(0, 0);
+                        
                         bzSeg.Point1 = new Point(startpoint.X, startpoint.Y + (startpoint.Y - endpoint.Y) / 2 + heightStart);
 
                         bzSeg.Point2 = new Point(endpoint.X - (endpoint.X - startpoint.X) / 2, endpoint.Y + heightEnd);
@@ -175,6 +179,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         endpoint = new Point(
                             Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
                             Canvas.GetTop(mDestUseCaseNode));
+                        if (double.IsNaN(endpoint.X) || double.IsNaN(endpoint.Y))
+                            endpoint = new Point(0, 0);
                         bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
                         bzSeg.Point2 = new Point(endpoint.X, startpoint.Y + heightStart);
                     
@@ -192,12 +198,16 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     double widthEnd = DockPosDestElement == DockedStatus.Right ? mDestUseCaseNode.Width : 0;
 
                     startpoint = new Point(Canvas.GetLeft(mSourceUseCaseNode) + widthStart,
-                        Canvas.GetTop(mSourceUseCaseNode) +
-                        (mSourceUseCaseNode.Height/amountIndexStart)*indexStartElement);
+                        Canvas.GetTop(mSourceUseCaseNode) + (mSourceUseCaseNode.Height/amountIndexStart)*indexStartElement);
+                    if (double.IsNaN(startpoint.X) || double.IsNaN(startpoint.Y))
+                        startpoint = new Point(0, 0);
+          
                     pthFigure.StartPoint = startpoint;
 
                     endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) + widthEnd,
                         Canvas.GetTop(mDestUseCaseNode) + (mDestUseCaseNode.Height/amountIndexEnd)*indexDestElement);
+                    if (double.IsNaN(endpoint.X) || double.IsNaN(endpoint.Y))
+                        endpoint = new Point(0, 0);
 
                     double middlePos = (endpoint.X - startpoint.X)/2;
 

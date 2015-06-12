@@ -360,8 +360,8 @@ namespace UseCaseAnalyser.GraphVisualiser
                 mNodePosDict.Add(node, new Point(leftPos, topPos));
 
                 //assign calculated position
-                Canvas.SetTop(useCaseNode, topPos);
-                Canvas.SetLeft(useCaseNode, leftPos);
+             Canvas.SetTop(useCaseNode, topPos);
+             Canvas.SetLeft(useCaseNode, leftPos);
             }
 
             //add node to graph visualiser usecase node list
