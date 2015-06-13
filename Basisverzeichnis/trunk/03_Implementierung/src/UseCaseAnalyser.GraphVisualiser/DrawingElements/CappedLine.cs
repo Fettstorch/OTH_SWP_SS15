@@ -84,6 +84,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             TransformGroup tg;
             Pen pen = new Pen(Stroke, StrokeThickness);
             dc.DrawGeometry(null, pen, LinePath);
+
+            Pen pentrans = new Pen(Brushes.Transparent, 15);
+            dc.DrawGeometry(null, pentrans, LinePath);
             if (BeginCap != null)
             {
                 LinePath.GetPointAtFractionLength(0.01d, out pos, out tangent);
