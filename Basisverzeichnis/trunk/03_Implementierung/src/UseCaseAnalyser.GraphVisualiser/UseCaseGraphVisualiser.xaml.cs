@@ -42,6 +42,9 @@ namespace UseCaseAnalyser.GraphVisualiser
         private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>();
         private Point mOffsetElementPosition;
         private FrameworkElement mSelectedElement;
+        private DateTime mLastSizeUpdateTime = DateTime.Now;
+        private const uint CanvasSizeUpdateTime = 20; // in Milliseconds
+
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting UseCaseGraph to display
@@ -509,7 +512,7 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             e.Handled = true;
         }
-
+    
         /// <summary>
         /// Event handler for Graphvisualiser. Handles dragging state.
         /// </summary>
@@ -542,6 +545,11 @@ namespace UseCaseAnalyser.GraphVisualiser
                     node.RenderEdges();
             }
 
+
+            if ((DateTime.Now - mLastSizeUpdateTime).Milliseconds < CanvasSizeUpdateTime)  
+                return;
+            
+            mLastSizeUpdateTime = DateTime.Now;
             const double borderToStartScroll = 100;
             Point currMousePos = Mouse.GetPosition(CanvasScrollViewer);
 
@@ -580,6 +588,7 @@ namespace UseCaseAnalyser.GraphVisualiser
                 CanvasScrollViewer.LineUp();
             }
         }
+
 
         /// <summary>
         /// Event handler for Graphvisualiser. Resets dragging state.
