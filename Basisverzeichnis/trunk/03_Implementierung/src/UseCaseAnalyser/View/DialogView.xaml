@@ -54,12 +54,18 @@
                         <Image Source="../Resources/word_64.png" Width="20" Height="20" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <Separator />
                 <MenuItem Header="Export scenario matrix" Command="{Binding Path=ExportScenarioMatrix}" >
-                <MenuItem.Icon>
-                    <Image Source="../Resources/excel_64.png" Width="20" Height="20" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator />
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/excel_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export all scenarios" Command="{Binding Path=ExportAllScenarioMatrices}" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/excel_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
                 <MenuItem Header="Exit" Name="ExitMenuItem" Click="ExitMenuItem_OnClick"/>
             </MenuItem>
             <MenuItem Header="Help">

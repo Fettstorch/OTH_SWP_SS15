@@ -36,6 +36,7 @@ namespace UseCaseAnalyser.Model.ViewModel
         private UseCaseGraph mSelectedUseCaseGraph;
         private IGraph mSelectedScenario;
         private ICommand mExportScenarioMatrix;
+        private ICommand mExportAllScenarioMatrices;
         private ICommand mOpenWordFile;
         private ICommand mOpenLogfile;
         private ICommand mOpenReportView;
@@ -148,6 +149,30 @@ namespace UseCaseAnalyser.Model.ViewModel
                     }
 
                 }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler. For more info check the logfile.")));
+                //  condtion to run the command (a graph has to be selected)
+            }
+        }
+
+        /// <summary>
+        /// exports the scenarios from all use cases
+        /// 
+        /// enabled if: any use case is imported
+        /// </summary>
+        public ICommand ExportAllScenarioMatrices
+        {
+            get
+            {
+                //  lazy initialization
+                return mExportAllScenarioMatrices ?? (mExportAllScenarioMatrices = new AsyncCommand(o =>
+                {
+                    FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save, "ScenarioMatrices");
+
+                    if (file != null)
+                    {
+                        ScenarioMatrixExporter.ExportScenarioMatrix(UseCaseGraphs, file);
+                    }
+
+                }, o => UseCaseGraphs != null && UseCaseGraphs.Any(), e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler. For more info check the logfile.")));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
