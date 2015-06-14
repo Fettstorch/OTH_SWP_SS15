@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:UseCaseAnalyser.Converters"
         xmlns:model="clr-namespace:UseCaseAnalyser.Model.Model;assembly=UseCaseAnalyser.Model"
         xmlns:view="clr-namespace:UseCaseAnalyser.View"
-        Title="DialogView" MinWidth="300" MinHeight="300">
+        Title="UseCase Analyser" MinWidth="300" MinHeight="300">
     <Window.Resources>
         <converters:GraphElementToStringConverter x:Key="GraphElementToStringConverter" />
         <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
