@@ -12,25 +12,25 @@ namespace UseCaseAnalyser.Model.Tests.Model
     {
         private INode[] mTestNodes;
         private UseCaseGraph mTestGraph;
+        const string Name = "Name";
+        readonly string mIndex = NodeAttributes.NormalIndex.AttributeName();
 
         [SetUp]
         public virtual void OnTestStarted()
-        {
-            const string name = "Name";
-            string index = NodeAttributes.NormalIndex.AttributeName();
+        {                       
             IAttribute[][] testAttributes =
             {
-                new IAttribute[]{new Attribute(name, "A"), new Attribute(index, "A"),  
+                new IAttribute[]{new Attribute(Name, "A"), new Attribute(mIndex, "A"),  
                     new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.StartNode), },
-                new IAttribute[]{new Attribute(name, "B"), new Attribute(index, "B"),
+                new IAttribute[]{new Attribute(Name, "B"), new Attribute(mIndex, "B"),
                     new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.NormalNode) },
-                new IAttribute[]{new Attribute(name, "C"), new Attribute(index, "C"),
+                new IAttribute[]{new Attribute(Name, "C"), new Attribute(mIndex, "C"),
                     new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.NormalNode) },
-                new IAttribute[]{new Attribute(name, "D"), new Attribute(index, "D"),
+                new IAttribute[]{new Attribute(Name, "D"), new Attribute(mIndex, "D"),
                     new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.VariantNode) },
-                new IAttribute[]{new Attribute(name, "E"), new Attribute(index, "E"),
+                new IAttribute[]{new Attribute(Name, "E"), new Attribute(mIndex, "E"),
                     new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.JumpNode) },
-                new IAttribute[]{new Attribute(name, "F"), new Attribute(index, "F"),
+                new IAttribute[]{new Attribute(Name, "F"), new Attribute(mIndex, "F"),
                     new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.EndNode) },
             };
 
@@ -44,7 +44,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
                 new Node(testAttributes[5])
             };
 
-            mTestGraph = new UseCaseGraph(new Attribute(name, "testGraph"));
+            mTestGraph = new UseCaseGraph(new Attribute(Name, "testGraph"));
             foreach (INode node in mTestNodes)
             {
                 mTestGraph.AddNode(node);
@@ -62,7 +62,58 @@ namespace UseCaseAnalyser.Model.Tests.Model
         public void CreateScenarioMatrix_DefaultTest()
         {
             IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
-            Assert.AreEqual(scenarios.Count(), 2);
+            Assert.AreEqual(2, scenarios.Count());
+        }
+
+        [Test, Description("ForwardJump added.")]
+        public void CreateScenarioMatrix_ForwardJump()
+        {
+            IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.JumpNode) };
+            INode testNode = new Node(testAttributes);
+            mTestGraph.AddNode(testNode);
+            mTestGraph.AddEdge(mTestNodes[1], testNode);
+            mTestGraph.AddEdge(testNode, mTestNodes[5]);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            Assert.AreEqual(4, scenarios.Count());
+        }
+
+        [Test, Description("Second BackwardJump added.")]
+        public void CreateScenarioMatrix_BackwardJump()
+        {
+            IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.JumpNode) };
+            INode testNode = new Node(testAttributes);
+            mTestGraph.AddNode(testNode);
+            mTestGraph.AddEdge(mTestNodes[1], testNode);
+            mTestGraph.AddEdge(testNode, mTestNodes[0]);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            Assert.AreEqual(5, scenarios.Count());
+        }
+
+        [Test, Description("Two EndNodes present.")]
+        public void CreateScenarioMatrix_TwoEndNodes()
+        {
+            IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.EndNode) };
+            INode testNode = new Node(testAttributes);
+            mTestGraph.AddNode(testNode);
+            mTestGraph.AddEdge(mTestNodes[1], testNode);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            Assert.AreEqual(4, scenarios.Count());
+        }
+
+        [Test, Description("Jump from EndNode is not possible, therefore there should be no more scenarios than in DefaultTest")]
+        public void CreateScenarioMatrix_JumpFromEndNode()
+        {
+            IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.JumpNode) };
+            INode testNode = new Node(testAttributes);
+            mTestGraph.AddNode(testNode);
+            mTestGraph.AddEdge(mTestNodes[5], testNode);
+            mTestGraph.AddEdge(testNode, mTestNodes[0]);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            Assert.AreEqual(2, scenarios.Count());
         }
 
         [TearDown]
