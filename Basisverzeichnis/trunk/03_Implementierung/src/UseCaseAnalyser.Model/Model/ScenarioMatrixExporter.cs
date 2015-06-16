@@ -129,7 +129,7 @@ namespace UseCaseAnalyser.Model.Model
                 string order = (string)scenarios.ElementAt(scenario).GetAttributeByName(COrder).Value;
                 string[] knotenNamen = order.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (!knotenNamen.Any(knoten => knoten.Length > 1)) continue; // das scenario durchläuft keine abzweigungen
+                if (!knotenNamen.Any(KnotenIstAblaufVariante)) continue; // das scenario durchläuft keine abzweigungen
 
                 // erste und zweite zelle jeder zeile
                 Row row = new Row();
@@ -205,7 +205,7 @@ namespace UseCaseAnalyser.Model.Model
 
         private static bool KnotenIstAblaufVariante(string name)
         {
-            return Regex.Matches(name, @"[a-zA-Z]").Count > 0;
+            return Regex.Match(name, @"[a-zA-Z]").Success;
 
         }
     }
