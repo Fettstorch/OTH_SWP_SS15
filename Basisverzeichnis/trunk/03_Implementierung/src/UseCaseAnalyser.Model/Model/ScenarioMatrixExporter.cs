@@ -135,7 +135,7 @@ namespace UseCaseAnalyser.Model.Model
                 string adresse = GetExcelAdressFromXY(1, rowcount + 1);
                 Cell cell = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
                 InlineString inlineString1 = new InlineString();
-                Text text1 = new Text {Text = scenario.ToString()};
+                Text text1 = new Text { Text = scenario.ToString() };
                 inlineString1.Append(text1);
                 cell.Append(inlineString1);
                 row.Append(cell);
@@ -151,9 +151,9 @@ namespace UseCaseAnalyser.Model.Model
                         abzweigungenGefunden++;
 
                         adresse = GetExcelAdressFromXY(abzweigungenGefunden + 2, rowcount + 1);
-                        Cell cell1 = new Cell() { CellReference = adresse, DataType = CellValues.InlineString };
+                        Cell cell1 = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
                         inlineString1 = new InlineString();
-                        text1 = new Text {Text = knotenNamen[i]};
+                        text1 = new Text { Text = knotenNamen[i] };
                         inlineString1.Append(text1);
                         cell1.Append(inlineString1);
                         row.Append(cell1);
@@ -175,12 +175,12 @@ namespace UseCaseAnalyser.Model.Model
                 string text;
                 if (x == 0) { text = "ID"; }
                 else if (x == 1) { text = "Beschreibung"; }
-                else { text = "V" + (x - 2); }
+                else { text = "V" + (x - 1); }
 
                 string headerAdress = GetExcelAdressFromXY(x + 1, 1);
-                Cell headerCell = new Cell{ CellReference = headerAdress, DataType = CellValues.InlineString };
+                Cell headerCell = new Cell { CellReference = headerAdress, DataType = CellValues.InlineString };
                 InlineString headerInlineString = new InlineString();
-                Text headerText = new Text {Text = text};
+                Text headerText = new Text { Text = text };
                 headerInlineString.Append(headerText);
                 headerCell.Append(headerInlineString);
                 header.Append(headerCell);
