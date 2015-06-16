@@ -10,6 +10,7 @@
 // <subject>Software Projekt</subject>
 // </summary>
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,8 +18,12 @@ using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using GraphFramework.Interfaces;
+using LogManager;
+
+// ReSharper disable PossiblyMistakenUseOfParamsMethod
+// ReSharper disable PossibleMultipleEnumeration
+// ReSharper disable InconsistentNaming
 
 namespace UseCaseAnalyser.Model.Model
 {
@@ -32,52 +37,20 @@ namespace UseCaseAnalyser.Model.Model
         private const string COrder = "Order of Visit";
 
         /// <summary>
-        /// exports the scenario matrix of the use case graph to the specfified file (.xlsx) 
+        /// exports the scenario matrix of one ore more use case graphs to the specfified file (.xlsx) 
         /// </summary>
-        /// <param name="useCaseGraph">use case graph whose scenario matrix should be exported</param>
+        /// <param name="useCaseGraphs">use case graph(s) whose scenario matrix should be exported</param>
         /// <param name="file">file info of the file to save the scenario matrix to</param>
-        public static void ExportScenarioMatrix(UseCaseGraph useCaseGraph, FileInfo file)
+        public static void ExportScenarioMatrix(IEnumerable<UseCaseGraph> useCaseGraphs, FileInfo file)
         {
-            //check if given file is corrupted
             ValidateFile(file);
-
-            SpreadsheetDocument document = SpreadsheetDocument.Create(file.FullName, SpreadsheetDocumentType.Workbook);
-            ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, 1);
-            document.Close();
+            LoggingFunctions.Debug("Creating Excel file");
+            using (SpreadsheetDocument document = SpreadsheetDocument.Create(file.FullName, SpreadsheetDocumentType.Workbook))
+            {
+                CreateAndFillExcelPages(useCaseGraphs, document);
+            }
+            LoggingFunctions.Debug("Done.");
         }
-
-        private static INode FindStartNode(IGraph graph)
-        {
-            return
-                graph.Nodes.FirstOrDefault(
-                    node =>
-                        node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
-                            .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode));
-        }
-
-        /// <summary>
-        /// Exports the scenario matrix of all use case graphs to the specfified file (.xlsx)
-        /// Each Use Case is a new excel sheet 
-        /// </summary>
-        /// <param name="scenarios"></param>
-        /// <param name="file">file info of the file to save the scenario matrix to</param>
-        public static void ExportScenarioMatrix(IEnumerable<IGraph> scenarios, FileInfo file)
-        {
-            
-
-            //check if given file is corrupted
-            //ValidateFile(file);
-            //
-            //using (SpreadsheetDocument document = SpreadsheetDocument.Open(file.FullName, true))
-            //{
-            //    for (UInt32Value i = 0; i < useCaseGraphs.Length; i++)
-            //    {
-            //        var useCaseGraph = useCaseGraphs[i];
-            //        ScenarioMatrixExporter.CreateScenarioMatrix(useCaseGraph, document, i);
-            //    }
-            //}
-        }
-
 
         // ReSharper disable once UnusedParameter.Local
         // [Mathias Schneider] needed for checking for exceptions
@@ -90,52 +63,85 @@ namespace UseCaseAnalyser.Model.Model
             if (file == null || file.FullName.Equals(ExcelExtension))
                 throw new InvalidOperationException("Please specify an output file name.");
             if (!string.Equals(file.Extension, ExcelExtension))
-                throw new InvalidOperationException("Wrong file type, please specify a *" + ExcelExtension + ".");
+                throw new InvalidOperationException("Wrong file type, please specify a *." + ExcelExtension);
         }
 
-        private static void CreateScenarioMatrix(UseCaseGraph useCaseGraph, SpreadsheetDocument spreadsheetDoc, UInt32Value index)
+        /// <summary>
+        /// Creates the excel pages.
+        /// </summary>
+        /// <param name="useCaseGraphs">The use case graphs.</param>
+        /// <param name="document">The excel document.</param>
+        /// <exception cref="System.InvalidOperationException">Use case is corrupt!</exception>
+        private static void CreateAndFillExcelPages(IEnumerable<UseCaseGraph> useCaseGraphs, SpreadsheetDocument document)
         {
-            string ucName = useCaseGraph.GetAttributeByName("Name").Value as string;
-            if (string.IsNullOrEmpty(ucName)) throw new InvalidOperationException("Use case is corrupt!");
+            // setting up document
+            WorkbookPart workbookPart1 = document.AddWorkbookPart();
+            Workbook workbook1 = new Workbook();
+            workbookPart1.Workbook = workbook1;
+            Sheets sheets1 = new Sheets();
+            workbook1.Append(sheets1);
+            workbook1.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
 
-            // Add a WorkbookPart to the document.
-            WorkbookPart workbookPart = spreadsheetDoc.AddWorkbookPart();
-            workbookPart.Workbook = new Workbook();
-
-            // Add a WorksheetPart to the WorkbookPart.
-            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            worksheetPart.Worksheet = new Worksheet(new SheetData());
-
-            // Add Sheets to the Workbook.
-            Sheets sheets = spreadsheetDoc.WorkbookPart.Workbook.AppendChild(new Sheets());
-
-            // Append a new worksheet and associate it with the workbook.
-            //Sheet sheet = new Sheet()
-            //{
-            //    Id = spreadsheetDoc.WorkbookPart.GetIdOfPart(worksheetPart),
-            //    SheetId = index,
-            //    Name = ucName
-            //};
-            //
-            //sheets.Append(sheet);
-
-            // TODO: Excel
-            Worksheet ws = worksheetPart.Worksheet;
-            WriteScenarios(useCaseGraph.Scenarios, ws);
-
-            sheets.Append(ws);
-
-            workbookPart.Workbook.Save();
-        }
-
-        private static void WriteScenarios(IEnumerable<IGraph> scenarios, Worksheet ws)
-        {
-            for(int scenario = 0; scenario < scenarios.Count(); scenario++)
+            // creating pages
+            for (uint i = 0; i < useCaseGraphs.Count(); i++)
             {
-                var order = (string)scenarios.ElementAt(scenario).GetAttributeByName(COrder).Value;
-                var knotenNamen = order.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                UseCaseGraph useCaseGraph = useCaseGraphs.ElementAt((int)i);
+                string ucName = useCaseGraph.GetAttributeByName("Name").Value as string;
+                if (string.IsNullOrEmpty(ucName))
+                {
+                    LoggingFunctions.Error("Use case name is not valid.");
+                    throw new InvalidOperationException("Use case is corrupt!");
+                }
+
+                LoggingFunctions.Debug("Creating Excel sheet for usecase " + ucName);
+
+                string id = "rId" + (i + 1);
+                Sheet sheet1 = new Sheet { Name = ucName, SheetId = i + 1, Id = id };
+                sheets1.Append(sheet1);
+                WorksheetPart worksheetPart1 = workbookPart1.AddNewPart<WorksheetPart>(id);
+                Worksheet worksheet1 = new Worksheet();
+                SheetData sheetData1 = new SheetData();
+
+                // writing scenarios into page
+                WriteScenarios(useCaseGraph.Scenarios, sheetData1);
+
+                worksheet1.Append(sheetData1);
+                worksheetPart1.Worksheet = worksheet1;
+            }
+        }
+
+        /// <summary>
+        /// Fills the excel page.
+        /// </summary>
+        /// <param name="scenarios">The scenarios.</param>
+        /// <param name="sd">The sd.</param>
+        private static void WriteScenarios(IEnumerable<IGraph> scenarios, SheetData sd)
+        {
+            Row header = new Row();
+            sd.Append(header);
+
+            int maxAbzweigungenGefunden = 0;
+            int rowcount = 1;
+
+            for (int scenario = 0; scenario < scenarios.Count(); scenario++)
+            {
+                string order = (string)scenarios.ElementAt(scenario).GetAttributeByName(COrder).Value;
+                string[] knotenNamen = order.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (!knotenNamen.Any(knoten => knoten.Length > 1)) continue; // das scenario durchläuft keine abzweigungen
+
+                // erste und zweite zelle jeder zeile
+                Row row = new Row();
+                string adresse = GetExcelAdressFromXY(1, rowcount + 1);
+                Cell cell = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
+                InlineString inlineString1 = new InlineString();
+                Text text1 = new Text {Text = scenario.ToString()};
+                inlineString1.Append(text1);
+                cell.Append(inlineString1);
+                row.Append(cell);
+                adresse = GetExcelAdressFromXY(2, rowcount + 1);
+                cell = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
+                row.Append(cell);
 
                 int abzweigungenGefunden = 0;
                 for (int i = 1; i < knotenNamen.Length; i++)
@@ -144,100 +150,56 @@ namespace UseCaseAnalyser.Model.Model
                     {
                         abzweigungenGefunden++;
 
-                        string adresse = ((char)('C' + scenario)).ToString() + (scenario + 1).ToString();
-                        var cell = InsertCellInWorksheet(ws, adresse);
-
-                        cell.CellValue = new CellValue(knotenNamen[i]);
-
-
+                        adresse = GetExcelAdressFromXY(abzweigungenGefunden + 2, rowcount + 1);
+                        Cell cell1 = new Cell() { CellReference = adresse, DataType = CellValues.InlineString };
+                        inlineString1 = new InlineString();
+                        text1 = new Text {Text = knotenNamen[i]};
+                        inlineString1.Append(text1);
+                        cell1.Append(inlineString1);
+                        row.Append(cell1);
                     }
                 }
-            }
-        }
-
-        private static Cell InsertCellInWorksheet(Worksheet ws, string addressName)
-        {
-            SheetData sheetData = ws.GetFirstChild<SheetData>();
-            Cell cell = null;
-
-            UInt32 rowNumber = GetRowIndex(addressName);
-            Row row = GetRow(sheetData, rowNumber);
-
-            // If the cell you need already exists, return it.
-            // If there is not a cell with the specified column name, insert one.  
-            Cell refCell = row.Elements<Cell>().
-                Where(c => c.CellReference.Value == addressName).FirstOrDefault();
-            if (refCell != null)
-            {
-                cell = refCell;
-            }
-            else
-            {
-                cell = CreateCell(row, addressName);
-            }
-            return cell;
-        } // Add a cell with the specified address to a row.
-
-        private static Cell CreateCell(Row row, String address)
-        {
-            Cell cellResult;
-            Cell refCell = null;
-
-            // Cells must be in sequential order according to CellReference. 
-            // Determine where to insert the new cell.
-            foreach (Cell cell in row.Elements<Cell>())
-            {
-                if (string.Compare(cell.CellReference.Value, address, true) > 0)
+                if (abzweigungenGefunden > 0)
                 {
-                    refCell = cell;
-                    break;
+                    rowcount++;
+                    maxAbzweigungenGefunden = Math.Max(abzweigungenGefunden, maxAbzweigungenGefunden);
+                    sd.Append(row);
                 }
             }
 
-            cellResult = new Cell();
-            cellResult.CellReference = address;
+            LoggingFunctions.Debug(String.Format("Wrote {0} scenarios in excel file", scenarios.Count()));
 
-            row.InsertBefore(cellResult, refCell);
-            return cellResult;
+            //header befüllen
+            for (int x = 0; x < maxAbzweigungenGefunden + 2; x++)
+            {
+                string text;
+                if (x == 0) { text = "ID"; }
+                else if (x == 1) { text = "Beschreibung"; }
+                else { text = "V" + (x - 2); }
+
+                string headerAdress = GetExcelAdressFromXY(x + 1, 1);
+                Cell headerCell = new Cell{ CellReference = headerAdress, DataType = CellValues.InlineString };
+                InlineString headerInlineString = new InlineString();
+                Text headerText = new Text {Text = text};
+                headerInlineString.Append(headerText);
+                headerCell.Append(headerInlineString);
+                header.Append(headerCell);
+            }
         }
 
-        // Return the row at the specified rowIndex located within
-        // the sheet data passed in via wsData. If the row does not
-        // exist, create it.
-        private static Row GetRow(SheetData wsData, UInt32 rowIndex)
+        private static string GetExcelAdressFromXY(int x, int y)
         {
-            var row = wsData.Elements<Row>().
-            Where(r => r.RowIndex.Value == rowIndex).FirstOrDefault();
-            if (row == null)
-            {
-                row = new Row();
-                row.RowIndex = rowIndex;
-                wsData.Append(row);
-            }
-            return row;
-        }
+            int dividend = x;
+            string columnName = String.Empty;
 
-        // Given an Excel address such as E5 or AB128, GetRowIndex
-        // parses the address and returns the row index.
-        private static UInt32 GetRowIndex(string address)
-        {
-            string rowPart;
-            UInt32 l;
-            UInt32 result = 0;
-
-            for (int i = 0; i < address.Length; i++)
+            while (dividend > 0)
             {
-                if (UInt32.TryParse(address.Substring(i, 1), out l))
-                {
-                    rowPart = address.Substring(i, address.Length - i);
-                    if (UInt32.TryParse(rowPart, out l))
-                    {
-                        result = l;
-                        break;
-                    }
-                }
+                int modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo) + columnName;
+                dividend = ((dividend - modulo) / 26);
             }
-            return result;
+
+            return columnName + y;
         }
     }
 }

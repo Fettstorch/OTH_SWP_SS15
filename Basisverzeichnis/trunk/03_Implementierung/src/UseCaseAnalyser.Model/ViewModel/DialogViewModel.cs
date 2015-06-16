@@ -145,7 +145,8 @@ namespace UseCaseAnalyser.Model.ViewModel
 
                     if (file != null)
                     {
-                        ScenarioMatrixExporter.ExportScenarioMatrix(SelectedUseCaseGraph, file); 
+                        LoggingFunctions.Debug("Exporting scenario for the selected UseCase");
+                        ScenarioMatrixExporter.ExportScenarioMatrix(new List<UseCaseGraph> { SelectedUseCaseGraph }, file); 
                     }
 
                 }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler. For more info check the logfile.")));
@@ -169,6 +170,7 @@ namespace UseCaseAnalyser.Model.ViewModel
 
                     if (file != null)
                     {
+                        LoggingFunctions.Debug("Exporting scenarios for all UseCases");
                         ScenarioMatrixExporter.ExportScenarioMatrix(UseCaseGraphs, file);
                     }
 
