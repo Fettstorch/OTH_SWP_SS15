@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using GraphFramework.Interfaces;
 using GraphFramework;
+using GraphFramework.Interfaces;
 using NUnit.Framework;
 using UseCaseAnalyser.Model.Model;
 using Attribute = GraphFramework.Attribute;
@@ -18,8 +16,8 @@ namespace UseCaseAnalyser.Model.Tests.Model
         {
         }
 
-        [TestCase(false)]
-        [TestCase(true, ExpectedException = typeof(InvalidOperationException))]
+        [TestCase(false, Description = "DefaultTest of IGraph Constructor", TestName = "DefaultTest")]
+        [TestCase(true, ExpectedException = typeof(InvalidOperationException), Description = "Test to check empty UseCaseGraphs Scenarios", TestName = "EmptyGraphScenarios")]
         public void UseCaseGraph_ConstructorTest(bool testScenarios)
         {
             UseCaseGraph testGraph = new UseCaseGraph();
@@ -32,9 +30,11 @@ namespace UseCaseAnalyser.Model.Tests.Model
             }
         }
 
-        [TestCase(false, false, ExpectedException = typeof(InvalidOperationException))]
-        [TestCase(true, false)]
-        [TestCase(true, true, ExpectedException = typeof(InvalidOperationException))]
+        [TestCase(false, false, ExpectedException = typeof(InvalidOperationException), TestName = "NoNameAttribute"
+            , Description = "No NameAttribute should throw an Exception.\r\nExpected: InvalidOperationException.")]
+        [TestCase(true, false, TestName = "DefaultTest", Description = "DefaultTest to check if method is working.")]
+        [TestCase(true, true, ExpectedException = typeof(InvalidOperationException), TestName = "MoreThanOneNameAttribute",
+            Description = "When more than one NameAttribute is present there should be an Excpetion. Should be handled by GraphElement.\r\nExpected: InvalidOperationException.")]
         public void UseCaseGraph_ToStringTest(bool initialize, bool doubleName)
         {
             UseCaseGraph testGraph = initialize
@@ -47,8 +47,8 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual("testGraph", testGraph.ToString());
         }
 
-        [TestCase(false, ExpectedException = typeof(InvalidOperationException))]
-        [TestCase(true)]
+        [TestCase(false, ExpectedException = typeof(InvalidOperationException), TestName = "NoNodesPresent", Description = "Test if it throws an Exception if Scenarios cannot be created.\r\nExpected: InvalidOperationException.")]
+        [TestCase(true, TestName = "DefaultTest", Description = "DefaultTest to see if property returns valid values.")]
         public void UseCaseGraph_ScenariosTest(bool initialize)
         {
             UseCaseGraph testGraph = new UseCaseGraph(new Attribute("Name", "testGraph"));
