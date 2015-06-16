@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -146,7 +147,7 @@ namespace UseCaseAnalyser.Model.Model
                 int abzweigungenGefunden = 0;
                 for (int i = 1; i < knotenNamen.Length; i++)
                 {
-                    if (knotenNamen[i].Length > knotenNamen[i - 1].Length)
+                    if (KnotenIstAblaufVariante(knotenNamen[i]) && !KnotenIstAblaufVariante(knotenNamen[i - 1]))
                     {
                         abzweigungenGefunden++;
 
@@ -200,6 +201,12 @@ namespace UseCaseAnalyser.Model.Model
             }
 
             return columnName + y;
+        }
+
+        private static bool KnotenIstAblaufVariante(string name)
+        {
+            return Regex.Matches(name, @"[a-zA-Z]").Count > 0;
+
         }
     }
 }

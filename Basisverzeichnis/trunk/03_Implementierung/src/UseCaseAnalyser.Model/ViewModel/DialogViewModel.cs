@@ -143,12 +143,10 @@ namespace UseCaseAnalyser.Model.ViewModel
                 {
                     FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save, SelectedUseCaseGraph.AttributeValue<string>(UseCaseAttributes.Name));
 
-                    if (file != null)
-                    {
-                        LoggingFunctions.Debug("Exporting scenario for the selected UseCase");
-                        ScenarioMatrixExporter.ExportScenarioMatrix(new List<UseCaseGraph> { SelectedUseCaseGraph }, file); 
-                    }
+                    if (file == null) return;
 
+                    LoggingFunctions.Debug("Exporting scenario for the selected UseCase");
+                    ScenarioMatrixExporter.ExportScenarioMatrix(new List<UseCaseGraph> { SelectedUseCaseGraph }, file);
                 }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler. For more info check the logfile.")));
                 //  condtion to run the command (a graph has to be selected)
             }
