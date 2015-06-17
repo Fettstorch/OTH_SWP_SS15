@@ -50,6 +50,7 @@ namespace UseCaseAnalyser.Model.Model
             {
                 CreateAndFillExcelPages(useCaseGraphs, document);
             }
+            
             LoggingFunctions.Debug("Done.");
         }
 
@@ -121,62 +122,61 @@ namespace UseCaseAnalyser.Model.Model
             Row header = new Row();
             sd.Append(header);
 
-            int maxAbzweigungenGefunden = 0;
-            int rowcount = 1;
+            int maxBranchesFound = 0;
+            int totalRowCount = 1;
 
             for (int scenario = 0; scenario < scenarios.Count(); scenario++)
             {
-                string order = (string)scenarios.ElementAt(scenario).GetAttributeByName(COrder).Value;
-                string[] knotenNamen = order.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                string nodeOrder = (string)scenarios.ElementAt(scenario).GetAttributeByName(COrder).Value;
+                string[] nodeName = nodeOrder.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                // auskommentiert da auch der normale ablauf in der excel tabelle sein soll
-                //if (!knotenNamen.Any(KnotenIstAblaufVariante)) continue; // das scenario durchläuft keine abzweigungen
+                //if (!knotenNamen.Any(KnotenIstAblaufVariante)) continue;
 
-                // erste und zweite zelle jeder zeile
+                // first and seconds cell of row
                 Row row = new Row();
-                string adresse = GetExcelAdressFromXY(1, rowcount + 1);
+                string adresse = GetExcelAdressFromXY(1, totalRowCount + 1);
                 Cell cell = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
                 InlineString inlineString1 = new InlineString();
                 Text text1 = new Text { Text = (scenario + 1).ToString() };
                 inlineString1.Append(text1);
                 cell.Append(inlineString1);
                 row.Append(cell);
-                adresse = GetExcelAdressFromXY(2, rowcount + 1);
+                adresse = GetExcelAdressFromXY(2, totalRowCount + 1);
                 cell = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
                 row.Append(cell);
 
-                int abzweigungenGefunden = 0;
-                for (int i = 1; i < knotenNamen.Length; i++)
+                int branchesFound = 0;
+                for (int i = 1; i < nodeName.Length; i++)
                 {
-                    if (KnotenIstAblaufVariante(knotenNamen[i]) && !KnotenIstAblaufVariante(knotenNamen[i - 1]))
+                    if (NodeIsNodeInBranch(nodeName[i]) && !NodeIsNodeInBranch(nodeName[i - 1]))
                     {
-                        abzweigungenGefunden++;
+                        branchesFound++;
 
-                        adresse = GetExcelAdressFromXY(abzweigungenGefunden + 2, rowcount + 1);
+                        adresse = GetExcelAdressFromXY(branchesFound + 2, totalRowCount + 1);
                         Cell cell1 = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
                         inlineString1 = new InlineString();
-                        text1 = new Text { Text = knotenNamen[i] };
+                        text1 = new Text { Text = nodeName[i] };
                         inlineString1.Append(text1);
                         cell1.Append(inlineString1);
                         row.Append(cell1);
                     }
                 }
-                //if (abzweigungenGefunden > 0) // auskommentiert da auch der normale ablauf in der excel tabelle sein soll
+                //if (abzweigungenGefunden > 0)
                 {
-                    rowcount++;
-                    maxAbzweigungenGefunden = Math.Max(abzweigungenGefunden, maxAbzweigungenGefunden);
+                    totalRowCount++;
+                    maxBranchesFound = Math.Max(branchesFound, maxBranchesFound);
                     sd.Append(row);
                 }
             }
 
             LoggingFunctions.Debug(String.Format("Wrote {0} scenarios in excel file", scenarios.Count()));
 
-            //header befüllen
-            for (int x = 0; x < maxAbzweigungenGefunden + 2; x++)
+            // fill header row
+            for (int x = 0; x < maxBranchesFound + 2; x++)
             {
                 string text;
                 if (x == 0) { text = "ID"; }
-                else if (x == 1) { text = "Beschreibung"; }
+                else if (x == 1) { text = "Description"; }
                 else { text = "V" + (x - 1); }
 
                 string headerAdress = GetExcelAdressFromXY(x + 1, 1);
@@ -204,7 +204,7 @@ namespace UseCaseAnalyser.Model.Model
             return columnName + y;
         }
 
-        private static bool KnotenIstAblaufVariante(string name)
+        private static bool NodeIsNodeInBranch(string name)
         {
             return Regex.Match(name, @"[a-zA-Z]").Success;
 
