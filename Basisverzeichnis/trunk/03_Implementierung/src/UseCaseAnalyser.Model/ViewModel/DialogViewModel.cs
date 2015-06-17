@@ -121,11 +121,9 @@ namespace UseCaseAnalyser.Model.ViewModel
                     UseCaseGraphs = WordImporter.ImportUseCases(file, out newReport);
                     LatestWordImportReport = newReport;
 
-                    if (LatestWordImportReport.ErrorReportEntries.Any())// || LatestWordImportReport.WarningReportEntries.Any())
-                    {
-                        mViewAbstraction.OpenReportResult(LatestWordImportReport); 
-                    }
-                }, o => true, e => OnError(e, "Das Einlesen der Word Datei ergab einen Fehler. For more info check the logfile.")));
+                    mViewAbstraction.OpenReportResult(LatestWordImportReport);
+
+                }, o => true, e => OnError(e)));
             }
         }
 
@@ -147,7 +145,7 @@ namespace UseCaseAnalyser.Model.ViewModel
 
                     LoggingFunctions.Debug("Exporting scenario for the selected UseCase");
                     ScenarioMatrixExporter.ExportScenarioMatrix(new List<UseCaseGraph> { SelectedUseCaseGraph }, file);
-                }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler. For more info check the logfile.")));
+                }, o => SelectedUseCaseGraph != null, e => OnError(e)));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
@@ -166,13 +164,11 @@ namespace UseCaseAnalyser.Model.ViewModel
                 {
                     FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save, "ScenarioMatrices");
 
-                    if (file != null)
-                    {
-                        LoggingFunctions.Debug("Exporting scenarios for all UseCases");
-                        ScenarioMatrixExporter.ExportScenarioMatrix(UseCaseGraphs, file);
-                    }
+                    if (file == null) return;
 
-                }, o => UseCaseGraphs != null && UseCaseGraphs.Any(), e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler. For more info check the logfile.")));
+                    LoggingFunctions.Debug("Exporting scenarios for all UseCases");
+                    ScenarioMatrixExporter.ExportScenarioMatrix(UseCaseGraphs, file);
+                }, o => UseCaseGraphs != null && UseCaseGraphs.Any(), e => OnError(e)));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
