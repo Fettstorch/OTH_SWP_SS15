@@ -57,6 +57,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>.\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -69,7 +72,9 @@
     <Compile Include="Converters\EntryTypeToColorConverter.cs" />
     <Compile Include="Converters\EntryTypeToImageConverter.cs" />
     <Compile Include="Converters\GraphElementToStringConverter.cs" />
+    <Compile Include="Converters\UseCaseToVariantCountConverter.cs" />
     <Compile Include="Converters\ReportToEntriesConverter.cs" />
+    <Compile Include="Converters\VariantTraverseCountConverter.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

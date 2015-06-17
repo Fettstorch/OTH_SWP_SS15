@@ -196,6 +196,9 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
         public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
         {
+            //  TO DO: CREATE SCENARIOS BASED ON TRAVERSE VARIANT COUNT
+            int traverseVariantCount = useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount);
+
             if (useCaseGraph == null)
             {
                 throw new ArgumentNullException("useCaseGraph");

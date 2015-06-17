@@ -7,11 +7,14 @@
         xmlns:converters="clr-namespace:UseCaseAnalyser.Converters"
         xmlns:model="clr-namespace:UseCaseAnalyser.Model.Model;assembly=UseCaseAnalyser.Model"
         xmlns:view="clr-namespace:UseCaseAnalyser.View"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="UseCase Analyser" MinWidth="300" MinHeight="300">
     <Window.Resources>
         <converters:GraphElementToStringConverter x:Key="GraphElementToStringConverter" />
         <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:VariantTraverseCountConverter x:Key="VariantTraverseCountConverter" />
+        <converters:UseCaseToVariantCountConverter x:Key="UseCaseToVariantCountConverter" />
         <BitmapImage x:Key="RefreshImage" UriSource="../Resources/refresh_64px.png" />
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="Padding" Value="3" />
@@ -121,14 +124,28 @@
                 </ListBox>
             </TabItem>
             <TabItem Header="Scenarios">
-                <ListBox Name="Scenarios" ItemsSource="{Binding Path=SelectedUseCaseGraph.Scenarios, Mode=OneWay}" SelectedItem="{Binding Path=SelectedScenario, 
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ListBox Name="Scenarios" ItemsSource="{Binding Path=SelectedUseCaseGraph.Scenarios, Mode=OneWay}"
+                             SelectedItem="{Binding Path=SelectedScenario, 
                     Mode=OneWayToSource}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type interfaces:IGraph}">
-                            <TextBlock Text="{Binding Converter={StaticResource GraphElementToStringConverter}}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type interfaces:IGraph}">
+                                <TextBlock Text="{Binding Converter={StaticResource GraphElementToStringConverter}}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="7">
+                        <TextBlock Text="Traverse variant count:   " />
+                        <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VariantTraverseCountConverter}}" 
+                                           Increment="1" Maximum="{Binding Path=SelectedUseCaseGraph, Converter={StaticResource UseCaseToVariantCountConverter}}" Minimum="3" 
+                                               HorizontalAlignment="Stretch"/>
+                        
+                    </StackPanel>
+                </Grid>
             </TabItem>
         </TabControl>
 

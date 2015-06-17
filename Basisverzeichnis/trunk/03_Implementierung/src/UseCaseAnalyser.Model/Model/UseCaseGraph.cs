@@ -62,7 +62,11 @@ namespace UseCaseAnalyser.Model.Model
         /// <summary>
         /// the open points of the use case, e.g. "Soll der Anwender mehrere Dateien auswählen können, die eingelesen werden sollen?"
         /// </summary>
-        OpenPoints
+        OpenPoints,
+        /// <summary>
+        /// how many variants should be traversed in one scenario
+        /// </summary>
+        TraverseVariantCount
     }
     
     /// <summary>
@@ -111,7 +115,8 @@ namespace UseCaseAnalyser.Model.Model
             "Normaler Ablauf:",
             "Ablauf-Varianten:",
             "Spezielle Anforderungen:",
-            "Zu klärende Punkte:"
+            "Zu klärende Punkte:",
+            "Varianten-Traversierungs-Anzahl"
         };
 
         /// <summary>
@@ -169,7 +174,24 @@ namespace UseCaseAnalyser.Model.Model
         public IEnumerable<IGraph> Scenarios
         {
             //  lazy initialization of the scenarios
-            get { return mScenarios ?? (mScenarios = ScenarioMatrixCreator.CreateScenarios(this)); }
+            get
+            {
+                if (mScenarios == null)
+                {
+
+                    if (this.Attribute(UseCaseAttributes.TraverseVariantCount, false) == null)
+                    {
+                        //  default traverse variant count: number of edges with description (variants) / 3 (but minimum 3)
+                        int variantCount = Edges.Count(e => e.GetAttributeByName("Description") != null);
+                        AddAttribute(UseCaseAttributes.TraverseVariantCount.CreateAttribute(variantCount <= 5 ? 3 : variantCount / 2));
+                    }
+
+                    //  scenario creator can use 'TraverseVariantCount' attribute to create scenarios
+                    mScenarios = ScenarioMatrixCreator.CreateScenarios(this);
+                }
+
+                return mScenarios;
+            }
         }
 
         /// <summary>
@@ -179,6 +201,14 @@ namespace UseCaseAnalyser.Model.Model
         public override string ToString()
         {
             return (string) Attributes.Single(a => a.Name == "Name").Value;
+        }
+
+        /// <summary>
+        /// sets the scenarios to null, so they will be initialized again when getting the property.
+        /// </summary>
+        public void RecalculateScenarios()
+        {
+            mScenarios = null;
         }
     }
 }
