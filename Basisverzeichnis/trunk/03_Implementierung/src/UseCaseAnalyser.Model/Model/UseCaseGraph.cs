@@ -10,6 +10,8 @@
 // <subject>Software Projekt</subject>
 // </summary>
 #endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GraphFramework;
@@ -183,7 +185,7 @@ namespace UseCaseAnalyser.Model.Model
                     {
                         //  default traverse variant count: number of edges with description (variants) / 3 (but minimum 3)
                         int variantCount = Edges.Count(e => e.GetAttributeByName("Description") != null);
-                        AddAttribute(UseCaseAttributes.TraverseVariantCount.CreateAttribute(variantCount <= 5 ? 3 : variantCount / 2));
+                        AddAttribute(UseCaseAttributes.TraverseVariantCount.CreateAttribute((int) Math.Round(variantCount <= 2 ? 1.0 : variantCount / 2.0)));
                     }
 
                     //  scenario creator can use 'TraverseVariantCount' attribute to create scenarios

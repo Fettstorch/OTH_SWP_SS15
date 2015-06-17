@@ -28,7 +28,7 @@ namespace UseCaseAnalyser.Converters
             }
 
             int variantCount = usecasegraph.Edges.Count(e => e.GetAttributeByName("Description") != null);
-            return variantCount < 3 ? 3 : variantCount;
+            return variantCount < 1 ? 1 : variantCount;
         }
 
         /// <summary>

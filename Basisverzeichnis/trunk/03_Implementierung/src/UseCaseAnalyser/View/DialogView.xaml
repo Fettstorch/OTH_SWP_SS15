@@ -141,8 +141,8 @@
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="7">
                         <TextBlock Text="Traverse variant count:   " />
                         <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VariantTraverseCountConverter}}" 
-                                           Increment="1" Maximum="{Binding Path=SelectedUseCaseGraph, Converter={StaticResource UseCaseToVariantCountConverter}}" Minimum="3" 
-                                               HorizontalAlignment="Stretch"/>
+                            Increment="1" Maximum="{Binding Path=SelectedUseCaseGraph, Converter={StaticResource UseCaseToVariantCountConverter}}" Minimum="1" 
+                                HorizontalAlignment="Stretch" ToolTip="Value to define how many variants to traverse in one scenario"/>
                         
                     </StackPanel>
                 </Grid>
