@@ -129,14 +129,15 @@ namespace UseCaseAnalyser.Model.Model
                 string order = (string)scenarios.ElementAt(scenario).GetAttributeByName(COrder).Value;
                 string[] knotenNamen = order.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (!knotenNamen.Any(KnotenIstAblaufVariante)) continue; // das scenario durchläuft keine abzweigungen
+                // auskommentiert da auch der normale ablauf in der excel tabelle sein soll
+                //if (!knotenNamen.Any(KnotenIstAblaufVariante)) continue; // das scenario durchläuft keine abzweigungen
 
                 // erste und zweite zelle jeder zeile
                 Row row = new Row();
                 string adresse = GetExcelAdressFromXY(1, rowcount + 1);
                 Cell cell = new Cell { CellReference = adresse, DataType = CellValues.InlineString };
                 InlineString inlineString1 = new InlineString();
-                Text text1 = new Text { Text = scenario.ToString() };
+                Text text1 = new Text { Text = (scenario + 1).ToString() };
                 inlineString1.Append(text1);
                 cell.Append(inlineString1);
                 row.Append(cell);
@@ -160,7 +161,7 @@ namespace UseCaseAnalyser.Model.Model
                         row.Append(cell1);
                     }
                 }
-                if (abzweigungenGefunden > 0)
+                //if (abzweigungenGefunden > 0) // auskommentiert da auch der normale ablauf in der excel tabelle sein soll
                 {
                     rowcount++;
                     maxAbzweigungenGefunden = Math.Max(abzweigungenGefunden, maxAbzweigungenGefunden);
