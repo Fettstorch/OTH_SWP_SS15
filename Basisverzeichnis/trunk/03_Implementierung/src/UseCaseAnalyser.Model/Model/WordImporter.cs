@@ -98,12 +98,19 @@ namespace UseCaseAnalyser.Model.Model
             // Check if the file exists
             if (!file.Exists)
             {
-                wordImporterReport.AddReportEntry(new Report.ReportEntry("ERROR", "File not found!", Report.Entrytype.ERROR));
-                return actUseCases;
+                throw new Exception("File not found!");
             }
 
             // Try to open the document
-            WordprocessingDocument doc = FixedOpen(file.FullName, false);
+            WordprocessingDocument doc;
+            try
+            {
+                doc = FixedOpen(file.FullName, false);
+            }
+            catch (Exception)
+            {
+                throw new Exception("File could not be open. Either the file is corrupt, or opened in another process!");
+            }
             // Fetch all tables in the document
             IEnumerable<Table> tables = doc.MainDocumentPart.Document.Descendants<Table>();
 
@@ -131,7 +138,7 @@ namespace UseCaseAnalyser.Model.Model
             {
                 // No Use Cases were imported
                 wordImporterReport.AddReportEntry(new Report.ReportEntry("Warning!",
-                    "No use cases found", Report.Entrytype.ERROR));
+                    "No use cases found", Report.Entrytype.WARNING));
             }
 
             return actUseCases;
@@ -170,8 +177,8 @@ namespace UseCaseAnalyser.Model.Model
                 return true;
             }
 
-            wordImporterReport.AddReportEntry(new Report.ReportEntry("Invalid format!", "Use Case doesn't have a name",
-                Report.Entrytype.ERROR, actUseCaseId));
+            wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Use Case doesn't have a name",
+                Report.Entrytype.ERROR));
             return false;
         }
 
@@ -188,12 +195,17 @@ namespace UseCaseAnalyser.Model.Model
             if (tableRows == null) return false;
             List<TableRow> rows = tableRows.ToList(); // Table is empty
             if (rows.Count == 0 || rows[0] == null) return false;
-            if (rows.Count < 3) return false; // Not a use case but a table -> no error
+            if (rows.Count < 16) return false; // Not a use case but a table -> stop importing, but no error
+
+            if (!TryGetUseCaseId(rows[1], out actUseCaseId))
+            {
+                // Table is not a use case table -> stop importing, but no error                
+                return false;
+            }
 
             string prio, desc, precon, postcon, spec, open;
 
-            if (TryGetUseCaseId(rows[1], out actUseCaseId) &&
-                TryGetHorizontalContent(rows[2], out prio, UseCaseAttributes.Priority.AttributeName()) &&
+            if (TryGetHorizontalContent(rows[2], out prio, UseCaseAttributes.Priority.AttributeName()) &&
                 TryGetVerticalContent(rows, 3, out desc, UseCaseAttributes.Description.AttributeName()) &&
                 TryGetVerticalContent(rows, 5, out precon, UseCaseAttributes.PreCondition.AttributeName()) &&
                 TryGetVerticalContent(rows, 7, out postcon, UseCaseAttributes.PostCondition.AttributeName()) &&
@@ -240,7 +252,7 @@ namespace UseCaseAnalyser.Model.Model
                     if (actUseCases.Exists(x => string.Equals(x.GetAttributeByName(
                         UseCaseAttributes.Id.AttributeName()).Value, cells[1].InnerText)))
                     {
-                        wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Use Case name occurs twice!",
+                        wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Use Case id occurs twice!",
                             Report.Entrytype.ERROR));
                         return false;
                     }
@@ -250,8 +262,10 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
 
-            wordImporterReport.AddReportEntry(new Report.ReportEntry("Invalid format!", "Could not the use case id!",
-                Report.Entrytype.WARNING, actUseCaseId));
+            string cellContent = cells.Count > 0 ? cells[0].InnerText : "(no content!)";
+
+            wordImporterReport.AddReportEntry(new Report.ReportEntry("unknown id", "Table was not detected as a use case! Content of cell is: "
+                    + cellContent, Report.Entrytype.WARNING));
             return false;
         }
 
@@ -275,8 +289,8 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
 
-            wordImporterReport.AddReportEntry(new Report.ReportEntry("Invalid format!", "Could not read '" + heading + "'!",
-                Report.Entrytype.WARNING, actUseCaseId));
+            wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Could not read '" + heading + "'!",
+                Report.Entrytype.WARNING));
             return false;
         }
 
@@ -310,8 +324,8 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
 
-            wordImporterReport.AddReportEntry(new Report.ReportEntry("Invalid format!",
-                "the content of '" + heading + "' could not be interpreted", Report.Entrytype.ERROR, actUseCaseId));
+            wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId,
+                "the content of '" + heading + "' could not be interpreted", Report.Entrytype.ERROR));
             return false;
         }
 
@@ -459,9 +473,9 @@ namespace UseCaseAnalyser.Model.Model
                         if (!nodes.TryGetValue(lastConditionId, out indexNode))
                         {
                             // Node refers to a node not included in the graph
-                            wordImporterReport.AddReportEntry(new Report.ReportEntry("Wrong reference!", "'" + lastCondition 
-                                + "' leads to a node which is not in the graph! " + "If you wanted the node to refer to an use case, write '" + UseCaseJump + "' instead!",
-                                Report.Entrytype.WARNING, actUseCaseId));
+                            wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Wrong reference! '" + lastCondition 
+                                + "' leads to a node which is not in the graph! " + "If you wanted the node to refer to an use case, write '"
+                                + UseCaseJump + "' instead!", Report.Entrytype.WARNING));
                             INode node;
                             if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out node)) continue;
                             node.AddAttribute(new HiddenAttribute(NodeAttributes.NodeType.AttributeName(),
@@ -472,9 +486,7 @@ namespace UseCaseAnalyser.Model.Model
                         INode lastNode;
                         if (!sequenceVarNodes.TryGetValue(previousVariantIndex, out lastNode))
                         {
-                            // Should never be happened!
-                            wordImporterReport.AddReportEntry(new Report.ReportEntry("Weird error!", "This should never be happen!",
-                                Report.Entrytype.WARNING, actUseCaseId));
+                            // Should never happen!
                             continue;
                         }
                         // make a edge between the normal routine node and the first node of the sequence variant
