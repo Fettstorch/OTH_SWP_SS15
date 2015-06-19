@@ -65,6 +65,14 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual(2, scenarios.Count());
         }
 
+        [Test, Description("DefaultTest to check if method is generally working.")]
+        public void CreateScenarioMatrix_VariantTest()
+        {
+            mTestGraph.AddAttribute(new Attribute(UseCaseAttributes.TraverseVariantCount.AttributeName(), 0));
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            Assert.AreEqual(1, scenarios.Count());
+        }
+
         [Test, Description("ForwardJump added.")]
         public void CreateScenarioMatrix_ForwardJump()
         {
