@@ -105,7 +105,6 @@ namespace UseCaseAnalyser.GraphVisualiser
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             UseCaseGraphVisualiser visualizer = (UseCaseGraphVisualiser) d;
 
-            //TODO needs to be exchanged to a specific Color of the Scenario
             if (visualizer.Scenario == null)
             {
                 LoggingFunctions.Trace("Scenario unselected.");
@@ -176,6 +175,8 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             if (clearCache)
             {
+                LoggingFunctions.Trace("Clear Cache of positions in the canvas of all nodes");
+                
                 foreach (UseCaseNode node in mNodes)
                 {
                     if (mNodePosDict.ContainsKey(node.Node))
@@ -185,6 +186,7 @@ namespace UseCaseAnalyser.GraphVisualiser
             // if the cache will not be cleared the position will be saved
             else
             {
+                LoggingFunctions.Trace("Save positions in the canvas of all nodes into the cache");
                 //Save old Position in Dictionary
                 foreach (UseCaseNode node in mNodes)
                 {
@@ -411,16 +413,16 @@ namespace UseCaseAnalyser.GraphVisualiser
 
                 //check if there are variant by using normal index as compare and only increase count if there exist an edge between normal node and variant node
                 //otherwise all variant sequence node would increase amount of variants
-                if (ucNodeVarSeqStepIndexAttribute != null)
-                {
-                    IAttribute ucNodeNormalIndexAttribute = orgNode.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+                if (ucNodeVarSeqStepIndexAttribute == null) 
+                    continue;
+                
+                IAttribute ucNodeNormalIndexAttribute = orgNode.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
 
-                    int nodeIndex;
-                    int.TryParse(ucNodeNormalIndexAttribute.Value.ToString(), out nodeIndex);
+                int nodeIndex;
+                int.TryParse(ucNodeNormalIndexAttribute.Value.ToString(), out nodeIndex);
 
-                    if (ucNodeIndexPrevious == nodeIndex && UseCase.GetEdges(previousNode, orgNode).ToList().Any())
-                        variantCount++;
-                }
+                if (ucNodeIndexPrevious == nodeIndex && UseCase.GetEdges(previousNode, orgNode).ToList().Any())
+                    variantCount++;
             }
 
             return variantCount;
@@ -471,12 +473,16 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <param name="e">Background_OnPreviewMouseLeftButtonDown mouse button event arguments.</param>
         private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (GraphElement == UseCase)
+            return;
+
             foreach (UIElement child in DrawingCanvas.Children)
             {
                 ISelectableGraphElement selectableChild = child as ISelectableGraphElement;
                 if (selectableChild != null)
                     selectableChild.Unselect();
             }
+            LoggingFunctions.Trace("Use Case Graph selected");
             GraphElement = UseCase;
         }
 

@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using GraphFramework.Interfaces;
+using LogManager;
 using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
@@ -64,7 +65,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
 
             //Set properties for visual appearience
             Stroke = mUnselectDrawingBrush = new SolidColorBrush(Colors.Black);
-            StrokeThickness = 2.5;           
+            StrokeThickness = 1.5;           
             //This geometry will represent an arrow at the end of this edge
             EndCap = Geometry.Parse("M0,0 L6,-6 L6,6 z");
 
@@ -90,9 +91,8 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     //Source node over destination node
                     if (Canvas.GetTop(mSourceUseCaseNode) + mSourceUseCaseNode.Height < Canvas.GetTop(mDestUseCaseNode))
                     {
-                        double posDest = Canvas.GetLeft(mDestUseCaseNode);
-                        double posSource = Canvas.GetLeft(mSourceUseCaseNode);
-
+                        // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                        // Patrick Schiessl: keep if statement for better readability
                         if (Canvas.GetLeft(mSourceUseCaseNode) + mSourceUseCaseNode.Width < Canvas.GetLeft(mDestUseCaseNode))
                             DockPosDestElement = DockedStatus.Left;
                         else
@@ -345,6 +345,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Select()
         {
+            if(Selected)
+                return;
+            LoggingFunctions.Trace("Use Case Edge selected");
             Selected = true;
             Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 100000, BlurRadius = 10 };
             RecalcBezier();
@@ -355,6 +358,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Unselect()
         {
+            if (!Selected) 
+                return;
+
+            LoggingFunctions.Trace("Use Case Edge unselected");
             Selected = false;
             Effect = null;
             RecalcBezier();

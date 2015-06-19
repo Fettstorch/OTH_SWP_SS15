@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using GraphFramework.Interfaces;
+using LogManager;
 using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
@@ -40,7 +41,6 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public UseCaseNode(INode node)
         {
             InitializeComponent();
-
             //initalize member
             IAttribute indexAttribute = node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
             IAttribute variantAttribute = node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
@@ -52,7 +52,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                 LblIndex.Content += variantAttribute.Value.ToString() + varSeqStepAttribute.Value;
 
             Node = node;
-            mUnselectDrawingBrush = Brushes.Black;
+            NodeBorder.BorderBrush = mUnselectDrawingBrush = Brushes.Black;
             Unselect();
         }
 
@@ -209,6 +209,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Select()
         {
+            if(Selected)
+                return;
+            LoggingFunctions.Trace("Use Case Node selected");
             Selected = true;
             NodeBorder.Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 1, BlurRadius = 30 };
         }
@@ -218,6 +221,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Unselect()
         {
+            if(!Selected)
+                return;
+            LoggingFunctions.Trace("Use Case Node unselected");
             Selected = false;
             NodeBorder.BorderBrush = mUnselectDrawingBrush;
             NodeBorder.Effect = null;
