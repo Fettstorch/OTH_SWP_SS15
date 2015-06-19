@@ -17,17 +17,13 @@ namespace UseCaseAnalyser.Model.Tests.Model
         }
 
         [TestCase(false, Description = "DefaultTest of IGraph Constructor", TestName = "DefaultTest")]
-        [TestCase(true, ExpectedException = typeof(InvalidOperationException), Description = "Test to check empty UseCaseGraphs Scenarios", TestName = "EmptyGraphScenarios")]
         public void UseCaseGraph_ConstructorTest(bool testScenarios)
         {
             UseCaseGraph testGraph = new UseCaseGraph();
             Assert.IsEmpty(testGraph.Attributes);
             Assert.IsEmpty(testGraph.Edges);
             Assert.IsEmpty(testGraph.Nodes);
-            if (testScenarios)
-            {
-                Assert.IsEmpty(testGraph.Scenarios);
-            }
+            Assert.IsEmpty(testGraph.Scenarios);
         }
 
         [TestCase(false, false, ExpectedException = typeof(InvalidOperationException), TestName = "NoNameAttribute"
@@ -47,7 +43,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual("testGraph", testGraph.ToString());
         }
 
-        [TestCase(false, ExpectedException = typeof(InvalidOperationException), TestName = "NoNodesPresent", Description = "Test if it throws an Exception if Scenarios cannot be created.\r\nExpected: InvalidOperationException.")]
+        [TestCase(false, TestName = "NoNodesPresent", Description = "Test if it throws an Exception if Scenarios cannot be created.\r\nExpected: InvalidOperationException.")]
         [TestCase(true, TestName = "DefaultTest", Description = "DefaultTest to see if property returns valid values.")]
         public void UseCaseGraph_ScenariosTest(bool initialize)
         {
@@ -63,6 +59,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
                 testGraph.AddEdge(testGraph.Nodes.First(), testGraph.Nodes.Last());
             }
             IGraph[] scenarios = testGraph.Scenarios.ToArray();
+            Assert.AreEqual(initialize ? 1 : 0, scenarios.Count());
         }
 
         [TearDown]
