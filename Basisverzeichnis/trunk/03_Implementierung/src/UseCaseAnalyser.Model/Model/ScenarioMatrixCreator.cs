@@ -94,6 +94,11 @@ namespace UseCaseAnalyser.Model.Model
             || (node.Attributes.Any(attr1 => attr1.Name.Equals(NodeAttributes.VariantIndex.AttributeName())));
         }
 
+        private static int CountVariants(IGraph graph)
+        {
+            return graph.Edges.Count(edge => IsAlternativeNode(edge.Node2) && !IsAlternativeNode(edge.Node1));
+        }
+
         private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
         {
             List<IGraph> retScenario = new List<IGraph>();
@@ -196,8 +201,9 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
         public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
         {
-            //  TO DO: CREATE SCENARIOS BASED ON TRAVERSE VARIANT COUNT
-            int traverseVariantCount = useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount);
+            int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
+                ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
+                : CountVariants(useCaseGraph);
 
             if (useCaseGraph == null)
             {
@@ -207,7 +213,7 @@ namespace UseCaseAnalyser.Model.Model
             INode startNode = FindStartNode(useCaseGraph);
             if (startNode == null)
             {
-                throw new InvalidOperationException("No StartNode found.");
+                return Enumerable.Empty<IGraph>();
             }
 
             foreach (INode node in useCaseGraph.Nodes)
@@ -247,7 +253,14 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
 
-            return allScenarios;
+            IList<IGraph> returnScenarios = new List<IGraph>();
+            if (scenarioList == null) return returnScenarios;
+            foreach (IGraph scenario in scenarioList.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
+            {
+                returnScenarios.Add(scenario);
+            }
+
+            return returnScenarios;
         }
     }
 }
