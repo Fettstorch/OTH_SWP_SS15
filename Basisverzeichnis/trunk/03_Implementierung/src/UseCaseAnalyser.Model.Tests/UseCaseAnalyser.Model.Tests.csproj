@@ -44,9 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Report.Test.cs" />
     <Compile Include="Model\ScenarioMatrixCreator.Test.cs" />
-    <Compile Include="Model\UseCaseAttributeExtensions.Test.cs" />
     <Compile Include="Model\UseCaseGraph.Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
