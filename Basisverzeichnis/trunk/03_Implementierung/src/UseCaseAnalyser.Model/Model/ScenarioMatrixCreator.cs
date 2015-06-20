@@ -99,11 +99,16 @@ namespace UseCaseAnalyser.Model.Model
             return graph.Edges.Count(edge => IsAlternativeNode(edge.Node2) && !IsAlternativeNode(edge.Node1));
         }
 
-        private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph)
+        private static bool IsVariantEntry(IEdge edge)
+        {
+            return !IsAlternativeNode(edge.Node1) && IsAlternativeNode(edge.Node2);
+        }
+
+        private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph, IDictionary<IEdge,int> numLoopTraversions,  int maxLoopTraversions = 1)
         {
             List<IGraph> retScenario = new List<IGraph>();
             UseCaseGraph internalGraph = new UseCaseGraph();
-
+            IDictionary<IEdge, int> variantTraversions = new Dictionary<IEdge, int>();
             if (currentNode == null)
             {
                 throw new ArgumentNullException("currentNode");
@@ -111,6 +116,13 @@ namespace UseCaseAnalyser.Model.Model
             if (useCaseGraph == null)
             {
                 throw new ArgumentNullException("useCaseGraph");
+            }
+            if (numLoopTraversions != null)
+            {
+                foreach (KeyValuePair<IEdge, int> value in numLoopTraversions)
+                {
+                    variantTraversions.Add(value.Key, value.Value);
+                }
             }
 
             //Copy Scenario from last recursion
@@ -156,14 +168,26 @@ namespace UseCaseAnalyser.Model.Model
             for (int i = 0; i < edgeList.Count(); i++)
             {
                 //check if destinationNode is variant and already visited
-                if (IsAlternativeNode(edgeList[i].Node2))
-                {
-                    if (internalGraph.Edges.Contains(edgeList[i]))
-                        continue;
-                }
+                //if (IsAlternativeNode(edgeList[i].Node2))
+                //{
+                //    if (internalGraph.Edges.Contains(edgeList[i]))
+                //        continue;
+                //}
 
                 if (!edgeList[i].Node1.Equals(currentNode))//SourceNode != currentNode
                     continue;
+
+                //check for maximum number of loop traversions
+                if (IsVariantEntry(edgeList[i]))
+                {
+                    if (!variantTraversions.ContainsKey(edgeList[i]))
+                    {
+                        variantTraversions.Add(edgeList[i], 0);
+                    }
+                    variantTraversions[edgeList[i]]++;
+                    if (variantTraversions[edgeList[i]] > maxLoopTraversions)
+                        continue;
+                }
 
                 INode destNode = edgeList[i].Node2;
                 if(!internalGraph.Nodes.Contains(destNode))
@@ -179,7 +203,10 @@ namespace UseCaseAnalyser.Model.Model
                 internalGraph.GetAttributeByName(COrder).Value =
                     ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, internalGraph, edgeList[i]);
 
-                retScenario.AddRange(CreateScenarioMatrix(destNode,internalGraph,useCaseGraph));
+                retScenario.AddRange(CreateScenarioMatrix(destNode, internalGraph, useCaseGraph, variantTraversions, maxLoopTraversions));
+
+                if(IsVariantEntry(edgeList[i]))
+                    variantTraversions[edgeList[i]]--;
 
                 //Restore Order
                 internalGraph.RemoveAttribute(COrder);
@@ -198,8 +225,9 @@ namespace UseCaseAnalyser.Model.Model
         /// Creates all scenarios from a Use-Case graph.
         /// </summary>
         /// <param name="useCaseGraph">Use-Case graph to get its scenarios from</param>
+        /// <param name="numLoopTraversions"></param>
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
-        public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
+        public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph, int numLoopTraversions = 1)
         {
             int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
                 ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
@@ -233,7 +261,7 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
             
-            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph);
+            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, numLoopTraversions);
             IList<IGraph> scenarioList = allScenarios as IList<IGraph>;
 
             //Name Scenarios
@@ -253,6 +281,7 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
 
+            //filter scenarios for number of variants
             IList<IGraph> returnScenarios = new List<IGraph>();
             if (scenarioList == null) return returnScenarios;
             foreach (IGraph scenario in scenarioList.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
