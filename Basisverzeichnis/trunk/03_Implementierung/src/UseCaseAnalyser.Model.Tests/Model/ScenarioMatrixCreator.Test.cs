@@ -65,7 +65,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual(2, scenarios.Count());
         }
 
-        [Test, Description("DefaultTest to check if method is generally working.")]
+        [Test, Description("DefaultTest to check if method is generally working with less variants.")]
         public void CreateScenarioMatrix_VariantTest()
         {
             mTestGraph.AddAttribute(new Attribute(UseCaseAttributes.TraverseVariantCount.AttributeName(), 0));
@@ -73,7 +73,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual(1, scenarios.Count());
         }
 
-        [Test, Description("ForwardJump added.")]
+        [Test, Description("ForwardJump with all variants, one loop.")]
         public void CreateScenarioMatrix_ForwardJump()
         {
             IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
@@ -86,7 +86,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual(4, scenarios.Count());
         }
 
-        [Test, Description("Second BackwardJump added.")]
+        [Test, Description("Second BackwardJump with all variants, one loop.")]
         public void CreateScenarioMatrix_BackwardJump()
         {
             IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
@@ -116,7 +116,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual(numVariants + 1, scenarios.Count());
         }
 
-        [Test, Description("Two EndNodes present.")]
+        [Test, Description("Two EndNodes with all variants and one loop.")]
         public void CreateScenarioMatrix_TwoEndNodes()
         {
             IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
