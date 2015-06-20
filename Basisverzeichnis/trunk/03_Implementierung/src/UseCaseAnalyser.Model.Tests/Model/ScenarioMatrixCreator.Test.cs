@@ -128,7 +128,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual(4, scenarios.Count());
         }
 
-        [Test, Description("Jump from EndNode is not possible, therefore there should be no more scenarios than in DefaultTest")]
+        [Test, Description("Jump from EndNode is possible, therefore there should be the same number of scenarios as in CreateScenarioMatrix_BackwardJump().")]
         public void CreateScenarioMatrix_JumpFromEndNode()
         {
             IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
@@ -138,7 +138,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddEdge(mTestNodes[5], testNode);
             mTestGraph.AddEdge(testNode, mTestNodes[0]);
             IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
-            Assert.AreEqual(2, scenarios.Count());
+            Assert.AreEqual(5, scenarios.Count());
         }
 
         [TearDown]
