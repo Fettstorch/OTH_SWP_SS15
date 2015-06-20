@@ -141,6 +141,21 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.AreEqual(5, scenarios.Count());
         }
 
+        [Test, Description("Jump from EndNode is possible, therefore there should be the same number of scenarios as in CreateScenarioMatrix_BackwardJump().")]
+        public void CreateScenarioMatrix_JumpFromEndNode_withLoops()
+        {
+            IAttribute[] testAttributes = {new Attribute(Name, "G"), new Attribute(mIndex, "G"),
+                    new Attribute(NodeAttributes.NodeType.AttributeName(), UseCaseGraph.NodeTypeAttribute.JumpNode) };
+            INode testNode = new Node(testAttributes);
+            mTestGraph.AddNode(testNode);
+            mTestGraph.AddEdge(mTestNodes[5], testNode);
+            mTestGraph.AddEdge(testNode, mTestNodes[0]);
+            mTestGraph.RemoveNode(mTestNodes[3]);
+            mTestGraph.RemoveNode(mTestNodes[4]);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph, 2);
+            Assert.AreEqual(3, scenarios.Count());
+        }
+
         [TearDown]
         public virtual void OnTestFinished()
         {
