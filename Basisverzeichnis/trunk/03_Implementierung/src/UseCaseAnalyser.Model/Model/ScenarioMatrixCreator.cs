@@ -265,32 +265,23 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
             
-            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, numLoopTraversions);
-            IList<IGraph> scenarioList = allScenarios as IList<IGraph>;
-
-            //Name Scenarios
-            if (allScenarios != null)
-            {
-                string useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
-                int count = 0;
-                if (scenarioList != null)
-                {
-                    count += scenarioList.Count();
-                    for (int i = 0; i < count; i++)
-                    {
-                        scenarioList[i].AddAttribute(new Attribute(CScenarioName,
-                            string.Format("Scenario No. '{0}' of use case '{1}'", i+1, useCaseName)));
-                        scenarioList[i].AddAttribute(new Attribute(CUseCase, useCaseName));
-                    }
-                }
-            }
+            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, numLoopTraversions);          
 
             //filter scenarios for number of variants
             IList<IGraph> returnScenarios = new List<IGraph>();
-            if (scenarioList == null) return returnScenarios;
-            foreach (IGraph scenario in scenarioList.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
+            if (allScenarios == null) return returnScenarios;
+            foreach (IGraph scenario in allScenarios.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
             {
                 returnScenarios.Add(scenario);
+            }
+
+            string useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
+            int count = returnScenarios.Count();           
+            for (int i = 0; i < count; i++)
+            {
+                returnScenarios[i].AddAttribute(new Attribute(CScenarioName,
+                    string.Format("Scenario No. '{0}' of use case '{1}'", i + 1, useCaseName)));
+                returnScenarios[i].AddAttribute(new Attribute(CUseCase, useCaseName));
             }
 
             return returnScenarios;
