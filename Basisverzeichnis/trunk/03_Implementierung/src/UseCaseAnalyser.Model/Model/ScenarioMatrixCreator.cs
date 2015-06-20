@@ -154,6 +154,7 @@ namespace UseCaseAnalyser.Model.Model
             if (IsEndNode(currentNode, useCaseGraph))
             {
                 retScenario.Add(internalGraph);
+                //check if there are edges from this endNode that need to be traversed
                 IEnumerable<IEdge> edgesFromEndNode = useCaseGraph.Edges.Where(edge => edge.Node1.Equals(currentNode));
                 IEdge[] fromEndNode = edgesFromEndNode as IEdge[] ?? edgesFromEndNode.ToArray();
                 foreach (IEdge edge in fromEndNode.Where(edge => !variantTraversions.ContainsKey(edge)))
@@ -162,6 +163,7 @@ namespace UseCaseAnalyser.Model.Model
                 }
                 IEnumerable<IEdge> validEdgesFromeEndNode =
                     fromEndNode.Where(edge => variantTraversions[edge] < maxLoopTraversions);
+
                 if(!validEdgesFromeEndNode.Any())
                     return retScenario;
             }
@@ -233,14 +235,15 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
         public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph, int numLoopTraversions = 1)
         {
-            int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
-                ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
-                : CountVariants(useCaseGraph);
-
+            //get information about use case           
             if (useCaseGraph == null)
             {
                 throw new ArgumentNullException("useCaseGraph");
             }
+
+            int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
+                ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
+                : CountVariants(useCaseGraph);
 
             INode startNode = FindStartNode(useCaseGraph);
             if (startNode == null)
@@ -275,6 +278,7 @@ namespace UseCaseAnalyser.Model.Model
                 returnScenarios.Add(scenario);
             }
 
+            //name scenarios
             string useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
             int count = returnScenarios.Count();           
             for (int i = 0; i < count; i++)
