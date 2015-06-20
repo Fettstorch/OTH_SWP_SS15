@@ -61,7 +61,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
         [Test, Description("DefaultTest to check if method is generally working.")]
         public void CreateScenarioMatrix_DefaultTest()
         {
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph, 1);
             Assert.AreEqual(2, scenarios.Count());
         }
 
@@ -69,7 +69,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
         public void CreateScenarioMatrix_VariantTest()
         {
             mTestGraph.AddAttribute(new Attribute(UseCaseAttributes.TraverseVariantCount.AttributeName(), 0));
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1 );
             Assert.AreEqual(1, scenarios.Count());
         }
 
@@ -82,7 +82,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[1], testNode);
             mTestGraph.AddEdge(testNode, mTestNodes[5]);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
             Assert.AreEqual(4, scenarios.Count());
         }
 
@@ -95,8 +95,25 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[1], testNode);
             mTestGraph.AddEdge(testNode, mTestNodes[0]);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
             Assert.AreEqual(5, scenarios.Count());
+        }
+
+        [TestCase(2, TestName = "Two Traversions", Description = "Two Traversions to pass"), Description("BackwardJump with multiple loop traversions.")]
+        [TestCase(3, TestName = "Three Traversions", Description = "Three Traversions to pass")]
+        public void CreateScenarioMatrix_BackwardJump_Loops(int numTraversions)
+        {
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph, numTraversions);
+            Assert.AreEqual(numTraversions+1, scenarios.Count());
+        }
+
+        [TestCase(0, TestName = "No Variants"), Description("Test to check traversion of specific number of variants")]
+        [TestCase(1, TestName = "One Variant")]
+        public void CreateScenarioMatrix_BackwardJump_Variants(int numVariants)
+        {
+            mTestGraph.AddAttribute(new Attribute("Varianten-Traversierungs-Anzahl", numVariants));
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            Assert.AreEqual(numVariants + 1, scenarios.Count());
         }
 
         [Test, Description("Two EndNodes present.")]
@@ -107,7 +124,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             INode testNode = new Node(testAttributes);
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[1], testNode);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
             Assert.AreEqual(4, scenarios.Count());
         }
 
@@ -120,7 +137,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[5], testNode);
             mTestGraph.AddEdge(testNode, mTestNodes[0]);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
             Assert.AreEqual(2, scenarios.Count());
         }
 
