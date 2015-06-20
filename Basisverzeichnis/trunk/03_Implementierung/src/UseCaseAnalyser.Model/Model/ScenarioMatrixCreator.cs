@@ -154,7 +154,16 @@ namespace UseCaseAnalyser.Model.Model
             if (IsEndNode(currentNode, useCaseGraph))
             {
                 retScenario.Add(internalGraph);
-                return retScenario;
+                IEnumerable<IEdge> edgesFromEndNode = useCaseGraph.Edges.Where(edge => edge.Node1.Equals(currentNode));
+                IEdge[] fromEndNode = edgesFromEndNode as IEdge[] ?? edgesFromEndNode.ToArray();
+                foreach (IEdge edge in fromEndNode.Where(edge => !variantTraversions.ContainsKey(edge)))
+                {
+                    variantTraversions.Add(edge, 0);
+                }
+                IEnumerable<IEdge> validEdgesFromeEndNode =
+                    fromEndNode.Where(edge => variantTraversions[edge] < maxLoopTraversions);
+                if(!validEdgesFromeEndNode.Any())
+                    return retScenario;
             }
 
             //Save old Scenario for comparison
@@ -167,13 +176,6 @@ namespace UseCaseAnalyser.Model.Model
             
             for (int i = 0; i < edgeList.Count(); i++)
             {
-                //check if destinationNode is variant and already visited
-                //if (IsAlternativeNode(edgeList[i].Node2))
-                //{
-                //    if (internalGraph.Edges.Contains(edgeList[i]))
-                //        continue;
-                //}
-
                 if (!edgeList[i].Node1.Equals(currentNode))//SourceNode != currentNode
                     continue;
 
@@ -189,6 +191,7 @@ namespace UseCaseAnalyser.Model.Model
                         continue;
                 }
 
+                //Add next Node 
                 INode destNode = edgeList[i].Node2;
                 if(!internalGraph.Nodes.Contains(destNode))
                     internalGraph.AddNode(destNode);
@@ -205,6 +208,7 @@ namespace UseCaseAnalyser.Model.Model
 
                 retScenario.AddRange(CreateScenarioMatrix(destNode, internalGraph, useCaseGraph, variantTraversions, maxLoopTraversions));
 
+                //Restore Variant Counter
                 if(IsVariantEntry(edgeList[i]))
                     variantTraversions[edgeList[i]]--;
 
