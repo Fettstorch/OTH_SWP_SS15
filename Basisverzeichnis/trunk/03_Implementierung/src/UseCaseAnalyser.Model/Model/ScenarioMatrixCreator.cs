@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GraphFramework;
 using GraphFramework.Interfaces;
+using LogManager;
 using Attribute = GraphFramework.Attribute;
 
 namespace UseCaseAnalyser.Model.Model
@@ -36,6 +37,7 @@ namespace UseCaseAnalyser.Model.Model
                 nodeNumber += node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName()).Value.ToString();
             else
             {
+                LoggingFunctions.Exception("Invalid Node found while creating ScenarioMatrix.");
                 throw new NullReferenceException("No NodeIndex found.");
             }
             if (node.Attributes.Any(t => t.Name == NodeAttributes.VariantIndex.AttributeName()))
@@ -111,10 +113,12 @@ namespace UseCaseAnalyser.Model.Model
             IDictionary<IEdge, int> variantTraversions = new Dictionary<IEdge, int>();
             if (currentNode == null)
             {
+                LoggingFunctions.Exception("Invalid Function call while creating ScenarioMatrix.");
                 throw new ArgumentNullException("currentNode");
             }
             if (useCaseGraph == null)
             {
+                LoggingFunctions.Exception("Invalid Function call while creating ScenarioMatrix.");
                 throw new ArgumentNullException("useCaseGraph");
             }
             if (numLoopTraversions != null)
@@ -241,6 +245,8 @@ namespace UseCaseAnalyser.Model.Model
                 throw new ArgumentNullException("useCaseGraph");
             }
 
+            string useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
+
             int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
                 ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
                 : CountVariants(useCaseGraph);
@@ -248,6 +254,7 @@ namespace UseCaseAnalyser.Model.Model
             INode startNode = FindStartNode(useCaseGraph);
             if (startNode == null)
             {
+                LoggingFunctions.Status(string.Format("No StartNode found in {0}.", useCaseName));
                 return Enumerable.Empty<IGraph>();
             }
 
@@ -257,8 +264,9 @@ namespace UseCaseAnalyser.Model.Model
                     node.Attributes.Any(
                         t => t.Name == NodeAttributes.NodeType.AttributeName()))
                     continue;
+                LoggingFunctions.Exception(string.Format("Invalid Nodes in {0}.", useCaseName));
                 try
-                {
+                {                   
                     throw new InvalidOperationException(string.Format("No NodeType attribute found at node {0}",
                         GetNodeNumber(node)));
                 }
@@ -279,7 +287,7 @@ namespace UseCaseAnalyser.Model.Model
             }
 
             //name scenarios
-            string useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
+            
             int count = returnScenarios.Count();           
             for (int i = 0; i < count; i++)
             {
@@ -287,6 +295,8 @@ namespace UseCaseAnalyser.Model.Model
                     string.Format("Scenario No. '{0}' of use case '{1}'", i + 1, useCaseName)));
                 returnScenarios[i].AddAttribute(new Attribute(CUseCase, useCaseName));
             }
+
+            LoggingFunctions.Trace(string.Format("Scenarios of {0} were generated successfully.", useCaseName));
 
             return returnScenarios;
         }
