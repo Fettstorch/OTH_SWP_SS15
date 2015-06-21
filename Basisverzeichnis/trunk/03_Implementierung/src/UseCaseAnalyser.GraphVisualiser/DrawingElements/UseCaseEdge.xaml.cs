@@ -219,10 +219,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         if (DockPosDestElement == DockedStatus.Right &&
                             startpoint.Y - mSourceUseCaseNode.Height/2 < endpoint.Y + mDestUseCaseNode.Height/2)
                         {
-                            if (startpoint.Y > endpoint.Y)
+                            if (endpoint.Y > startpoint.Y + mDestUseCaseNode.Height)
+                                resultEndPosY = endpoint.Y;
+                            else if (startpoint.Y > endpoint.Y)
                                 resultEndPosY = startpoint.Y - 1.5*mSourceUseCaseNode.Height;
                             else
-                                resultEndPosY = startpoint.Y + 1.5*mSourceUseCaseNode.Height;
+                                resultEndPosY = endpoint.Y + 1.5 * mSourceUseCaseNode.Height;
                         }
                         else
                         {
