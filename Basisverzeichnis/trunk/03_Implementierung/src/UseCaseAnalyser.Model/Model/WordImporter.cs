@@ -169,7 +169,7 @@ namespace UseCaseAnalyser.Model.Model
                 if (actUseCases.Exists(x => string.Equals(x.GetAttributeByName(
                     UseCaseAttributes.Name.AttributeName()).Value, useCaseName)))
                 {
-                    wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Use Case name occurs twice!",
+                    wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("Use Case name \"{0}\" occured more than once!", useCaseName),
                         Report.Entrytype.ERROR));
                     return false;
                 }
@@ -252,7 +252,7 @@ namespace UseCaseAnalyser.Model.Model
                     if (actUseCases.Exists(x => string.Equals(x.GetAttributeByName(
                         UseCaseAttributes.Id.AttributeName()).Value, cells[1].InnerText)))
                     {
-                        wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, "Use Case id occurs twice!",
+                        wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("Use Case id \"{0}\" occured more than once!", cells[1].InnerText),
                             Report.Entrytype.ERROR));
                         return false;
                     }
