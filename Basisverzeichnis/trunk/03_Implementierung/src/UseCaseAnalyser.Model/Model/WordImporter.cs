@@ -541,7 +541,7 @@ namespace UseCaseAnalyser.Model.Model
             catch (Exception e)
             {
                 //try to fix
-                if (!e.ToString().Contains("Ungültiger URI"))
+                if (!e.ToString().Contains("Invalid Hyperlink"))
                 {
                     throw;
                 }
@@ -569,9 +569,8 @@ namespace UseCaseAnalyser.Model.Model
         /// <summary>
         /// Handler method for dealing with broken URIs.
         /// </summary>
-        /// <param name="brokenUri">Broken URI that should be fixed.</param>
         /// <returns>Returns a valid (dummy) URI.</returns>
-        private static Uri FixUri(string brokenUri)
+        private static Uri FixUri()
         {
             return new Uri("http://broken-link/");
         }
@@ -581,7 +580,7 @@ namespace UseCaseAnalyser.Model.Model
         /// </summary>
         /// <param name="fs">Stream that should be checked and fixed regarding invalid URIs.</param>
         /// <param name="invalidUriHandler">Function that should be called if URI is invalid.</param>
-        private static void FixInvalidUri(Stream fs, Func<string, Uri> invalidUriHandler)
+        private static void FixInvalidUri(Stream fs, Func<Uri> invalidUriHandler)
         {
             XNamespace relNs = "http://schemas.openxmlformats.org/package/2006/relationships";
             using (ZipArchive za = new ZipArchive(fs, ZipArchiveMode.Update))
@@ -615,7 +614,7 @@ namespace UseCaseAnalyser.Model.Model
                                     }
                                     catch (UriFormatException)
                                     {
-                                        Uri newUri = invalidUriHandler(target);
+                                        Uri newUri = invalidUriHandler();
                                         rel.Attribute("Target").Value = newUri.ToString();
                                         replaceEntry = true;
                                     }
