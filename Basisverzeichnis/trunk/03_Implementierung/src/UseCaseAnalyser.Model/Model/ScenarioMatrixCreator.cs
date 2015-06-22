@@ -245,7 +245,11 @@ namespace UseCaseAnalyser.Model.Model
                 throw new ArgumentNullException("useCaseGraph");
             }
 
-            string useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
+            string useCaseName = "<no name found>";
+            if (useCaseGraph.Attribute(UseCaseAttributes.Name, false) != null)
+            {
+                useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
+            }
 
             int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
                 ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
