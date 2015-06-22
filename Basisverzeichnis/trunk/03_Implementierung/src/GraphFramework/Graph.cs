@@ -116,18 +116,29 @@ namespace GraphFramework
         {
             CheckForNull(edge, "edge");
 
-            if (this.Edges.Contains(edge))
+            if (Edges.Contains(edge))
             {
                 throw new InvalidOperationException("The parameter edge is already part of Graph.");
             }
-            if (!this.Nodes.Contains(edge.Node1))
+            if (edge.Node1 == null)
             {
-                throw new InvalidOperationException("The parameter edge.Node1 is not part of Graph.");
+                throw new InvalidOperationException("The parameter edge.Node1 is null.");
             }
-            if (!this.Nodes.Contains(edge.Node2))
+            if (edge.Node2 == null)
             {
-                throw new InvalidOperationException("The parameter edge.Node2 is not part of Graph.");
+                throw new InvalidOperationException("The parameter edge.Node2 is null.");
             }
+            
+            if (!Nodes.Contains(edge.Node1))
+            {
+                AddNode(edge.Node1);
+            } 
+                    
+            if (!Nodes.Contains(edge.Node2))
+            {
+                AddNode(edge.Node2);
+            }
+
             mEdges.Add(edge);
         }
 
