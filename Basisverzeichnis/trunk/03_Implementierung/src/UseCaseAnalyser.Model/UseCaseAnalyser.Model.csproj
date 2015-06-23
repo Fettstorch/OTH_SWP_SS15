@@ -17,24 +17,28 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(SolutionDir)\Build\bin\Debug</OutputPath>
-    <BaseIntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>..\Build\bin\Debug\UseCaseAnalyser.Model.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(SolutionDir)\Build\bin\Release</OutputPath>
-    <BaseIntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)\Build\obj\$(MSBuildProjectName)</IntermediateOutputPath>
     <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\Build\bin\Release\UseCaseAnalyser.Model.XML</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>..\UseCaseAnalyser\Resources\DocumentFormat.OpenXml.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>OpenXmlSdkLib\$(Configuration)\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -48,6 +52,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="-global-\UseCaseAttributeExtensions.cs" />
+    <Compile Include="Model\HiddenAttribute.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\ScenarioMatrixCreator.cs" />
     <Compile Include="Model\ScenarioMatrixExporter.cs" />

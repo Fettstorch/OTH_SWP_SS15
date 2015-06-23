@@ -1,0 +1,54 @@
+﻿<Window x:Class="UseCaseAnalyser.View.AboutView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About UseCaseAnalyser" Background="AliceBlue" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Height="400" Width="382">
+    <Grid Margin="10">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Grid.ColumnSpan="3" FontWeight="Bold" FontSize="20" >
+            <StackPanel Orientation="Horizontal">
+                <Image Source="../Resources/graph_Icon.png" Height="{Binding ElementName=HeaderText, Path=ActualHeight}" />
+                <TextBlock Text="UseCasAnalyser" Margin="20" Name="HeaderText" />
+            </StackPanel>
+        </ContentControl>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Text="Projektzeitram: " />
+        <TextBlock Grid.Row="2" Grid.Column="0" FontWeight="Bold" Text="Dozent: " />
+        <TextBlock Grid.Row="3" Grid.Column="0" FontWeight="Bold" Text="Semester: " />
+        <TextBlock Grid.Row="4" Grid.Column="0" FontWeight="Bold" Text="Projektmitglieder:   " />
+        
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="18.03.2015 - 08.07.2015" />
+        <TextBlock Grid.Column="1" Grid.Row="2" Text="Prof. Dr. rer. nat. Kurt Hoffmann" />
+        <TextBlock Grid.Column="1" Grid.Row="3" Text="SS 2015" />
+        <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Vertical">
+            <TextBlock Text="Betting, Pascal" />
+            <TextBlock Text="Hegen, Erik" />
+            <TextBlock Text="Mertz, Sebastian" />
+            <TextBlock Text="Pölloth, Stefan" />
+            <TextBlock Text="Saalfrank, Adrian" />
+            <TextBlock Text="Schießl, Patrick" />
+            <TextBlock Text="Schlemelch, Manuel" />
+            <TextBlock Text="Schneider, Mathias" />
+            <TextBlock Text="Weigl, Benjamin" />
+        </StackPanel>
+        <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold" 
+                   Text="© OTH Amberg-Weiden, SoftwareProjekt SS 2015, Team B" Margin="10" />
+    </Grid>
+</Window>

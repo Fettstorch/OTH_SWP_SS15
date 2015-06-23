@@ -27,8 +27,9 @@ namespace UseCaseAnalyser.Model.ViewModel
         /// </summary>
         /// <param name="filter">filter of the files</param>
         /// <param name="dialogType">dialog type (open or save)</param>
+        /// <param name="predefinedName">the default file name</param>
         /// <returns>the file which has been selected</returns>
-        FileInfo OpenFileDialog(string filter, FileDialogType dialogType);
+        FileInfo OpenFileDialog(string filter, FileDialogType dialogType, string predefinedName = null);
 
         /// <summary>
         /// opens a message box with the given parameters
@@ -43,6 +44,16 @@ namespace UseCaseAnalyser.Model.ViewModel
         /// </summary>
         /// <param name="viewModel">the report which is used as viewmodel of the report view</param>
         void OpenReportResult(Report viewModel);
+
+        /// <summary>
+        /// Opens the about box
+        /// </summary>
+        void OpenAboutView();
+
+        /// <summary>
+        /// lets the graph visualizer redraw the graph
+        /// </summary>
+        void RedrawGraph();
     }
 
     /// <summary>

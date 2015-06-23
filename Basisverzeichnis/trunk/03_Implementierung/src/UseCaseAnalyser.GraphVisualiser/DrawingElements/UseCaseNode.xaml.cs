@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using GraphFramework.Interfaces;
+using LogManager;
 using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
@@ -31,7 +32,7 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// <summary>
         /// List of UseCaseEdge that either start or end in this UseCaseNode
         /// </summary>
-        private readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
+        public readonly List<UseCaseEdge> mEdges = new List<UseCaseEdge>();
 
         /// <summary>
         /// Wrapper class for GraphFrameworks's INode which is used to define how a node will be displayed in UseCaseGraphVisualiser.
@@ -40,14 +41,18 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         public UseCaseNode(INode node)
         {
             InitializeComponent();
-
             //initalize member
-            LblIndex.Content =
-                node.Attributes.First(
-                    attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]).Value;
+            IAttribute indexAttribute = node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+            IAttribute variantAttribute = node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
+            IAttribute varSeqStepAttribute = node.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName());
+           
+            if (indexAttribute != null)
+                LblIndex.Content = indexAttribute.Value.ToString();
+            if (varSeqStepAttribute != null && variantAttribute != null)
+                LblIndex.Content += variantAttribute.Value.ToString() + varSeqStepAttribute.Value;
 
             Node = node;
-            mUnselectDrawingBrush = Brushes.Black;
+            NodeBorder.BorderBrush = mUnselectDrawingBrush = Brushes.Black;
             Unselect();
         }
 
@@ -93,9 +98,21 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// <param name="newEdge">UseCaseEgde that should be added to the UseCaseNode</param>
         public void AddEdge(UseCaseEdge newEdge)
         {
-            if (!mEdges.Contains(newEdge) &&
-                (Equals(newEdge.mDestUseCaseNode, this) || Equals(newEdge.mSourceUseCaseNode, this)))
-                mEdges.Add(newEdge);
+            if (mEdges.Contains(newEdge)) 
+                return;
+
+            if (Equals(newEdge.mSourceUseCaseNode, this))
+            {
+                if(mEdges.Count<=1)
+                    mEdges.Add(newEdge);
+                else
+                    mEdges.Insert(2,newEdge);
+            }
+
+            if(Equals(newEdge.mDestUseCaseNode, this))
+            {
+                mEdges.Insert(0, newEdge);
+            }
         }
 
         /// <summary>
@@ -109,8 +126,26 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                 ? sourceEdge.DockPosSourceElement
                 : sourceEdge.DockPosDestElement;
 
-            for (int i = 0, index = 1; i < mEdges.Count; i++)
+            IEnumerable<UseCaseEdge> normalEdges = mEdges.FindAll(edge =>
+                edge.mSourceUseCaseNode.Node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName()) == null
+                && edge.mDestUseCaseNode.Node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName()) == null);
+
+            int index = 1;
+            //find index of normal edge
+            foreach (UseCaseEdge edge in normalEdges)
             {
+                if ((!edge.mSourceUseCaseNode.Equals(this) || edge.DockPosSourceElement != currentDockedStatus) &&
+                    (!edge.mDestUseCaseNode.Equals(this) || edge.DockPosDestElement != currentDockedStatus))
+                    continue;
+                if (sourceEdge.Equals(edge))
+                    return index;
+                index++;
+            }
+            //get index of all other edges
+            for (int i = 0 ; i < mEdges.Count; i++)
+            {
+                if (normalEdges.Contains(mEdges[i]))
+                    continue;
                 if ((!mEdges[i].mSourceUseCaseNode.Equals(this) || mEdges[i].DockPosSourceElement != currentDockedStatus) &&
                     (!mEdges[i].mDestUseCaseNode.Equals(this) || mEdges[i].DockPosDestElement != currentDockedStatus))
                     continue;
@@ -174,6 +209,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Select()
         {
+            if(Selected)
+                return;
+            LoggingFunctions.Trace("Use Case Node selected");
             Selected = true;
             NodeBorder.Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 1, BlurRadius = 30 };
         }
@@ -183,6 +221,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Unselect()
         {
+            if(!Selected)
+                return;
+            LoggingFunctions.Trace("Use Case Node unselected");
             Selected = false;
             NodeBorder.BorderBrush = mUnselectDrawingBrush;
             NodeBorder.Effect = null;

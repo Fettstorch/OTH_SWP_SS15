@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -36,24 +35,28 @@ namespace UseCaseAnalyser.GraphVisualiser
     {
         #region properties
 
-        private const double ElementWidth = 150;
-        private const double ElementHeight = 120;
+        private const double ElementWidth = 110;
+        private const double ElementHeight = 70;
+        private const double ScaleRateZoom = 1.05;
         private readonly List<UseCaseNode> mNodes = new List<UseCaseNode>();
         private readonly Dictionary<INode, Point> mNodePosDict = new Dictionary<INode, Point>();
         private Point mOffsetElementPosition;
         private FrameworkElement mSelectedElement;
+        private DateTime mLastSizeUpdateTime = DateTime.Now;
+        private const uint CanvasSizeUpdateTime = 20; // in Milliseconds
+
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting UseCaseGraph to display
         /// </summary>
         public static readonly DependencyProperty UseCaseProperty = DependencyProperty.Register("UseCase",
-            typeof (UseCaseGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(UseCase_PropertyChanged));
+            typeof (UseCaseGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(UseCasePropertyChanged));
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting a scenario graph (which will be highlighted by UseCaseGraphVisualiser)
         /// </summary>
         public static readonly DependencyProperty ScenarioProperty = DependencyProperty.Register("Scenario",
-            typeof (IGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(Scenario_PropertyChanged));
+            typeof (IGraph), typeof (UseCaseGraphVisualiser), new PropertyMetadata(ScenarioPropertyChanged));
 
         /// <summary>
         /// Binding configuration for a dependecy property which is setting the currently selected IGraphElement (INode/IEdge/IGraph) in UseCaseGraphVisualiser
@@ -95,24 +98,24 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// </summary>
         /// <param name="d">Dependency object that was changed</param>
         /// <param name="e">Event args containing information about the changes of the Scenario property</param>
-        private static void Scenario_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void ScenarioPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //  MARK THE NODES WITHIN THE SCENARIO
 
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             UseCaseGraphVisualiser visualizer = (UseCaseGraphVisualiser) d;
 
-            //TODO needs to be exchanged to a specific Color of the Scenario
             if (visualizer.Scenario == null)
             {
                 LoggingFunctions.Trace("Scenario unselected.");
                 return;
             }
-            IAttribute nameAttribute = visualizer.Scenario.Attributes.FirstOrDefault(attr => attr.Name == "Name");
+            IAttribute nameAttribute = visualizer.Scenario.GetAttributeByName("Name");
             if (nameAttribute != null)
                 LoggingFunctions.Trace("Scenario : " + nameAttribute.Value + " was selected.");
-            if (visualizer.Scenario != null)
-                visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
+            
+            visualizer.SetBrushForScenario(visualizer.Scenario, Brushes.Red);
+            visualizer.GraphElement = visualizer.Scenario;
         }
 
         /// <summary>
@@ -123,7 +126,7 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// </summary>
         /// <param name="d">Dependency object that was changed</param>
         /// <param name="e">Event args containing information about the changes of the UseCase property</param>
-        private static void UseCase_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void UseCasePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //  ACCESS MEMBER VIA DEPENDENCY OBJECT
             UseCaseGraphVisualiser visualizer = (UseCaseGraphVisualiser) d;
@@ -134,30 +137,12 @@ namespace UseCaseAnalyser.GraphVisualiser
                 LoggingFunctions.Trace("UseCase unselected.");
                 return;
             }
-            IAttribute nameAttribute = visualizer.UseCase.Attributes.FirstOrDefault(attr => attr.Name == "Name");
+            IAttribute nameAttribute = visualizer.UseCase.GetAttributeByName("Name");
             if (nameAttribute != null)
                 LoggingFunctions.Trace("UseCase : " + nameAttribute.Value + " was selected.");
 
             //  REDRAW (NEW GRAPH)
-            try
-            {
-                visualizer.VisualiseNodes();
-            }
-            catch
-            {
-                LoggingFunctions.Error("Error while calculating visualisation of use case nodes occured.");
-                throw;
-            }
-
-            try
-            {
-                visualizer.VisualiseEdges();
-            }
-            catch
-            {
-                LoggingFunctions.Error("Error while calculating visualisation of use case egdes occured.");
-                throw;
-            }
+            visualizer.VisualiseGraph();
         }
 
         #endregion
@@ -170,68 +155,92 @@ namespace UseCaseAnalyser.GraphVisualiser
             InitializeComponent();
         }
 
+
+        /// <summary>
+        /// redraws the current usecasegraph --> nodes + edges are redrawn
+        /// and the cache positon will be deleted
+        /// </summary>
+        public void RedrawGraph()
+        {
+            Clear(true);
+            VisualiseGraph();
+        }
+
         /// <summary>
         /// Creates cache entries (current position) for all INode objects within the UseCaseNodes.
         /// Furthermore clear Canvas and mNodes list.
         /// </summary>
-        private void Clear()
+        /// <param name="clearCache">True:clear cache of nodes | False: save old postion of nodes</param>
+        private void Clear(bool clearCache = false)
         {
-            //Save old Position in Dictionary
-            foreach (UseCaseNode node in mNodes)
+            if (clearCache)
             {
-                if (mNodePosDict.ContainsKey(node.Node))
+                LoggingFunctions.Trace("Clear Cache of positions in the canvas of all nodes");
+                
+                foreach (UseCaseNode node in mNodes)
                 {
-                    mNodePosDict[node.Node] = new Point(Canvas.GetLeft(node), Canvas.GetTop(node));
+                    if (mNodePosDict.ContainsKey(node.Node))
+                        mNodePosDict.Remove(node.Node);
                 }
             }
+            // if the cache will not be cleared the position will be saved
+            else
+            {
+                LoggingFunctions.Trace("Save positions in the canvas of all nodes into the cache");
+                //Save old Position in Dictionary
+                foreach (UseCaseNode node in mNodes)
+                {
+                    if (mNodePosDict.ContainsKey(node.Node))
+                    {
+                        mNodePosDict[node.Node] = new Point(Canvas.GetLeft(node), Canvas.GetTop(node));
+                    }
+                }     
+            }
+           
             mNodes.Clear();
             DrawingCanvas.Children.Clear();
+            DrawingCanvas.Height = DrawingCanvas.Width = 100;
+            CanvaScaleTransform.ScaleX = CanvaScaleTransform.ScaleY = 1;
+            CanvasScrollViewer.ScrollToLeftEnd();
+            CanvasScrollViewer.ScrollToTop();
+
         }
 
         /// <summary>
-        /// Visualise all nodes in dependency property UseCaseGraph by using Index attributes to calculate their corresponding
-        /// default slotNumber (node's X-Offset). If Index is corrupted an InvalidOperationException will be thrown.
+        /// Visiualise all Nodes in Standard Position and redraw edges 
+        /// </summary>
+        private void VisualiseGraph()
+        {
+            try
+            {
+                VisualiseNodes();
+            }
+            catch
+            {
+                LoggingFunctions.Error("Error while calculating visualisation of use case nodes occured.");
+                throw;
+            }
+
+            try
+            {
+                VisualiseEdges();
+            }
+            catch
+            {
+                LoggingFunctions.Error("Error while calculating visualisation of use case egdes occured.");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Visualise all nodes in dependency property UseCaseGraph.
         /// </summary>
         private void VisualiseNodes()
         {
-            //first add all nodes contained in UseCaseGraph to visualiser
+            //add all nodes contained in UseCaseGraph to visualiser
             foreach (INode ucNode in UseCase.Nodes)
             {
-                //get node's attribute named "Index"
-                IAttribute ucNodeAttribut =
-                    ucNode.Attributes.First(
-                        a => a.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]);
-
-                //parse Index value
-                // Todo Use NodeAttributes NormalIndex, VariantIndex, VarSeqStep instead of IndexParser()
-                List<string> results = IndexParser(ucNodeAttribut.Value.ToString());
-                switch (results.Count)
-                {
-                    case 1:
-                        //if regex returns list with one element the node is a main sequence node - add it to first row
-                        AddNode(1, ucNode);
-                        break;
-                    case 3:
-                        //if regex returns list with three elements the node is a variant sequence node
-                        //calculate row by converting character to int (only first char is converted at the moment)
-                        //furthermore first entry in list marks reference node (node where variant sequences branches
-                        AddNode((uint) (char.ToUpper(results[1][0]) - 63), ucNode,
-                            UseCase.Nodes.FirstOrDefault(
-                                node =>
-                                    node.Attributes.Any(
-                                        attr =>
-                                            attr.Name.Equals(
-                                                UseCaseGraph.AttributeNames[
-                                                    (int) UseCaseGraph.NodeAttributes.Index]) &&
-                                            ((string) attr.Value).Equals(results[0]))));
-                        break;
-                    default:
-                        InvalidOperationException invalidOperationException =
-                            new InvalidOperationException(
-                                @"Extraction of node index failed. Node position can not be determined.");
-                        LoggingFunctions.Exception(invalidOperationException);
-                        throw invalidOperationException;
-                }
+                AddNode(ucNode);
             }
         }
 
@@ -247,19 +256,9 @@ namespace UseCaseAnalyser.GraphVisualiser
                 UseCaseNode secondNode = null;
                 foreach (UseCaseNode ucNode in mNodes)
                 {
-                    IAttribute ucNodeIndexAttr =
-                        ucNode.Node.Attributes.First(
-                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index]);
-
-                    if (firstNode == null &&
-                        ucNodeIndexAttr.Value == ucEdge.Node1.Attributes.First(
-                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index])
-                            .Value)
+                    if (firstNode == null && ucNode.Node.Equals(ucEdge.Node1))
                         firstNode = ucNode;
-                    if (secondNode == null && ucNodeIndexAttr.Value ==
-                        ucEdge.Node2.Attributes.First(
-                            attr => attr.Name == UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Index])
-                            .Value)
+                    if (secondNode == null && ucNode.Node.Equals(ucEdge.Node2))
                         secondNode = ucNode;
                 }
 
@@ -278,31 +277,16 @@ namespace UseCaseAnalyser.GraphVisualiser
         }
 
         /// <summary>
-        /// Parse index by using a regex to split it in either one (NormalNodes) or three (VariantNodes) values.
-        /// These values will be used for determine default position.
+        /// Adds a node to UseCaseGraphVisualiser canvas and node list. Furthermore adjusts default position of this node using 
+        /// NormalIndex/VariantIndex attributes if no cached value is given.
         /// </summary>
-        /// <param name="index">Index string extracted by WordImporter containg NormalIndex, (VariantIndex and VarSeqStep) concatenated.</param>
-        /// <returns>List values containing either one value (NormalIndex) for NormalNodes or three values (NormalIndex,VariantIndex,VarSeqStep) for VariantNodes)</returns>
-        private List<string> IndexParser(string index)
-        {
-            Regex regex = new Regex(@"([0-9]+)([A-z]+)([0-9]+)");
-            //split method adds empty entries in front and in the end of list - therefore remove empty entries
-            return regex.Split(index).Where(s => s != String.Empty).ToList();
-        }
-
-        /// <summary>
-        /// Adds a node to UseCaseGraphVisualiser canvas and node list. Furthermore adjusts default position of this node if no cached value is given.
-        /// </summary>
-        /// <param name="slotNumber">Used to determine X-Offset for node (column).</param>
         /// <param name="node">INode object that should be wrapped within a UseCaseNode.</param>
-        /// <param name="referenceUseCaseNode">Used if node is a variant node. Corrensponding reference node is normal node where the variant was branched. Used to determine Y-Offset.</param>
-        private void AddNode(uint slotNumber, INode node, INode referenceUseCaseNode = null)
+        private void AddNode(INode node)
         {
             UseCaseNode useCaseNode = new UseCaseNode(node);
             useCaseNode.PreviewMouseLeftButtonDown += GraphVisualiser_OnMouseDown;
             DrawingCanvas.Children.Add(useCaseNode);
             Panel.SetZIndex(useCaseNode, 10);
-
 
             // If the node is already in the Dictionary the old value will be loaded
             // otherwise default value will be calculated
@@ -313,28 +297,76 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
             else
             {
-                double leftPos = ElementWidth*(slotNumber - 1) + 40;
+                double leftPos = 40;
                 double topPos = 0;
+                uint yOffsetMultiplier;
 
-                if (referenceUseCaseNode != null)
+                // get node's attribute named "NormalIndex"
+                IAttribute normalAttribute = node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+
+                // determine if node is a variant node (node type cannot be used)
+                IAttribute variantIndexAttribute = node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
+
+                // check if node is a variant sequence node
+                if (variantIndexAttribute != null)
                 {
+                    // determine y-Offset using variant index (character) which is
+                    // "casted" to an integer with offset
+                    yOffsetMultiplier = (uint) (char.ToUpper(variantIndexAttribute.Value.ToString()[0]) - 64);
+
+                    // determine reference use case node 
+                    INode referenceUseCaseNode = UseCase.Nodes.FirstOrDefault(
+                        ucNode => ucNode.Attributes.Any(attr =>
+                            attr.Name.Equals(NodeAttributes.NormalIndex.AttributeName()) &&
+                            ((string) attr.Value).Equals(normalAttribute.Value)));
+                    // get correspronding UseCaseNode
                     UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(referenceUseCaseNode));
-                    topPos = Canvas.GetTop(referencenode);
-                }
 
-                foreach (UseCaseNode ucNode in mNodes)
+                    // determine x-Offset using variant sequence step
+                    uint xOffsetMultiplier;
+                    IAttribute varSeqStepAttribute = node.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName());
+                    uint.TryParse(varSeqStepAttribute.Value.ToString(), out xOffsetMultiplier);
+
+                    //top is calculated by using reference node y-offset added to y-offset corresponding to its variant number
+                    topPos = Canvas.GetTop(referencenode) + yOffsetMultiplier*ElementHeight;
+                    //left only depends on variant sequence number
+                    leftPos += xOffsetMultiplier*ElementWidth;
+                }
+                //otherwise it's a normal sequence node
+                else
                 {
-                    if (Math.Abs(Canvas.GetLeft(ucNode) - leftPos) < 0.1f && Canvas.GetTop(ucNode) > topPos)
-                        topPos = Canvas.GetTop(ucNode);
+                    // normal index is used to determine default y-Position
+                    uint.TryParse(normalAttribute.Value.ToString(), out yOffsetMultiplier);
+                    topPos += (yOffsetMultiplier - 1) * ElementHeight;
+
+                    //skip calculation of variant sequence offset for first node (with index 1)
+                    //note: if node are inserted in an wrong order rendering would become corrupted!
+                    if (mNodes.Count > 0)
+                    {
+                        //determine index of previous normal node
+                        int ucNodeIndexPrevious;
+                        int.TryParse(normalAttribute.Value.ToString(), out ucNodeIndexPrevious);
+                        ucNodeIndexPrevious--;
+
+                        //determine reference use case node (previous normal node)
+                        INode previousNode = UseCase.Nodes.FirstOrDefault(n => n.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName()).Value.Equals(ucNodeIndexPrevious.ToString()));
+                        UseCaseNode referencenode = mNodes.Single(n => n.Node.Equals(previousNode));
+                        topPos = Canvas.GetTop(referencenode) + ElementHeight;
+                    }
+                    //get previous normal node's variant count used to calculate additional offset
+                    int variantCount = GetPreviousNodeVariantCount(useCaseNode);
+
+                    //add element height for all elements except first (otherwise margin would be too large)
+                    if (mNodes.Count > 0)
+                        topPos += (ElementHeight * (variantCount));
                 }
 
-                //add element height for all elements except first (otherwise margin would be too large)
-                if (mNodes.Count > 0)
-                    topPos += ElementHeight;
-
+                // finally add calculated position to cache
                 mNodePosDict.Add(node, new Point(leftPos, topPos));
-                Canvas.SetTop(useCaseNode, topPos);
-                Canvas.SetLeft(useCaseNode, leftPos);
+
+                //assign calculated position
+             Canvas.SetTop(useCaseNode, topPos);
+             Canvas.SetLeft(useCaseNode, leftPos);
             }
 
             //add node to graph visualiser usecase node list
@@ -345,6 +377,55 @@ namespace UseCaseAnalyser.GraphVisualiser
                 DrawingCanvas.Width = Canvas.GetLeft(useCaseNode) + ElementWidth;
             if (DrawingCanvas.Height < (Canvas.GetTop(useCaseNode) + ElementHeight))
                 DrawingCanvas.Height = Canvas.GetTop(useCaseNode) + ElementHeight;
+        }
+
+        /// <summary>
+        /// Calculates additional offset corresponding to previous node's variant sequence count.
+        /// </summary>
+        /// <param name="ucNode">UseCaseNode which predecessor's variant sequence count should be determined.</param>
+        /// <returns>Count of previous normal node - if ucNode is not a normal node itself or previous could not be determined count is 0.</returns>
+        private int GetPreviousNodeVariantCount(UseCaseNode ucNode)
+        {
+            // get node's attribute named "NormalIndex"
+            IAttribute normalIndexAttribute = ucNode.Node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+
+            //determine if node is a variant node (node type cannot be used)
+            IAttribute variantIndexAttribute = ucNode.Node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName());
+
+            //if a variant node was specified return 0
+            if (variantIndexAttribute != null) 
+                return 0;
+
+            //determine index of previous normal node
+            int ucNodeIndexPrevious;
+            int.TryParse(normalIndexAttribute.Value.ToString(), out ucNodeIndexPrevious);
+            ucNodeIndexPrevious--;
+
+            //get previous node
+            INode previousNode = UseCase.Nodes.FirstOrDefault(n => n.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName()).Value.Equals(ucNodeIndexPrevious.ToString()));
+            if (previousNode == null) return 0;
+
+            //calculate previous node's variant count
+            int variantCount = 0;
+            foreach (INode orgNode in UseCase.Nodes)
+            {
+                IAttribute ucNodeVarSeqStepIndexAttribute = orgNode.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName());
+
+                //check if there are variant by using normal index as compare and only increase count if there exist an edge between normal node and variant node
+                //otherwise all variant sequence node would increase amount of variants
+                if (ucNodeVarSeqStepIndexAttribute == null) 
+                    continue;
+                
+                IAttribute ucNodeNormalIndexAttribute = orgNode.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName());
+
+                int nodeIndex;
+                int.TryParse(ucNodeNormalIndexAttribute.Value.ToString(), out nodeIndex);
+
+                if (ucNodeIndexPrevious == nodeIndex && UseCase.GetEdges(previousNode, orgNode).ToList().Any())
+                    variantCount++;
+            }
+
+            return variantCount;
         }
 
         /// <summary>
@@ -392,12 +473,16 @@ namespace UseCaseAnalyser.GraphVisualiser
         /// <param name="e">Background_OnPreviewMouseLeftButtonDown mouse button event arguments.</param>
         private void Background_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (GraphElement == UseCase)
+            return;
+
             foreach (UIElement child in DrawingCanvas.Children)
             {
                 ISelectableGraphElement selectableChild = child as ISelectableGraphElement;
                 if (selectableChild != null)
                     selectableChild.Unselect();
             }
+            LoggingFunctions.Trace("Use Case Graph selected");
             GraphElement = UseCase;
         }
 
@@ -433,7 +518,7 @@ namespace UseCaseAnalyser.GraphVisualiser
 
             e.Handled = true;
         }
-
+    
         /// <summary>
         /// Event handler for Graphvisualiser. Handles dragging state.
         /// </summary>
@@ -443,17 +528,17 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             if (mSelectedElement == null)
                 return;
-
+            
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
             double maxHeight = 0, maxWidth = 0;
             foreach (FrameworkElement frameworkElement in DrawingCanvas.Children)
             {
-                if (maxHeight < frameworkElement.Height + Canvas.GetTop(frameworkElement) + 50)
-                    maxHeight = frameworkElement.Height + Canvas.GetTop(frameworkElement) + 50;
+                if (maxHeight < frameworkElement.Height + Canvas.GetTop(frameworkElement) + 20)
+                    maxHeight = frameworkElement.Height + Canvas.GetTop(frameworkElement) + 20;
 
-                if (maxWidth < frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 50)
-                    maxWidth = frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 50;
+                if (maxWidth < frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 20)
+                    maxWidth = frameworkElement.Width + Canvas.GetLeft(frameworkElement) + 20;
 
 
                 if (!frameworkElement.Equals(mSelectedElement))
@@ -466,13 +551,50 @@ namespace UseCaseAnalyser.GraphVisualiser
                     node.RenderEdges();
             }
 
-            DrawingCanvas.Height = maxHeight;
-            DrawingCanvas.Width = maxWidth;
-            if (Canvas.GetLeft(mSelectedElement) + 300 > DrawingCanvas.Width)
-                CanvasScrollViewer.ScrollToRightEnd();
-            if (Canvas.GetTop(mSelectedElement) + 300 > DrawingCanvas.Height)
-                CanvasScrollViewer.ScrollToBottom();
+
+            if ((DateTime.Now - mLastSizeUpdateTime).Milliseconds < CanvasSizeUpdateTime)  
+                return;
+            
+            mLastSizeUpdateTime = DateTime.Now;
+            const double borderToStartScroll = 100;
+            Point currMousePos = Mouse.GetPosition(CanvasScrollViewer);
+
+            //Mouse is moving with an element on the right side of the canvas -> Increase canvas size and scroll right
+            if (currMousePos.X > CanvasScrollViewer.ActualWidth - borderToStartScroll)
+            {
+                DrawingCanvas.Width = maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X;
+                CanvasScrollViewer.LineRight();
+            }
+            // Is Mouse pos in the left side of the canvas -> decrease Canvas size
+            else if (currMousePos.X < borderToStartScroll)
+            {
+                //Scroll viewer is completly left -> set standard value of drawing canvas size
+                if (CanvasScrollViewer.HorizontalOffset< 0.1)
+                    DrawingCanvas.Width = maxWidth;
+                //set max pos of element as canvas size and add Mouse Offset
+                else
+                    DrawingCanvas.Width = maxWidth + CanvasScrollViewer.ActualWidth - Mouse.GetPosition(CanvasScrollViewer).X;
+                CanvasScrollViewer.LineLeft();
+            }
+            //Mouse is moving with an element on the bottom side of the canvas -> Increase canvas size and scroll down
+            if (currMousePos.Y > CanvasScrollViewer.ActualHeight - borderToStartScroll)
+            {
+                DrawingCanvas.Height = maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y;
+                CanvasScrollViewer.LineDown();
+            }
+            // Is Mouse pos in the up side of the canvas -> decrease Canvas size
+            else if (currMousePos.Y < borderToStartScroll)
+            {
+                //Scroll viewer is completly up -> set standard value of drawing canvas size
+                if (CanvasScrollViewer.VerticalOffset < 0.1)
+                    DrawingCanvas.Height = maxHeight;
+                //set max pos of element as canvas size and add Mouse Offset
+                else
+                    DrawingCanvas.Height = maxHeight + CanvasScrollViewer.ActualHeight - Mouse.GetPosition(CanvasScrollViewer).Y;
+                CanvasScrollViewer.LineUp();
+            }
         }
+
 
         /// <summary>
         /// Event handler for Graphvisualiser. Resets dragging state.
@@ -483,16 +605,13 @@ namespace UseCaseAnalyser.GraphVisualiser
         {
             if (mSelectedElement == null)
                 return;
-
-
+            
             // ReSharper disable once LoopCanBePartlyConvertedToQuery
             //[Mathias Schneider, Patrick Schießl] - keep more readable foreach loop instead of using LINQ
             foreach (FrameworkElement element in DrawingCanvas.Children)
             {
                 if (!element.Equals(mSelectedElement))
                     continue;
-                //Canvas.SetTop(fe, e.GetPosition(this).Y - offsetElementPosition.Y);
-                //Canvas.SetLeft(fe, e.GetPosition(this).X - offsetElementPosition.X);
                 UseCaseNode node = element as UseCaseNode;
                 if (node != null)
                     node.RenderEdges();
@@ -501,6 +620,31 @@ namespace UseCaseAnalyser.GraphVisualiser
             }
         }
 
+        /// <summary>
+        /// Event handler for CanvasScrollViewer. If left Ctrl Key is pressed Canvas Zoom starts
+        /// </summary>
+        /// <param name="sender">Sender of CanvasScrollViewer_OnMouseWheel event</param>
+        /// <param name="e">CanvasScrollViewer_OnMouseWheel mouse wheel event arguments</param>
+        private void CanvasScrollViewer_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+                return;
+
+            if (e.Delta > 0)
+            {
+                CanvaScaleTransform.ScaleX *= ScaleRateZoom;
+                CanvaScaleTransform.ScaleY *= ScaleRateZoom;
+            }
+            else
+            {
+                CanvaScaleTransform.ScaleX /= ScaleRateZoom;
+                CanvaScaleTransform.ScaleY /= ScaleRateZoom;
+            }
+            e.Handled = true;
+        }
+
         #endregion
+
+
     }
 }

@@ -36,9 +36,12 @@ namespace UseCaseAnalyser.Model.ViewModel
         private UseCaseGraph mSelectedUseCaseGraph;
         private IGraph mSelectedScenario;
         private ICommand mExportScenarioMatrix;
+        private ICommand mExportAllScenarioMatrices;
         private ICommand mOpenWordFile;
         private ICommand mOpenLogfile;
         private ICommand mOpenReportView;
+        private ICommand mOpenAboutView;
+        private ICommand mRefreshGraph;
         //private IGraphElement mSelectedGraphElement;
 
         /// <summary>
@@ -119,11 +122,9 @@ namespace UseCaseAnalyser.Model.ViewModel
                     UseCaseGraphs = WordImporter.ImportUseCases(file, out newReport);
                     LatestWordImportReport = newReport;
 
-                    if (LatestWordImportReport.ErrorReportEntries.Any() || LatestWordImportReport.WarningReportEntries.Any())
-                    {
-                        mViewAbstraction.OpenReportResult(LatestWordImportReport); 
-                    }
-                }, o => true, e => OnError(e, "Das Einlesen der Word Datei ergab einen Fehler.")));
+                    mViewAbstraction.OpenReportResult(LatestWordImportReport);
+
+                }, o => true, e => OnError(e)));
             }
         }
 
@@ -139,10 +140,36 @@ namespace UseCaseAnalyser.Model.ViewModel
                 //  lazy initialization
                 return mExportScenarioMatrix ?? (mExportScenarioMatrix = new AsyncCommand(o =>
                 {
-                    FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save);
+                    FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save, SelectedUseCaseGraph.AttributeValue<string>(UseCaseAttributes.Name));
 
-                    ScenarioMatrixExporter.ExportScenarioMatrix(SelectedUseCaseGraph, file);
-                }, o => SelectedUseCaseGraph != null, e => OnError(e, "Das Schreiben der Excel Datei ergab einen Fehler.")));
+                    if (file == null) return;
+
+                    LoggingFunctions.Debug("Exporting scenario for the selected UseCase");
+                    ScenarioMatrixExporter.ExportScenarioMatrix(new List<UseCaseGraph> { SelectedUseCaseGraph }, file);
+                }, o => SelectedUseCaseGraph != null, e => OnError(e)));
+                //  condtion to run the command (a graph has to be selected)
+            }
+        }
+
+        /// <summary>
+        /// exports the scenarios from all use cases
+        /// 
+        /// enabled if: any use case is imported
+        /// </summary>
+        public ICommand ExportAllScenarioMatrices
+        {
+            get
+            {
+                //  lazy initialization
+                return mExportAllScenarioMatrices ?? (mExportAllScenarioMatrices = new AsyncCommand(o =>
+                {
+                    FileInfo file = mViewAbstraction.OpenFileDialog("Excel files (.xlsx)|*.xlsx", FileDialogType.Save, "ScenarioMatrices");
+
+                    if (file == null) return;
+
+                    LoggingFunctions.Debug("Exporting scenarios for all UseCases");
+                    ScenarioMatrixExporter.ExportScenarioMatrix(UseCaseGraphs, file);
+                }, o => UseCaseGraphs != null && UseCaseGraphs.Any(), e => OnError(e)));
                 //  condtion to run the command (a graph has to be selected)
             }
         }
@@ -181,6 +208,37 @@ namespace UseCaseAnalyser.Model.ViewModel
                     mViewAbstraction.OpenReportResult(LatestWordImportReport);
                 }, o => LatestWordImportReport != null, e => OnError(e)));
                 //  condtion to run the command (always true)
+            }
+        }
+
+        /// <summary>
+        /// opens the about view in its seperate window
+        /// 
+        /// </summary>
+        public ICommand OpenAboutView
+        {
+            get
+            {
+                //  lazy initialization
+                return mOpenAboutView ?? (mOpenAboutView = new AsyncCommand(o =>
+                {
+                    mViewAbstraction.OpenAboutView();
+                }, o => true, e => OnError(e)));
+                //  condtion to run the command (always true)
+            }
+        }
+
+        /// <summary>
+        /// refreshes the current use case graph visualization
+        /// </summary>
+        public ICommand RefreshGraph
+        {
+            get
+            {
+                return mRefreshGraph ?? (mRefreshGraph = new AsyncCommand(o =>
+                {
+                    mViewAbstraction.RedrawGraph();
+                }, o => true, e => OnError(e)));
             }
         }
 

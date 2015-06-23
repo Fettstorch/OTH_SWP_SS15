@@ -10,153 +10,299 @@
 // <subject>Software Projekt</subject>
 // </summary>
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using GraphFramework;
 using GraphFramework.Interfaces;
+using LogManager;
+using Attribute = GraphFramework.Attribute;
 
 namespace UseCaseAnalyser.Model.Model
 {
-    //[Serializable]
-    //public class SourceNodeNotFoundException : Exception
-    //{
-    //    public SourceNodeNotFoundException() { }
-    //    public SourceNodeNotFoundException(string message) : base(message) { }
-    //    public SourceNodeNotFoundException(string message, Exception inner) : base(message, inner) { }
-
-    //    // A constructor is needed for serialization when an
-    //    // exception propagates from a remoting server to the client. 
-    //    protected SourceNodeNotFoundException(System.Runtime.Serialization.SerializationInfo info,
-    //        System.Runtime.Serialization.StreamingContext context) { }
-    //}
-
     /// <summary>
     /// class to create the scenarios for a use case graph
     /// </summary>
     public static class ScenarioMatrixCreator
-    {       
-        private static INode FindStartingNode(IGraph graph)
-        {          
-            foreach (INode node in graph.Nodes)
-            {
-                foreach (IAttribute attribute in node.Attributes)
-                {
-                    if (!attribute.Name.Equals(
-                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]))
-                        continue;
-                    if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode))
-                    {
-                        return node;
-                    }
-                }
-            }
+    {
+        private const string CUseCase = "Scenario of UseCase";
+        private const string COrder = "Order of Visit";
+        private const string CScenarioName = "Name";
 
-            return null;
-        }
-
-        private static IEnumerable<INode> FindEndNodes(IGraph graph)
+        private static string GetNodeNumber(INode node)
         {
-            List<INode> endNodes = new List<INode>();
-            foreach (INode node in graph.Nodes)
+            string nodeNumber = "";
+            if (node.Attributes.Any(t => t.Name == NodeAttributes.NormalIndex.AttributeName()))
+                nodeNumber += node.GetAttributeByName(NodeAttributes.NormalIndex.AttributeName()).Value.ToString();
+            else
             {
-                foreach (IAttribute attribute in node.Attributes)
-                {
-                    if (!attribute.Name.Equals(
-                        UseCaseGraph.AttributeNames[(int)UseCaseGraph.NodeAttributes.NodeType]))
-                        continue;
-                    if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.EndNode))
-                    {
-                        endNodes.Add(node);
-                    }
-                }
+                LoggingFunctions.Exception("Invalid Node found while creating ScenarioMatrix.");
+                throw new NullReferenceException("No NodeIndex found.");
             }
-            return endNodes;
+            if (node.Attributes.Any(t => t.Name == NodeAttributes.VariantIndex.AttributeName()))
+                nodeNumber += node.GetAttributeByName(NodeAttributes.VariantIndex.AttributeName()).Value.ToString();
+            if (node.Attributes.Any(t => t.Name == NodeAttributes.VarSeqStep.AttributeName()))
+                nodeNumber += node.GetAttributeByName(NodeAttributes.VarSeqStep.AttributeName()).Value.ToString();
+            return nodeNumber;
+
         }
 
-        private static INode FindSourceNode(IEdge edge)
+        private static string ExtendOrderAttribute(string attributeValue, INode nextNode, UseCaseGraph useCaseGraph, IEdge correspondingEdge = null)
+        {           
+            IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node2 == nextNode);
+            IEdge[] edgeArray = correspondingEdge == null ? edges as IEdge[] ?? edges.ToArray() : new IEdge[]{correspondingEdge};
+
+            string seperator = (string.IsNullOrEmpty(attributeValue) ? string.Empty : " ");
+            if (IsAlternativeNode(nextNode))
+            {
+                if (edgeArray.Any(edge => !IsAlternativeNode(edge.Node1)))
+                {
+                    seperator = "\r\n  ";
+                }                
+            }
+            else
+            {
+                if (edgeArray.Any(edge => IsAlternativeNode(edge.Node1)))
+                {
+                    seperator = "\r\n";
+                }  
+            }
+            return attributeValue + seperator + GetNodeNumber(nextNode);
+        }
+
+        private static INode FindStartNode(IGraph graph)
         {
-            //Todo: Im UseCaseGraph/WordImporter muss die Richtung von edges implementiert werden
-            //foreach (INode node in new[] {edge.Node1, edge.Node2})
-            //{
-            //    foreach (IAttribute attribute in node.Attributes)
-            //    {
-            //        if (!attribute.Name.Equals(
-            //            UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.Direction]))
-            //            continue;
-            //        if (attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.SourceNode))
-            //        {
-            //            return node;
-            //        }
-            //    }
-            //}
-            throw new NotImplementedException();
+            return
+                graph.Nodes.FirstOrDefault(
+                    node =>
+                        node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
+                            .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode));
         }
 
-        private static List<IGraph> CreateScenario(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph, params INode[] endNodes)
+        private static bool IsEndNode(INode node, UseCaseGraph useCaseGraph)
+        {
+            return node.GetAttributeByName(NodeAttributes.NodeType.AttributeName()).Value
+                .Equals(UseCaseGraph.NodeTypeAttribute.EndNode) || useCaseGraph.Edges.All(edge => edge.Node1 != node);
+        }
+
+        private static bool IsAlternativeNode(INode node)
+        {
+            return node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
+                .Value.Equals(UseCaseGraph.NodeTypeAttribute.VariantNode)
+                   ||
+                   node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
+                       .Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)
+            || (node.Attributes.Any(attr1 => attr1.Name.Equals(NodeAttributes.VariantIndex.AttributeName())));
+        }
+
+        private static int CountVariants(IGraph graph)
+        {
+            return graph.Edges.Count(edge => IsAlternativeNode(edge.Node2) && !IsAlternativeNode(edge.Node1));
+        }
+
+        private static bool IsVariantEntry(IEdge edge)
+        {
+            return !IsAlternativeNode(edge.Node1) && IsAlternativeNode(edge.Node2);
+        }
+
+        private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph, IDictionary<IEdge,int> numLoopTraversions,  int maxLoopTraversions = 1)
         {
             List<IGraph> retScenario = new List<IGraph>();
-            UseCaseGraph internalGraph = new UseCaseGraph(useCaseGraph.Attributes.ToArray());
-           
+            UseCaseGraph internalGraph = new UseCaseGraph();
+            IDictionary<IEdge, int> variantTraversions = new Dictionary<IEdge, int>();
+            if (currentNode == null)
+            {
+                LoggingFunctions.Exception("Invalid Function call while creating ScenarioMatrix.");
+                throw new ArgumentNullException("currentNode");
+            }
+            if (useCaseGraph == null)
+            {
+                LoggingFunctions.Exception("Invalid Function call while creating ScenarioMatrix.");
+                throw new ArgumentNullException("useCaseGraph");
+            }
+            if (numLoopTraversions != null)
+            {
+                foreach (KeyValuePair<IEdge, int> value in numLoopTraversions)
+                {
+                    variantTraversions.Add(value.Key, value.Value);
+                }
+            }
+
+            //Copy Scenario from last recursion
             if (existingScenario != null)
+            {
                 internalGraph.AddGraph(existingScenario);
-            
+                internalGraph.AddAttribute(existingScenario.Attributes.Any(t => t.Name == COrder)
+                    ? existingScenario.GetAttributeByName(COrder) //take Order of visits from existingScenario 
+                    : new Attribute(COrder, "")); // initialize empty new Scenario if existingScenario == new Graph()
+            }
+            else //initialize empty new Scenario if existingScenario == null
+            {
+                internalGraph.AddAttribute(new Attribute(COrder, ""));
+            }
+
+            //fault: currentNode not part of useCaseGraph, returns empty List
             if (!useCaseGraph.Nodes.Contains(currentNode))
                 return retScenario;
 
+            //include currentNode to Scenario
             if (!internalGraph.Nodes.Contains(currentNode))
-                internalGraph.AddNode(currentNode);
-
-            if (endNodes.Contains(currentNode))
             {
-                retScenario.Add(internalGraph);
-                return retScenario;
+                internalGraph.AddNode(currentNode);
+                internalGraph.GetAttributeByName(COrder).Value =
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, currentNode, internalGraph);
             }
 
-            IEnumerable<IEdge> edges = internalGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
-            IList<IEdge> edgeList= edges as IList<IEdge> ?? edges.ToList();
+            //end of recursion, EndNode found
+            if (IsEndNode(currentNode, useCaseGraph))
+            {
+                retScenario.Add(internalGraph);
+                //check if there are edges from this endNode that need to be traversed
+                IEnumerable<IEdge> edgesFromEndNode = useCaseGraph.Edges.Where(edge => edge.Node1.Equals(currentNode));
+                IEdge[] fromEndNode = edgesFromEndNode as IEdge[] ?? edgesFromEndNode.ToArray();
+                foreach (IEdge edge in fromEndNode.Where(edge => !variantTraversions.ContainsKey(edge)))
+                {
+                    variantTraversions.Add(edge, 0);
+                }
+                IEnumerable<IEdge> validEdgesFromeEndNode =
+                    fromEndNode.Where(edge => variantTraversions[edge] < maxLoopTraversions);
+
+                if(!validEdgesFromeEndNode.Any())
+                    return retScenario;
+            }
+
+            //Save old Scenario for comparison
+            IGraph saveGraph = new Graph(internalGraph.Attributes.ToArray());
+            saveGraph.AddGraph(internalGraph);
+
+            //visit all connected Nodes
+            IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
+            IList<IEdge> edgeList = edges as IList<IEdge> ?? edges.ToList();
             
             for (int i = 0; i < edgeList.Count(); i++)
             {
-                if (!internalGraph.Edges.Contains(edgeList[i]))
+                if (!edgeList[i].Node1.Equals(currentNode))//SourceNode != currentNode
+                    continue;
+
+                //check for maximum number of loop traversions
+                if (IsVariantEntry(edgeList[i]))
                 {
-                    if(! currentNode.Equals(FindSourceNode(edgeList[i])))
-                     continue;
-                    //Todo: Patrick please check if this is now correct, the order of the Nodes was the other way round before
-                    INode destNode = edgeList[i].Node1 == currentNode ? edgeList[i].Node2 : edgeList[i].Node1; 
-                    internalGraph.AddNode(destNode);
-                    internalGraph.AddEdge(currentNode, destNode,edgeList[i].Attributes.ToArray());
-
-                    retScenario.AddRange(CreateScenario(destNode,internalGraph,useCaseGraph, endNodes));
-
-                    //Remove last node 
-                    internalGraph.RemoveNode(destNode);
+                    if (!variantTraversions.ContainsKey(edgeList[i]))
+                    {
+                        variantTraversions.Add(edgeList[i], 0);
+                    }
+                    variantTraversions[edgeList[i]]++;
+                    if (variantTraversions[edgeList[i]] > maxLoopTraversions)
+                        continue;
                 }
 
+                //Add next Node 
+                INode destNode = edgeList[i].Node2;
+                if(!internalGraph.Nodes.Contains(destNode))
+                    internalGraph.AddNode(destNode);
+                if(!internalGraph.Edges.Contains(edgeList[i]))
+                    internalGraph.AddEdge(edgeList[i]);
+
+                //Save Order
+                IAttribute orderAttribute = new Attribute(internalGraph.GetAttributeByName(COrder).Name, 
+                    internalGraph.GetAttributeByName(COrder).Value);
+                    
+                //Set Order for recursive call
+                internalGraph.GetAttributeByName(COrder).Value =
+                    ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, internalGraph, edgeList[i]);
+
+                retScenario.AddRange(CreateScenarioMatrix(destNode, internalGraph, useCaseGraph, variantTraversions, maxLoopTraversions));
+
+                //Restore Variant Counter
+                if(IsVariantEntry(edgeList[i]))
+                    variantTraversions[edgeList[i]]--;
+
+                //Restore Order
+                internalGraph.RemoveAttribute(COrder);
+                internalGraph.AddAttribute(orderAttribute);
+
+                //Remove last node if necessary
+                if(!saveGraph.Nodes.Contains(edgeList[i].Node2))
+                {
+                    internalGraph.RemoveNode(destNode);
+                }
             }
-
             return retScenario;
-
         }
 
         /// <summary>
         /// Creates all scenarios from a Use-Case graph.
         /// </summary>
         /// <param name="useCaseGraph">Use-Case graph to get its scenarios from</param>
+        /// <param name="numLoopTraversions"></param>
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
-        public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
-        {           
-            INode startNode = FindStartingNode(useCaseGraph);
+        public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph, int numLoopTraversions = 1)
+        {
+            //get information about use case           
+            if (useCaseGraph == null)
+            {
+                throw new ArgumentNullException("useCaseGraph");
+            }
 
-            IEnumerable<INode> endNodes = FindEndNodes(useCaseGraph);
+            string useCaseName = "<no name found>";
+            if (useCaseGraph.Attribute(UseCaseAttributes.Name, false) != null)
+            {
+                useCaseName = useCaseGraph.GetAttributeByName("Name").Value.ToString();
+            }
 
-            IEnumerable<IGraph> allScenarios = CreateScenario(startNode, new Graph(), useCaseGraph, endNodes.ToArray());
+            int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
+                ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
+                : CountVariants(useCaseGraph);
+
+            INode startNode = FindStartNode(useCaseGraph);
+            if (startNode == null)
+            {
+                LoggingFunctions.Status(string.Format("No StartNode found in {0}.", useCaseName));
+                return Enumerable.Empty<IGraph>();
+            }
+
+            foreach (INode node in useCaseGraph.Nodes)
+            {
+                if (
+                    node.Attributes.Any(
+                        t => t.Name == NodeAttributes.NodeType.AttributeName()))
+                    continue;
+                LoggingFunctions.Exception(string.Format("Invalid Nodes in {0}.", useCaseName));
+                try
+                {                   
+                    throw new InvalidOperationException(string.Format("No NodeType attribute found at node {0}",
+                        GetNodeNumber(node)));
+                }
+                catch (NullReferenceException)
+                {
+                    throw new InvalidOperationException("No NodeType and no NormalIndex attribute found");
+                }
+            }
             
-            //  EMPTY ENUMERABLE SO THE VIEW CAN BE TESTED WITHOUT CRASHES
-            return Enumerable.Empty<IGraph>();
+            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, numLoopTraversions);          
+
+            //filter scenarios for number of variants
+            IList<IGraph> returnScenarios = new List<IGraph>();
+            if (allScenarios == null) return returnScenarios;
+            foreach (IGraph scenario in allScenarios.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
+            {
+                returnScenarios.Add(scenario);
+            }
+
+            //name scenarios
+            
+            int count = returnScenarios.Count();           
+            for (int i = 0; i < count; i++)
+            {
+                returnScenarios[i].AddAttribute(new Attribute(CScenarioName,
+                    string.Format("Scenario No. '{0}' of use case '{1}'", i + 1, useCaseName)));
+                returnScenarios[i].AddAttribute(new Attribute(CUseCase, useCaseName));
+            }
+
+            LoggingFunctions.Trace(string.Format("Scenarios of {0} were generated successfully.", useCaseName));
+
+            return returnScenarios;
         }
-
-
-
     }
 }

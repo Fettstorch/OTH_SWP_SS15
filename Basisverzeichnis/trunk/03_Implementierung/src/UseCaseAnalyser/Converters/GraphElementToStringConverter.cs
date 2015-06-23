@@ -42,7 +42,7 @@ namespace UseCaseAnalyser.Converters
             }
 
             IAttribute nameAttribute = graphElement.Attributes.FirstOrDefault(a => a.Name == "Name");
-            return string.Format("{0}: {1}", value.GetType().Name, nameAttribute == null ? "<no name>" : nameAttribute.Value);
+            return string.Format("{0}: {1}", value.GetType().Name, nameAttribute == null ? "" : nameAttribute.Value);
         }
 
         /// <summary>

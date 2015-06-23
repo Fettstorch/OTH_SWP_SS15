@@ -119,5 +119,17 @@ namespace GraphFramework.Tests
             IGraphElement testElement = new Node(testAttributes);
             testElement.RemoveAttribute(removeNull ? null : removeAttribute);
         }
+
+        [TestCase(null, ExpectedException = typeof(ArgumentNullException), TestName = "NameNull",
+            Description = "This is a test to check if trying to get an Attribute that is null is handled.\r\nExpected: ArgumentNullException.\r\n\r\n")]
+        [TestCase("unknown", ExpectedException = typeof(NullReferenceException), TestName = "NameNotFound",
+            Description = "This is a test to check if trying to get an Attribute that is not found is handled.\r\nExpected: ArgumentNullException.\r\n\r\n")]
+        [TestCase("Name", TestName = "DefaultTest", Description = "DefaultTest to check if getting an attribute by its name is working")]
+        public void GetAttributeByNameTest(string name)
+        {
+            INode testNode = new Node(new Attribute("Name", "A"));
+            IAttribute extractedAttribute = testNode.GetAttributeByName(name);
+            Assert.AreEqual(name, extractedAttribute.Name);
+        }
     }
 }

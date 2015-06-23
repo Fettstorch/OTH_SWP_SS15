@@ -40,11 +40,13 @@ namespace UseCaseAnalyser.View
         /// </summary>
         /// <param name="filter">filter of the files</param>
         /// <param name="dialogType">dialog type (open or save)</param>
+        /// <param name="predefinedName">the default file name</param>
         /// <returns>the file which has been selected</returns>
-        public FileInfo OpenFileDialog(string filter, FileDialogType dialogType)
+        public FileInfo OpenFileDialog(string filter, FileDialogType dialogType, string predefinedName = null)
         {
             FileDialog dialog = dialogType == FileDialogType.Open ? (FileDialog) new OpenFileDialog() : new SaveFileDialog();
             dialog.Filter = filter;
+            dialog.FileName = predefinedName;
 
             if (dialog.ShowDialog() != true) return null;
 
@@ -74,6 +76,22 @@ namespace UseCaseAnalyser.View
         {
             mView = new ReportView(viewModel) {Owner = this};
             mView.ShowDialog();
+        }
+
+        /// <summary>
+        /// opens the about view
+        /// </summary>
+        public void OpenAboutView()
+        {
+            (new AboutView{Owner = this}).ShowDialog();
+        }
+
+        /// <summary>
+        /// lets the use case graph viewer redraw the graph, which is currently represented
+        /// </summary>
+        public void RedrawGraph()
+        {
+            UseCaseGraphViewer.RedrawGraph();
         }
 
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)

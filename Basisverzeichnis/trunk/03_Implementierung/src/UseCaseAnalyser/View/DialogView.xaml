@@ -5,13 +5,37 @@
         xmlns:viewModel="clr-namespace:UseCaseAnalyser.Model.ViewModel;assembly=UseCaseAnalyser.Model"
         xmlns:interfaces="clr-namespace:GraphFramework.Interfaces;assembly=GraphFramework"
         xmlns:converters="clr-namespace:UseCaseAnalyser.Converters"
-        Title="DialogView" MinWidth="300" MinHeight="300">
+        xmlns:model="clr-namespace:UseCaseAnalyser.Model.Model;assembly=UseCaseAnalyser.Model"
+        xmlns:view="clr-namespace:UseCaseAnalyser.View"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="UseCase Analyser" MinWidth="300" MinHeight="300">
     <Window.Resources>
         <converters:GraphElementToStringConverter x:Key="GraphElementToStringConverter" />
+        <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:VariantTraverseCountConverter x:Key="VariantTraverseCountConverter" />
+        <converters:TraverseLoopCountConverter x:Key="TraverseLoopCountConverter" />
+        <converters:UseCaseToVariantCountConverter x:Key="UseCaseToVariantCountConverter" />
+        <BitmapImage x:Key="RefreshImage" UriSource="../Resources/refresh_64px.png" />
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="Padding" Value="3" />
         </Style>
-        <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
+        <Style TargetType="{x:Type ListBoxItem}" x:Key="NoSelectionStyle" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Style.Resources>
+                <!-- With focus -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="Transparent" />
+                <!-- Without focus -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                 Color="Transparent" />
+                <!-- Text foreground -->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                 Color="Black" />
+            </Style.Resources>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        </Style>
+        <converters:AttributesConverter x:Key="AttributesConverter" />
+        <converters:UseCaseToScenarioCountConverter x:Key="UseCaseToScenarioCountConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -30,15 +54,42 @@
 
         <Menu Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0">
             <MenuItem Header="File">
-                <MenuItem Header="Import word file" Command="{Binding Path=OpenWordFile}" />
-                <MenuItem Header="Export scenario matrix" Command="{Binding Path=ExportScenarioMatrix}" />
+                <MenuItem Header="Import word file" Command="{Binding Path=OpenWordFile}">
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/word_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Export scenario matrix" Command="{Binding Path=ExportScenarioMatrix}" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/excel_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export all scenarios" Command="{Binding Path=ExportAllScenarioMatrices}" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/excel_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Exit" Name="ExitMenuItem" Click="ExitMenuItem_OnClick"/>
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem Header="Open Logfile" Command="{Binding Path=OpenLogfile}" />
-                <MenuItem Header="Open latest import report" Command="{Binding Path=OpenReportView}" />
-                <MenuItem Header="About" />
+                <MenuItem Header="Open Logfile" Command="{Binding Path=OpenLogfile}" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/log_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open latest import report" Command="{Binding Path=OpenReportView}" >
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/report_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="About" Command="{Binding Path=OpenAboutView}">
+                    <MenuItem.Icon>
+                        <Image Source="../Resources/about_64.png" Width="20" Height="20" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
         
@@ -52,17 +103,54 @@
         <TabControl Grid.Column="2" Grid.Row="1">
             <TabItem Header="UseCases">
                 <ListBox Name="UseCases" ItemsSource="{Binding Path=UseCaseGraphs, Mode=OneWay}" SelectedItem="{Binding Path=SelectedUseCaseGraph, Mode=OneWayToSource}"
-                         HorizontalContentAlignment="Stretch" />
-            </TabItem>
-            <TabItem Header="Scenarios">
-                <ListBox Name="Scenarios" ItemsSource="{Binding Path=SelectedUseCaseGraph.Scenarios, Mode=OneWay}" SelectedItem="{Binding Path=SelectedScenario, 
-                    Mode=OneWayToSource}">
+                         HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type interfaces:IGraph}">
-                            <TextBlock Text="{Binding Converter={StaticResource GraphElementToStringConverter}}" />
+                        <DataTemplate DataType="{x:Type model:UseCaseGraph}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="{Binding Mode=OneWay}" />
+                                <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type view:DialogView}},
+                                    Mode=OneWay, Path=DataContext.(viewModel:DialogViewModel.RefreshGraph)}" Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                    AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                        Background="White" ToolTip="Resets the graph visualization to its default drawing">
+                                    
+                                    <Image Width="20" Height="20" Source="{StaticResource RefreshImage}" />
+                                </Button>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+            </TabItem>
+            <TabItem Header="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource UseCaseToScenarioCountConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ListBox Name="Scenarios" ItemsSource="{Binding Path=SelectedUseCaseGraph.Scenarios, Mode=OneWay}"
+                             SelectedItem="{Binding Path=SelectedScenario, 
+                    Mode=OneWayToSource}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type interfaces:IGraph}">
+                                <TextBlock Text="{Binding Converter={StaticResource GraphElementToStringConverter}}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="7">
+                        <TextBlock Text="Traverse variant count: " />
+                        <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VariantTraverseCountConverter}}" 
+                            Increment="1" Maximum="{Binding Path=SelectedUseCaseGraph, Converter={StaticResource UseCaseToVariantCountConverter}}" Minimum="1" 
+                                HorizontalAlignment="Stretch" ToolTip="Value to define how many variants to traverse in one scenario"/>
+                        <TextBlock Text="  Traverse loops count: " />
+                        <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TraverseLoopCountConverter}}"
+                            Increment="1" Maximum="3" Minimum="1" HorizontalAlignment="Stretch" ToolTip="Value to define how many loops to traverse in the scenarios"/>
+                        
+                    </StackPanel>
+                </Grid>
             </TabItem>
         </TabControl>
 
@@ -71,11 +159,11 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Properties of  " FontWeight="Bold" />
-                        <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphElementToStringConverter}}" />
+                        <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphElementToStringConverter}}" FontWeight="Bold" />
                     </StackPanel>
                 </TabItem.Header>
                 <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement.Attributes, 
-                    Mode=OneWay}" HorizontalContentAlignment="Stretch">
+                    Mode=OneWay, Converter={StaticResource AttributesConverter}}" HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource NoSelectionStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">
                                 <Expander IsExpanded="{Binding Mode=OneWay, Converter={StaticResource AttributeToBoolConverter}}" IsEnabled="{Binding Mode=OneWay, 

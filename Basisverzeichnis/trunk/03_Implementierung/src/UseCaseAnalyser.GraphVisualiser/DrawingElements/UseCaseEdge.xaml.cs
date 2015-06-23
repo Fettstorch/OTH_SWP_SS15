@@ -13,12 +13,12 @@
 
 #endregion
 
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using GraphFramework.Interfaces;
+using LogManager;
 using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
@@ -57,18 +57,15 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
             mSourceUseCaseNode.AddEdge(this);
             mDestUseCaseNode.AddEdge(this);
 
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            // [Patrick Schießl] Better readable with if statement
-            if (source.Node.Attributes.Any(attribute =>
-                attribute.Name.Equals(UseCaseGraph.AttributeNames[(int) UseCaseGraph.NodeAttributes.NodeType]) &&
-                attribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)))
-                ProcessType = EdgeProcessType.BackwardEdge;
-            else
-                ProcessType = EdgeProcessType.ForwardEdge;
+            IAttribute nameAttribute = source.Node.GetAttributeByName(NodeAttributes.NodeType.AttributeName());
+
+            ProcessType = nameAttribute != null && nameAttribute.Value.Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)
+                ? EdgeProcessType.BackwardEdge
+                : EdgeProcessType.ForwardEdge;
 
             //Set properties for visual appearience
             Stroke = mUnselectDrawingBrush = new SolidColorBrush(Colors.Black);
-            StrokeThickness = 2.5;           
+            StrokeThickness = 1.5;           
             //This geometry will represent an arrow at the end of this edge
             EndCap = Geometry.Parse("M0,0 L6,-6 L6,6 z");
 
@@ -94,8 +91,14 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     //Source node over destination node
                     if (Canvas.GetTop(mSourceUseCaseNode) + mSourceUseCaseNode.Height < Canvas.GetTop(mDestUseCaseNode))
                     {
+                        // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                        // Patrick Schiessl: keep if statement for better readability
+                        if (Canvas.GetLeft(mSourceUseCaseNode) + mSourceUseCaseNode.Width < Canvas.GetLeft(mDestUseCaseNode))
+                            DockPosDestElement = DockedStatus.Left;
+                        else
+                            DockPosDestElement = DockedStatus.Top;
+                        
                         DockPosSourceElement = DockedStatus.Bottom;
-                        DockPosDestElement = DockedStatus.Top;
                     }
                     //Source node under destination node
                     else if (Canvas.GetTop(mDestUseCaseNode) + mDestUseCaseNode.Height <
@@ -155,15 +158,37 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         Canvas.GetLeft(mSourceUseCaseNode) +
                         (mSourceUseCaseNode.Width/amountIndexStart)*indexStartElement,
                         Canvas.GetTop(mSourceUseCaseNode));
-                    endpoint = new Point(
-                        Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
-                        Canvas.GetTop(mDestUseCaseNode));
+                   if(double.IsNaN(startpoint.X) || double.IsNaN(startpoint.Y))
+                       startpoint = new Point(0,0);
+          
                     double heightStart = DockPosSourceElement == DockedStatus.Bottom ? mSourceUseCaseNode.Height : 0;
                     double heightEnd = DockPosDestElement == DockedStatus.Bottom ? mDestUseCaseNode.Height : 0;
 
+                    if (DockPosDestElement == DockedStatus.Left)
+                    {
+                        endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) , Canvas.GetTop(mDestUseCaseNode) + (mDestUseCaseNode.Height / amountIndexEnd) * indexDestElement);
+                        if (double.IsNaN(endpoint.X) || double.IsNaN(endpoint.Y))
+                            endpoint = new Point(0, 0);
+                        
+                        bzSeg.Point1 = new Point(startpoint.X, startpoint.Y + (startpoint.Y - endpoint.Y) / 2 + heightStart);
+
+                        bzSeg.Point2 = new Point(endpoint.X - (endpoint.X - startpoint.X) / 2, endpoint.Y + heightEnd);
+                    }
+                    else
+                    {
+                        endpoint = new Point(
+                            Canvas.GetLeft(mDestUseCaseNode) + (mDestUseCaseNode.Width/amountIndexEnd)*indexDestElement,
+                            Canvas.GetTop(mDestUseCaseNode));
+                        if (double.IsNaN(endpoint.X) || double.IsNaN(endpoint.Y))
+                            endpoint = new Point(0, 0);
+                        bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
+                        bzSeg.Point2 = new Point(endpoint.X, startpoint.Y + heightStart);
+                    
+                    }
+                    
                     pthFigure.StartPoint = new Point(startpoint.X, startpoint.Y + heightStart);
                     bzSeg.Point1 = new Point(startpoint.X, endpoint.Y + heightEnd);
-                    bzSeg.Point2 = new Point(endpoint.X, startpoint.Y + heightStart);
+              
                     bzSeg.Point3 = new Point(endpoint.X, endpoint.Y + heightEnd);
                     break;
 
@@ -173,12 +198,16 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                     double widthEnd = DockPosDestElement == DockedStatus.Right ? mDestUseCaseNode.Width : 0;
 
                     startpoint = new Point(Canvas.GetLeft(mSourceUseCaseNode) + widthStart,
-                        Canvas.GetTop(mSourceUseCaseNode) +
-                        (mSourceUseCaseNode.Height/amountIndexStart)*indexStartElement);
+                        Canvas.GetTop(mSourceUseCaseNode) + (mSourceUseCaseNode.Height/amountIndexStart)*indexStartElement);
+                    if (double.IsNaN(startpoint.X) || double.IsNaN(startpoint.Y))
+                        startpoint = new Point(0, 0);
+          
                     pthFigure.StartPoint = startpoint;
 
                     endpoint = new Point(Canvas.GetLeft(mDestUseCaseNode) + widthEnd,
                         Canvas.GetTop(mDestUseCaseNode) + (mDestUseCaseNode.Height/amountIndexEnd)*indexDestElement);
+                    if (double.IsNaN(endpoint.X) || double.IsNaN(endpoint.Y))
+                        endpoint = new Point(0, 0);
 
                     double middlePos = (endpoint.X - startpoint.X)/2;
 
@@ -190,10 +219,12 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
                         if (DockPosDestElement == DockedStatus.Right &&
                             startpoint.Y - mSourceUseCaseNode.Height/2 < endpoint.Y + mDestUseCaseNode.Height/2)
                         {
-                            if (startpoint.Y > endpoint.Y)
+                            if (endpoint.Y > startpoint.Y + mDestUseCaseNode.Height)
+                                resultEndPosY = endpoint.Y;
+                            else if (startpoint.Y > endpoint.Y)
                                 resultEndPosY = startpoint.Y - 1.5*mSourceUseCaseNode.Height;
                             else
-                                resultEndPosY = startpoint.Y + 1.5*mSourceUseCaseNode.Height;
+                                resultEndPosY = endpoint.Y + 1.5 * mSourceUseCaseNode.Height;
                         }
                         else
                         {
@@ -316,6 +347,9 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Select()
         {
+            if(Selected)
+                return;
+            LoggingFunctions.Trace("Use Case Edge selected");
             Selected = true;
             Effect = new DropShadowEffect { ShadowDepth = 1, Color = Colors.DodgerBlue, Opacity = 100000, BlurRadius = 10 };
             RecalcBezier();
@@ -326,6 +360,10 @@ namespace UseCaseAnalyser.GraphVisualiser.DrawingElements
         /// </summary>
         public void Unselect()
         {
+            if (!Selected) 
+                return;
+
+            LoggingFunctions.Trace("Use Case Edge unselected");
             Selected = false;
             Effect = null;
             RecalcBezier();
