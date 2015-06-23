@@ -28,10 +28,10 @@
                 <TextBlock Text="UseCasAnalyser" Margin="20" Name="HeaderText" />
             </StackPanel>
         </ContentControl>
-        
+
         <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Text="Projektzeitram: " />
-        <TextBlock Grid.Row="2" Grid.Column="0" FontWeight="Bold" Text="Semester: " />
-        <TextBlock Grid.Row="3" Grid.Column="0" FontWeight="Bold" Text="Dozent: " />
+        <TextBlock Grid.Row="2" Grid.Column="0" FontWeight="Bold" Text="Dozent: " />
+        <TextBlock Grid.Row="3" Grid.Column="0" FontWeight="Bold" Text="Semester: " />
         <TextBlock Grid.Row="4" Grid.Column="0" FontWeight="Bold" Text="Projektmitglieder:   " />
         
         <TextBlock Grid.Column="1" Grid.Row="1" Text="18.03.2015 - 08.07.2015" />
