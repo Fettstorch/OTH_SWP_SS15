@@ -235,9 +235,8 @@ namespace UseCaseAnalyser.Model.Model
         /// Creates all scenarios from a Use-Case graph.
         /// </summary>
         /// <param name="useCaseGraph">Use-Case graph to get its scenarios from</param>
-        /// <param name="numLoopTraversions"></param>
         /// <returns>scenario matrix (as array of graphs --> scenarios)</returns>
-        public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph, int numLoopTraversions = 1)
+        public static IEnumerable<IGraph> CreateScenarios(UseCaseGraph useCaseGraph)
         {
             //get information about use case           
             if (useCaseGraph == null)
@@ -254,6 +253,9 @@ namespace UseCaseAnalyser.Model.Model
             int traverseVariantCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseVariantCount, false) != null
                 ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseVariantCount)
                 : CountVariants(useCaseGraph);
+
+            int traverseLoopCount = useCaseGraph.Attribute(UseCaseAttributes.TraverseLoopCount, false) != null
+                ? useCaseGraph.AttributeValue<int>(UseCaseAttributes.TraverseLoopCount) : 1;
 
             INode startNode = FindStartNode(useCaseGraph);
             if (startNode == null)
@@ -280,7 +282,7 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
             
-            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, numLoopTraversions);          
+            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, traverseLoopCount);          
 
             //filter scenarios for number of variants
             IList<IGraph> returnScenarios = new List<IGraph>();
