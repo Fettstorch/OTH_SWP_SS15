@@ -66,12 +66,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converters\AttributesConverter.cs" />
     <Compile Include="Converters\AttributeToBoolConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="Converters\EntryTypeToColorConverter.cs" />
     <Compile Include="Converters\EntryTypeToImageConverter.cs" />
+    <Compile Include="Converters\GenericValueConverter.cs" />
     <Compile Include="Converters\GraphElementToStringConverter.cs" />
+    <Compile Include="Converters\HideAttributesConverter.cs" />
+    <Compile Include="Converters\IsNullConverter.cs" />
+    <Compile Include="Converters\TraverseLoopCountConverter.cs" />
     <Compile Include="Converters\UseCaseToScenarioCountConverter.cs" />
     <Compile Include="Converters\UseCaseToVariantCountConverter.cs" />
     <Compile Include="Converters\ReportToEntriesConverter.cs" />

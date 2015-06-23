@@ -1,7 +1,16 @@
-﻿using System;
-using System.Globalization;
+﻿#region Copyright information
+// <summary>
+// <copyright file="UseCaseToVariantCountConverter.cs">Copyright (c) 2015</copyright>
+// 
+// <creationDate>17/06/2015</creationDate>
+// 
+// <professor>Prof. Dr. Kurt Hoffmann</professor>
+// <studyCourse>Angewandte Informatik</studyCourse>
+// <branchOfStudy>Industrieinformatik</branchOfStudy>
+// <subject>Software Projekt</subject>
+// </summary>
+#endregion
 using System.Linq;
-using System.Windows.Data;
 using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.Converters
@@ -9,40 +18,17 @@ namespace UseCaseAnalyser.Converters
     /// <summary>
     /// converts an usecasegraph to its variantCount attribute value
     /// </summary>
-    public class UseCaseToVariantCountConverter : IValueConverter
+    public class UseCaseToVariantCountConverter : GenericValueConverter<UseCaseGraph,int>
     {
         /// <summary>
-        /// converts a usecase graph to the its variant count
+        /// converts the source value of type TSource to a target value of type TTarget
         /// </summary>
-        /// <param name="value">object to convert</param>
-        /// <param name="targetType">target type for the conversion</param>
-        /// <param name="parameter">parameter which can be passed in view</param>
-        /// <param name="culture">the current culture info</param>
-        /// <returns>the converted object</returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <param name="source">value to be converted</param>
+        /// <returns>the converted value</returns>
+        public override int Convert(UseCaseGraph source)
         {
-            UseCaseGraph usecasegraph = value as UseCaseGraph;
-            if (usecasegraph == null)
-            {
-                return null;
-            }
-
-            int variantCount = usecasegraph.Edges.Count(e => e.GetAttributeByName("Description") != null);
+            int variantCount = source.Edges.Count(e => e.GetAttributeByName("Description") != null);
             return variantCount < 1 ? 1 : variantCount;
-        }
-
-        /// <summary>
-        /// converts the converted value back to its original type
-        /// -- not supported here --> only 1 way binding is supported
-        /// </summary>
-        /// <param name="value">object to convert</param>
-        /// <param name="targetType">target type for the conversion</param>
-        /// <param name="parameter">parameter which can be passed in view</param>
-        /// <param name="culture">the current culture info</param>
-        /// <returns>the converted object</returns>
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

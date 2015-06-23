@@ -10,9 +10,6 @@
 // <subject>Software Projekt</subject>
 // </summary>
 #endregion
-using System;
-using System.Globalization;
-using System.Windows.Data;
 using GraphFramework.Interfaces;
 
 namespace UseCaseAnalyser.Converters
@@ -20,41 +17,16 @@ namespace UseCaseAnalyser.Converters
     /// <summary>
     /// converts an attribute to a boolean to determine weather the attribute is filled
     /// </summary>
-    public class AttributeToBoolConverter : IValueConverter
+    public class AttributeToBoolConverter : GenericValueConverter<IAttribute, bool>
     {
         /// <summary>
-        /// converts the attribute to a bool value, weather the attribute has content
+        /// converts the source value of type TSource to a target value of type TTarget
         /// </summary>
-        /// <param name="value">object to convert</param>
-        /// <param name="targetType">target type for the conversion</param>
-        /// <param name="parameter">parameter which can be passed in view</param>
-        /// <param name="culture">the current culture info</param>
-        /// <returns>the converted object</returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <param name="source">value to be converted</param>
+        /// <returns>the converted value</returns>
+        public override bool Convert(IAttribute source)
         {
-            IAttribute attribute = value as IAttribute;
-
-            if (attribute == null)
-            {
-                return null;
-            }
-
-            string attributeValue = attribute.Type == typeof(string) ? (string) attribute.Value : attribute.Value.ToString();
-            return !string.IsNullOrWhiteSpace(attributeValue);
-        }
-
-        /// <summary>
-        /// converts the converted value back to its original type
-        /// -- not supported here --> only 1 way binding is supported
-        /// </summary>
-        /// <param name="value">object to convert</param>
-        /// <param name="targetType">target type for the conversion</param>
-        /// <param name="parameter">parameter which can be passed in view</param>
-        /// <param name="culture">the current culture info</param>
-        /// <returns>the converted object</returns>
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
+            return !string.IsNullOrWhiteSpace(source.Type == typeof(string) ? (string)source.Value : source.Value.ToString());
         }
     }
 }

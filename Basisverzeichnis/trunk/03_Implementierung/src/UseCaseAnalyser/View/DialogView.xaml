@@ -16,6 +16,9 @@
         <converters:VariantTraverseCountConverter x:Key="VariantTraverseCountConverter" />
         <converters:TraverseLoopCountConverter x:Key="TraverseLoopCountConverter" />
         <converters:UseCaseToVariantCountConverter x:Key="UseCaseToVariantCountConverter" />
+        <converters:HideAttributesConverter x:Key="AttributesConverter" />
+        <converters:UseCaseToScenarioCountConverter x:Key="UseCaseToScenarioCountConverter" />
+        <converters:IsNullConverter x:Key="IsNullConverter" />
         <BitmapImage x:Key="RefreshImage" UriSource="../Resources/refresh_64px.png" />
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="Padding" Value="3" />
@@ -34,8 +37,6 @@
             </Style.Resources>
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         </Style>
-        <converters:AttributesConverter x:Key="AttributesConverter" />
-        <converters:UseCaseToScenarioCountConverter x:Key="UseCaseToScenarioCountConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -144,10 +145,12 @@
                         <TextBlock Text="Traverse variant count: " />
                         <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VariantTraverseCountConverter}}" 
                             Increment="1" Maximum="{Binding Path=SelectedUseCaseGraph, Converter={StaticResource UseCaseToVariantCountConverter}}" Minimum="1" 
-                                HorizontalAlignment="Stretch" ToolTip="Value to define how many variants to traverse in one scenario"/>
+                                HorizontalAlignment="Stretch" ToolTip="Value to define how many variants to traverse in one scenario"
+                                               IsReadOnly="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource IsNullConverter}}"/>
                         <TextBlock Text="  Traverse loops count: " />
                         <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TraverseLoopCountConverter}}"
-                            Increment="1" Maximum="3" Minimum="1" HorizontalAlignment="Stretch" ToolTip="Value to define how many loops to traverse in the scenarios"/>
+                            Increment="1" Maximum="2" Minimum="1" HorizontalAlignment="Stretch" ToolTip="Value to define how many loops to traverse in the scenarios"
+                                               IsReadOnly="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource IsNullConverter}}"/>
                         
                     </StackPanel>
                 </Grid>

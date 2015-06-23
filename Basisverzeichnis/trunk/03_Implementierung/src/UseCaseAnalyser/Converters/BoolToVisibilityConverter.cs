@@ -1,44 +1,32 @@
-using System;
-using System.Globalization;
+#region Copyright information
+// <summary>
+// <copyright file="BoolToVisibilityConverter.cs">Copyright (c) 2015</copyright>
+// 
+// <creationDate>28/05/2015</creationDate>
+// 
+// <professor>Prof. Dr. Kurt Hoffmann</professor>
+// <studyCourse>Angewandte Informatik</studyCourse>
+// <branchOfStudy>Industrieinformatik</branchOfStudy>
+// <subject>Software Projekt</subject>
+// </summary>
+#endregion
 using System.Windows;
-using System.Windows.Data;
 
 namespace UseCaseAnalyser.Converters
 {
     /// <summary>
     /// converts a bool to a visibility
     /// </summary>
-    public class BoolToVisibilityConverter : IValueConverter
+    public class BoolToVisibilityConverter : GenericValueConverter<bool, Visibility>
     {
         /// <summary>
-        /// converts the bool to a visibility value
+        /// converts the source value of type TSource to a target value of type TTarget
         /// </summary>
-        /// <param name="value">object to convert</param>
-        /// <param name="targetType">target type for the conversion</param>
-        /// <param name="parameter">parameter which can be passed in view</param>
-        /// <param name="culture">the current culture info</param>
-        /// <returns>the converted object</returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <param name="source">value to be converted</param>
+        /// <returns>the converted value</returns>
+        public override Visibility Convert(bool source)
         {
-            bool? boolean = value as bool?;
-            if (boolean == null) return null;
-
-            Visibility result = boolean.Value ? Visibility.Visible : Visibility.Hidden;
-            return result;
-        }
-
-        /// <summary>
-        /// converts the converted value back to its original type
-        /// -- not supported here --> only 1 way binding is supported
-        /// </summary>
-        /// <param name="value">object to convert</param>
-        /// <param name="targetType">target type for the conversion</param>
-        /// <param name="parameter">parameter which can be passed in view</param>
-        /// <param name="culture">the current culture info</param>
-        /// <returns>the converted object</returns>
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
+            return source ? Visibility.Visible : Visibility.Hidden;
         }
     }
 }
