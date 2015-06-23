@@ -14,6 +14,7 @@
         <converters:AttributeToBoolConverter x:Key="AttributeToBoolConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:VariantTraverseCountConverter x:Key="VariantTraverseCountConverter" />
+        <converters:TraverseLoopCountConverter x:Key="TraverseLoopCountConverter" />
         <converters:UseCaseToVariantCountConverter x:Key="UseCaseToVariantCountConverter" />
         <BitmapImage x:Key="RefreshImage" UriSource="../Resources/refresh_64px.png" />
         <Style TargetType="{x:Type ListBoxItem}">
@@ -34,6 +35,7 @@
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         </Style>
         <converters:AttributesConverter x:Key="AttributesConverter" />
+        <converters:UseCaseToScenarioCountConverter x:Key="UseCaseToScenarioCountConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -123,7 +125,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </TabItem>
-            <TabItem Header="Scenarios">
+            <TabItem Header="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource UseCaseToScenarioCountConverter}}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -139,10 +141,13 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="7">
-                        <TextBlock Text="Traverse variant count:   " />
+                        <TextBlock Text="Traverse variant count: " />
                         <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VariantTraverseCountConverter}}" 
                             Increment="1" Maximum="{Binding Path=SelectedUseCaseGraph, Converter={StaticResource UseCaseToVariantCountConverter}}" Minimum="1" 
                                 HorizontalAlignment="Stretch" ToolTip="Value to define how many variants to traverse in one scenario"/>
+                        <TextBlock Text="  Traverse loops count: " />
+                        <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TraverseLoopCountConverter}}"
+                            Increment="1" Maximum="3" Minimum="1" HorizontalAlignment="Stretch" ToolTip="Value to define how many loops to traverse in the scenarios"/>
                         
                     </StackPanel>
                 </Grid>
@@ -154,10 +159,10 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Properties of  " FontWeight="Bold" />
-                        <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphElementToStringConverter}}" />
+                        <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphElementToStringConverter}}" FontWeight="Bold" />
                     </StackPanel>
                 </TabItem.Header>
-                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement.Attributes, 
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Path=SelectedUseCaseGraph.Attributes, 
                     Mode=OneWay, Converter={StaticResource AttributesConverter}}" HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource NoSelectionStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">

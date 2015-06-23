@@ -1,30 +1,18 @@
-﻿#region Copyright information
-// <summary>
-// <copyright file="GraphElementToStringConverter.cs">Copyright (c) 2015</copyright>
-// 
-// <creationDate>15/05/2015</creationDate>
-// 
-// <professor>Prof. Dr. Kurt Hoffmann</professor>
-// <studyCourse>Angewandte Informatik</studyCourse>
-// <branchOfStudy>Industrieinformatik</branchOfStudy>
-// <subject>Software Projekt</subject>
-// </summary>
-#endregion
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using GraphFramework.Interfaces;
+using UseCaseAnalyser.Model.Model;
 
 namespace UseCaseAnalyser.Converters
 {
     /// <summary>
-    /// converts a graph element to a readable string --> returns 'Name' attribute or 'no name'
+    /// converts the usecase graph to a description with a count of its scenarios
     /// </summary>
-    public class GraphElementToStringConverter : IValueConverter
+    public class UseCaseToScenarioCountConverter : IValueConverter
     {
         /// <summary>
-        /// converts a graph element to a string by returining the name attribute of the graph element.
+        /// converts a usecasegraph to a string representation of the scenario count
         /// </summary>
         /// <param name="value">object to convert</param>
         /// <param name="targetType">target type for the conversion</param>
@@ -33,16 +21,12 @@ namespace UseCaseAnalyser.Converters
         /// <returns>the converted object</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return null;
+            UseCaseGraph graph = value as UseCaseGraph;
 
-            IGraphElement graphElement = value as IGraphElement;
-            if (graphElement == null)
-            {
-                throw new NotSupportedException();
-            }
+            if (graph == null) return "Scenarios";
 
-            IAttribute nameAttribute = graphElement.Attributes.FirstOrDefault(a => a.Name == "Name");
-            return string.Format("{0}: {1}", value.GetType().Name, nameAttribute == null ? "" : nameAttribute.Value);
+            string result = string.Format("Scenarios ({0})", graph.Scenarios.Count());
+            return result;
         }
 
         /// <summary>

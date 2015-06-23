@@ -68,7 +68,12 @@ namespace UseCaseAnalyser.Model.Model
         /// <summary>
         /// how many variants should be traversed in one scenario
         /// </summary>
-        TraverseVariantCount
+        TraverseVariantCount,
+
+        /// <summary>
+        /// how often loops should be traversed in the scenarios
+        /// </summary>
+        TraverseLoopCount
     }
     
     /// <summary>
@@ -118,7 +123,8 @@ namespace UseCaseAnalyser.Model.Model
             "Ablauf-Varianten:",
             "Spezielle Anforderungen:",
             "Zu klärende Punkte:",
-            "Varianten-Traversierungs-Anzahl"
+            "Varianten-Traversierungs-Anzahl",
+            "Schleifen-Traversierungs-Anzahl"
         };
 
         /// <summary>
@@ -180,19 +186,24 @@ namespace UseCaseAnalyser.Model.Model
             {
                 if (mScenarios == null)
                 {
-
-                    if (this.Attribute(UseCaseAttributes.TraverseVariantCount, false) == null)
-                    {
-                        //  default traverse variant count: number of edges with description (variants) / 3 (but minimum 3)
-                        int variantCount = Edges.Count(e => e.GetAttributeByName("Description") != null);
-                        AddAttribute(UseCaseAttributes.TraverseVariantCount.CreateAttribute((int) Math.Round(variantCount <= 2 ? 1.0 : variantCount / 2.0)));
-                    }
+                    //  default traverse variant count: number of edges with description (variants) / 3 (but minimum 3)
+                    int variantCount = Edges.Count(e => e.GetAttributeByName("Description") != null);
+                    InitAttribute(UseCaseAttributes.TraverseVariantCount, (int) Math.Round(variantCount <= 2 ? 1.0 : variantCount / 2.0));
+                    InitAttribute(UseCaseAttributes.TraverseLoopCount, 1);
 
                     //  scenario creator can use 'TraverseVariantCount' attribute to create scenarios
                     mScenarios = ScenarioMatrixCreator.CreateScenarios(this);
                 }
 
                 return mScenarios;
+            }
+        }
+
+        private void InitAttribute<T>(UseCaseAttributes attribute, T value)
+        {
+            if (this.Attribute(attribute, false) == null)
+            {
+                AddAttribute(attribute.CreateAttribute(value, true));
             }
         }
 

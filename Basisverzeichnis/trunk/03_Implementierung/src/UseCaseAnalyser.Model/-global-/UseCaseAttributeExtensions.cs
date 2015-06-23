@@ -104,10 +104,11 @@ public static class UseCaseAttributeExtensions
     /// </summary>
     /// <param name="sourceUsecasegraphAttribute">the nodeAttribute enum value</param>
     /// <param name="attributeValue">the value of the attribute</param>
+    /// <param name="hidden">value to determine weather the attribute should be hidden in the gui</param>
     /// <returns>a new attribute</returns>
-    public static IAttribute CreateAttribute(this UseCaseAttributes sourceUsecasegraphAttribute, object attributeValue)
+    public static IAttribute CreateAttribute<T>(this UseCaseAttributes sourceUsecasegraphAttribute, T attributeValue, bool hidden = false)
     {
-        IAttribute attribute = CreateAttribute((int)sourceUsecasegraphAttribute, UseCaseGraph.UseCaseGraphAttributeNames, attributeValue);
+        IAttribute attribute = CreateAttribute((int)sourceUsecasegraphAttribute, UseCaseGraph.UseCaseGraphAttributeNames, attributeValue, hidden);
         return attribute;
     }
 
@@ -116,10 +117,11 @@ public static class UseCaseAttributeExtensions
     /// </summary>
     /// <param name="sourceNodeAttribute">the nodeAttribute enum value</param>
     /// <param name="attributeValue">the value of the attribute</param>
+    /// <param name="hidden">value to determine weather the attribute should be hidden in the gui</param>
     /// <returns>a new attribute</returns>
-    public static IAttribute CreateAttribute<TValue>(this NodeAttributes sourceNodeAttribute, TValue attributeValue)
+    public static IAttribute CreateAttribute<TValue>(this NodeAttributes sourceNodeAttribute, TValue attributeValue, bool hidden = false)
     {
-        IAttribute attribute = CreateAttribute((int) sourceNodeAttribute, UseCaseGraph.NodeAttributeNames, attributeValue);
+        IAttribute attribute = CreateAttribute((int) sourceNodeAttribute, UseCaseGraph.NodeAttributeNames, attributeValue, hidden);
         return attribute;
     }
 
@@ -143,9 +145,9 @@ public static class UseCaseAttributeExtensions
         return UseCaseGraph.NodeAttributeNames[(int)sourceNodeAttribute];
     }
 
-    private static IAttribute CreateAttribute(int enumValue, IList<string> attributeNameList, object attributeValue)
+    private static IAttribute CreateAttribute<T>(int enumValue, IList<string> attributeNameList, T attributeValue, bool hidden)
     {
         string attributeName = attributeNameList[enumValue];
-        return new Attribute(attributeName, attributeValue);
+        return hidden ? new HiddenAttribute(attributeName, attributeValue) : new Attribute(attributeName, attributeValue);
     }
 }

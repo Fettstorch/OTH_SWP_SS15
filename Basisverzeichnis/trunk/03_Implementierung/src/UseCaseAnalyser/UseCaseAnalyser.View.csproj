@@ -72,6 +72,7 @@
     <Compile Include="Converters\EntryTypeToColorConverter.cs" />
     <Compile Include="Converters\EntryTypeToImageConverter.cs" />
     <Compile Include="Converters\GraphElementToStringConverter.cs" />
+    <Compile Include="Converters\UseCaseToScenarioCountConverter.cs" />
     <Compile Include="Converters\UseCaseToVariantCountConverter.cs" />
     <Compile Include="Converters\ReportToEntriesConverter.cs" />
     <Compile Include="Converters\VariantTraverseCountConverter.cs" />
