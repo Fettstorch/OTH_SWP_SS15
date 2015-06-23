@@ -362,6 +362,14 @@ namespace UseCaseAnalyser.Model.Model
             if (paragraphList.Count < 1) return false; // no normal routine found
             IAttribute nodeType, normalIndex, descAttribute;
             int normalRoutinesCount = paragraphList.Count;
+
+            //check if normal use case routine paragraph is empty - maybe user wanted to add them later
+            if (paragraphList[0].InnerText.Equals(""))
+            {
+                wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("No normal sequence was specified so no graph will be visualized and empty scenario matrix will be exported."), Report.Entrytype.WARNING));
+                return true;
+            }
+
             for (int i = 0; i < paragraphList.Count; i++)
             {                
                 if (i == 0)
