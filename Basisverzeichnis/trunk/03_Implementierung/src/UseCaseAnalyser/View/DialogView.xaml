@@ -162,7 +162,7 @@
                         <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphElementToStringConverter}}" FontWeight="Bold" />
                     </StackPanel>
                 </TabItem.Header>
-                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Path=SelectedUseCaseGraph.Attributes, 
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement.Attributes, 
                     Mode=OneWay, Converter={StaticResource AttributesConverter}}" HorizontalContentAlignment="Stretch" ItemContainerStyle="{StaticResource NoSelectionStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type interfaces:IAttribute}">
