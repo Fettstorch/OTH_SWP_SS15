@@ -281,29 +281,38 @@ namespace UseCaseAnalyser.Model.Model
                     throw new InvalidOperationException("No NodeType and no NormalIndex attribute found");
                 }
             }
-            
-            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, traverseLoopCount);          
 
-            //filter scenarios for number of variants
-            IList<IGraph> returnScenarios = new List<IGraph>();
-            if (allScenarios == null) return returnScenarios;
-            foreach (IGraph scenario in allScenarios.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
+            IList<IGraph> returnScenarios;
+            try
             {
-                returnScenarios.Add(scenario);
+                IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, traverseLoopCount);
+
+                //filter scenarios for number of variants
+                returnScenarios = new List<IGraph>();
+                if (allScenarios == null) return returnScenarios;
+                foreach (IGraph scenario in allScenarios.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
+                {
+                    returnScenarios.Add(scenario);
+                }
+
+                //name scenarios
+
+                int count = returnScenarios.Count();
+                for (int i = 0; i < count; i++)
+                {
+                    returnScenarios[i].AddAttribute(new Attribute(CScenarioName,
+                        string.Format("Scenario No. '{0}' of use case '{1}'", i + 1, useCaseName)));
+                    returnScenarios[i].AddAttribute(new Attribute(CUseCase, useCaseName));
+                }
+
+                LoggingFunctions.Trace(string.Format("Scenarios of {0} were generated successfully.", useCaseName));
             }
-
-            //name scenarios
-            
-            int count = returnScenarios.Count();           
-            for (int i = 0; i < count; i++)
-            {
-                returnScenarios[i].AddAttribute(new Attribute(CScenarioName,
-                    string.Format("Scenario No. '{0}' of use case '{1}'", i + 1, useCaseName)));
-                returnScenarios[i].AddAttribute(new Attribute(CUseCase, useCaseName));
+            catch (OutOfMemoryException)
+            {    
+                LoggingFunctions.Error(string.Format("Scenarios of {0} could not be created: Too many Scenarios to create.", useCaseName));
+                throw new OutOfMemoryException(string.Format("Scenarios of {0} could not be created: Too many Scenarios to create.", useCaseName));
             }
-
-            LoggingFunctions.Trace(string.Format("Scenarios of {0} were generated successfully.", useCaseName));
-
+                                
             return returnScenarios;
         }
     }
