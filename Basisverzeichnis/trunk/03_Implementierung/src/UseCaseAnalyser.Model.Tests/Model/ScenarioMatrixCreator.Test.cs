@@ -61,7 +61,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
         [Test, Description("DefaultTest to check if method is generally working.")]
         public void CreateScenarioMatrix_DefaultTest()
         {
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph, 1);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(2, scenarios.Count());
         }
 
@@ -69,7 +69,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
         public void CreateScenarioMatrix_VariantTest()
         {
             mTestGraph.AddAttribute(new Attribute(UseCaseAttributes.TraverseVariantCount.AttributeName(), 0));
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1 );
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(1, scenarios.Count());
         }
 
@@ -82,7 +82,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[1], testNode);
             mTestGraph.AddEdge(testNode, mTestNodes[5]);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(4, scenarios.Count());
         }
 
@@ -95,7 +95,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[1], testNode);
             mTestGraph.AddEdge(testNode, mTestNodes[0]);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(5, scenarios.Count());
         }
 
@@ -103,7 +103,8 @@ namespace UseCaseAnalyser.Model.Tests.Model
         [TestCase(3, TestName = "Three Traversions", Description = "Three Traversions to pass")]
         public void CreateScenarioMatrix_BackwardJump_Loops(int numTraversions)
         {
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph, numTraversions);
+            mTestGraph.AddAttribute(new Attribute(UseCaseAttributes.TraverseLoopCount.AttributeName(), numTraversions));
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(numTraversions+1, scenarios.Count());
         }
 
@@ -124,7 +125,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             INode testNode = new Node(testAttributes);
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[1], testNode);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(4, scenarios.Count());
         }
 
@@ -137,7 +138,7 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddNode(testNode);
             mTestGraph.AddEdge(mTestNodes[5], testNode);
             mTestGraph.AddEdge(testNode, mTestNodes[0]);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph,1);
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(5, scenarios.Count());
         }
 
@@ -152,7 +153,8 @@ namespace UseCaseAnalyser.Model.Tests.Model
             mTestGraph.AddEdge(testNode, mTestNodes[0]);
             mTestGraph.RemoveNode(mTestNodes[3]);
             mTestGraph.RemoveNode(mTestNodes[4]);
-            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph, 2);
+            mTestGraph.AddAttribute(new Attribute(UseCaseAttributes.TraverseLoopCount.AttributeName(), 2));
+            IEnumerable<IGraph> scenarios = ScenarioMatrixCreator.CreateScenarios(mTestGraph);
             Assert.AreEqual(3, scenarios.Count());
         }
 
