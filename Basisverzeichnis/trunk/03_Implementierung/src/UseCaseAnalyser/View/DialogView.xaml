@@ -85,7 +85,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="About" >
+                <MenuItem Header="About" Command="{Binding Path=OpenAboutView}">
                     <MenuItem.Icon>
                         <Image Source="../Resources/about_64.png" Width="20" Height="20" />
                     </MenuItem.Icon>

@@ -46,6 +46,11 @@ namespace UseCaseAnalyser.Model.ViewModel
         void OpenReportResult(Report viewModel);
 
         /// <summary>
+        /// Opens the about box
+        /// </summary>
+        void OpenAboutView();
+
+        /// <summary>
         /// lets the graph visualizer redraw the graph
         /// </summary>
         void RedrawGraph();

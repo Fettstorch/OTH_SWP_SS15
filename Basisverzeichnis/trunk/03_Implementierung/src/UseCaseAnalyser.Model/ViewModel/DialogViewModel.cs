@@ -40,6 +40,7 @@ namespace UseCaseAnalyser.Model.ViewModel
         private ICommand mOpenWordFile;
         private ICommand mOpenLogfile;
         private ICommand mOpenReportView;
+        private ICommand mOpenAboutView;
         private ICommand mRefreshGraph;
         //private IGraphElement mSelectedGraphElement;
 
@@ -206,6 +207,23 @@ namespace UseCaseAnalyser.Model.ViewModel
                 {
                     mViewAbstraction.OpenReportResult(LatestWordImportReport);
                 }, o => LatestWordImportReport != null, e => OnError(e)));
+                //  condtion to run the command (always true)
+            }
+        }
+
+        /// <summary>
+        /// opens the about view in its seperate window
+        /// 
+        /// </summary>
+        public ICommand OpenAboutView
+        {
+            get
+            {
+                //  lazy initialization
+                return mOpenAboutView ?? (mOpenAboutView = new AsyncCommand(o =>
+                {
+                    mViewAbstraction.OpenAboutView();
+                }, o => true, e => OnError(e)));
                 //  condtion to run the command (always true)
             }
         }
