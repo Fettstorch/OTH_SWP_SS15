@@ -361,6 +361,7 @@ namespace UseCaseAnalyser.Model.Model
             INode oldNode = null;
             if (paragraphList.Count < 1) return false; // no normal routine found
             IAttribute nodeType, normalIndex, descAttribute;
+            int normalRoutinesCount = paragraphList.Count;
             for (int i = 0; i < paragraphList.Count; i++)
             {                
                 if (i == 0)
@@ -413,6 +414,30 @@ namespace UseCaseAnalyser.Model.Model
                 if (!cells[0].InnerText.Equals(""))
                 {
                     variantIndex = cells[0].InnerText;
+
+                    //check format for variant index - has to start with number and ends with letter(s)
+                    Regex validateVariantIndex = new Regex("[0-9]+[a-z]+");
+                    if (!validateVariantIndex.IsMatch(variantIndex))
+                    {
+                        wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("Format error! Variant index \"{0}\" does not start with a number and ends with letter(s).", variantIndex), Report.Entrytype.ERROR));
+                        return false;
+                    }
+
+                    int variantIndexInt;
+                    //due to regex check before this TryParse will never fail - nevertheless deal with error
+                    if (!int.TryParse(rgx.Replace(variantIndex, ""), out variantIndexInt))
+                    {
+                        wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("Format error! Variant index \"{0}\" contains no number.", variantIndex), Report.Entrytype.ERROR));
+                        return false;
+                    }
+
+                    //with variant index is higher than normal routine count it has no source node
+                    if (variantIndexInt > normalRoutinesCount)
+                    {
+                        wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("Format error! Variant index \"{0}\" has no normal use case routine to branch from.", variantIndex), Report.Entrytype.ERROR));
+                        return false;
+                    }
+
                     previousVariantIndex = "";
                     varDesc = cells[1].InnerText;
                 }
