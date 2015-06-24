@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GraphFramework;
 using GraphFramework.Interfaces;
+using LogManager;
 
 namespace UseCaseAnalyser.Model.Model
 {
@@ -191,8 +192,18 @@ namespace UseCaseAnalyser.Model.Model
                     InitAttribute(UseCaseAttributes.TraverseVariantCount, (int) Math.Round(variantCount <= 2 ? 1.0 : variantCount / 2.0));
                     InitAttribute(UseCaseAttributes.TraverseLoopCount, 1);
 
-                    //  scenario creator can use 'TraverseVariantCount' attribute to create scenarios
-                    mScenarios = ScenarioMatrixCreator.CreateScenarios(this);
+                    try
+                    {
+                        //  scenario creator can use 'TraverseVariantCount' attribute to create scenarios
+                        mScenarios = ScenarioMatrixCreator.CreateScenarios(this);
+                    }
+                    catch (OutOfMemoryException) 
+                    {
+                        GC.Collect(3, GCCollectionMode.Forced, true);
+                        LoggingFunctions.Error(string.Format("Scenarios of {0} could not be created: Too many Scenarios to create.", GetAttributeByName(UseCaseAttributes.Name.AttributeName())));
+                        throw;
+                    }
+                    
                 }
 
                 return mScenarios;

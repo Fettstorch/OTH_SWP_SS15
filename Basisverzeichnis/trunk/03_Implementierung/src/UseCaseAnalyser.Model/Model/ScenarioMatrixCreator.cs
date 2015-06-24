@@ -106,7 +106,8 @@ namespace UseCaseAnalyser.Model.Model
             return !IsAlternativeNode(edge.Node1) && IsAlternativeNode(edge.Node2);
         }
 
-        private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph, IDictionary<IEdge,int> numLoopTraversions,  int maxLoopTraversions = 1)
+        private static IEnumerable<IGraph> CreateScenarioMatrix(INode currentNode, IGraph existingScenario, UseCaseGraph useCaseGraph, 
+            int maxVariantTraversions, IDictionary<IEdge,int> numLoopTraversions,  int maxLoopTraversions)
         {
             List<IGraph> retScenario = new List<IGraph>();
             UseCaseGraph internalGraph = new UseCaseGraph();
@@ -177,7 +178,7 @@ namespace UseCaseAnalyser.Model.Model
             saveGraph.AddGraph(internalGraph);
 
             //visit all connected Nodes
-            IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node1 == currentNode ||edge.Node2 == currentNode);
+            IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node1 == currentNode);
             IList<IEdge> edgeList = edges as IList<IEdge> ?? edges.ToList();
             
             for (int i = 0; i < edgeList.Count(); i++)
@@ -197,6 +198,11 @@ namespace UseCaseAnalyser.Model.Model
                         continue;
                 }
 
+                //check for maximum number of variant traversions
+                if (CountVariants(internalGraph) > maxVariantTraversions &&
+                    !(variantTraversions.ContainsKey(edgeList[i])))
+                    continue;
+
                 //Add next Node 
                 INode destNode = edgeList[i].Node2;
                 if(!internalGraph.Nodes.Contains(destNode))
@@ -212,7 +218,7 @@ namespace UseCaseAnalyser.Model.Model
                 internalGraph.GetAttributeByName(COrder).Value =
                     ExtendOrderAttribute((string)internalGraph.GetAttributeByName(COrder).Value, destNode, internalGraph, edgeList[i]);
 
-                retScenario.AddRange(CreateScenarioMatrix(destNode, internalGraph, useCaseGraph, variantTraversions, maxLoopTraversions));
+                retScenario.AddRange(CreateScenarioMatrix(destNode, internalGraph, useCaseGraph, maxVariantTraversions, variantTraversions, maxLoopTraversions));
 
                 //Restore Variant Counter
                 if(IsVariantEntry(edgeList[i]))
@@ -282,37 +288,20 @@ namespace UseCaseAnalyser.Model.Model
                 }
             }
 
-            IList<IGraph> returnScenarios;
-            try
+            IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, traverseVariantCount, null, traverseLoopCount);
+
+            //name scenarios
+            IGraph[] returnScenarios = allScenarios as IGraph[] ?? allScenarios.ToArray();
+            int count = returnScenarios.Count();
+            for (int i = 0; i < count; i++)
             {
-                IEnumerable<IGraph> allScenarios = CreateScenarioMatrix(startNode, new Graph(), useCaseGraph, null, traverseLoopCount);
-
-                //filter scenarios for number of variants
-                returnScenarios = new List<IGraph>();
-                if (allScenarios == null) return returnScenarios;
-                foreach (IGraph scenario in allScenarios.Where(scenario => CountVariants(scenario) <= traverseVariantCount))
-                {
-                    returnScenarios.Add(scenario);
-                }
-
-                //name scenarios
-
-                int count = returnScenarios.Count();
-                for (int i = 0; i < count; i++)
-                {
-                    returnScenarios[i].AddAttribute(new Attribute(CScenarioName,
-                        string.Format("Scenario No. '{0}' of use case '{1}'", i + 1, useCaseName)));
-                    returnScenarios[i].AddAttribute(new Attribute(CUseCase, useCaseName));
-                }
-
-                LoggingFunctions.Trace(string.Format("Scenarios of {0} were generated successfully.", useCaseName));
+                returnScenarios[i].AddAttribute(new Attribute(CScenarioName,
+                    string.Format("Scenario No. '{0}' of use case '{1}'", i + 1, useCaseName)));
+                returnScenarios[i].AddAttribute(new Attribute(CUseCase, useCaseName));
             }
-            catch (OutOfMemoryException)
-            {    
-                LoggingFunctions.Error(string.Format("Scenarios of {0} could not be created: Too many Scenarios to create.", useCaseName));
-                throw new OutOfMemoryException(string.Format("Scenarios of {0} could not be created: Too many Scenarios to create.", useCaseName));
-            }
-                                
+
+            LoggingFunctions.Trace(string.Format("Scenarios of {0} were generated successfully.", useCaseName));
+
             return returnScenarios;
         }
     }
