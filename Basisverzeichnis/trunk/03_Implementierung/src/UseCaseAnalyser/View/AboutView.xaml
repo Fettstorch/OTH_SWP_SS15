@@ -25,11 +25,11 @@
         <ContentControl Grid.ColumnSpan="3" FontWeight="Bold" FontSize="20" >
             <StackPanel Orientation="Horizontal">
                 <Image Source="../Resources/graph_Icon.png" Height="{Binding ElementName=HeaderText, Path=ActualHeight}" />
-                <TextBlock Text="UseCasAnalyser" Margin="20" Name="HeaderText" />
+                <TextBlock Text="UseCase Analyser" Margin="20" Name="HeaderText" />
             </StackPanel>
         </ContentControl>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Text="Projektzeitram: " />
+        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Text="Projektzeitraum: " />
         <TextBlock Grid.Row="2" Grid.Column="0" FontWeight="Bold" Text="Dozent: " />
         <TextBlock Grid.Row="3" Grid.Column="0" FontWeight="Bold" Text="Semester: " />
         <TextBlock Grid.Row="4" Grid.Column="0" FontWeight="Bold" Text="Projektmitglieder:   " />
