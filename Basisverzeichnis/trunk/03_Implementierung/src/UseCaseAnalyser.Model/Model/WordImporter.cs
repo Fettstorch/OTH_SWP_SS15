@@ -378,6 +378,12 @@ namespace UseCaseAnalyser.Model.Model
                     nodeType = new HiddenAttribute(NodeAttributes.NodeType.AttributeName(),
                         UseCaseGraph.NodeTypeAttribute.StartNode);
                 }
+                else if (i == paragraphList.Count - 1)
+                {
+                    // Type = End Node
+                    nodeType = new HiddenAttribute(NodeAttributes.NodeType.AttributeName(),
+                        UseCaseGraph.NodeTypeAttribute.EndNode);
+                }
                 else
                 {
                     // Type = Normal Node
@@ -398,14 +404,15 @@ namespace UseCaseAnalyser.Model.Model
                 oldNode = node;
             }
 
-            // Add Endnode:
+            // Add end node:
+            /*
             INode endNode = new Node(new HiddenAttribute(NodeAttributes.NormalIndex.AttributeName(),
                     (paragraphList.Count+1).ToString()), new Attribute(NodeAttributes.Description.AttributeName(),
                 EndDescription), new HiddenAttribute(NodeAttributes.NodeType.AttributeName(),
                 UseCaseGraph.NodeTypeAttribute.EndNode));
             useCaseGraph.AddNode(endNode);
             useCaseGraph.AddEdge(oldNode, endNode);
-
+            */
             // Try to get the sequence variants
             rowIndex += 2;
             cells = rows[rowIndex].Descendants<TableCell>().ToList();
@@ -539,7 +546,7 @@ namespace UseCaseAnalyser.Model.Model
                         //lastNode.AddAttribute(new Attribute(NodeAttributes.Description.AttributeName(),
                         //  lastCondition));
                     }
-                    // End Node
+                    // End Node                    
                     else if (lastCondition.StartsWith(UseCaseEnd))
                     {
                         INode lastNode;
