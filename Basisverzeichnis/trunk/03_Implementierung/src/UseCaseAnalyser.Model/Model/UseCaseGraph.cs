@@ -200,6 +200,7 @@ namespace UseCaseAnalyser.Model.Model
                     catch (OutOfMemoryException) 
                     {
                         GC.Collect(3, GCCollectionMode.Forced, true);
+                        GetAttributeByName(UseCaseAttributes.TraverseLoopCount.AttributeName()).Value = 1;
                         LoggingFunctions.Error(string.Format("Scenarios of {0} could not be created: Too many Scenarios to create.", GetAttributeByName(UseCaseAttributes.Name.AttributeName())));
                         throw;
                     }

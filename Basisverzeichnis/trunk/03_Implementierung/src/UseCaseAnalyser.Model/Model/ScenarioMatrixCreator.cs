@@ -51,7 +51,7 @@ namespace UseCaseAnalyser.Model.Model
         private static string ExtendOrderAttribute(string attributeValue, INode nextNode, UseCaseGraph useCaseGraph, IEdge correspondingEdge = null)
         {           
             IEnumerable<IEdge> edges = useCaseGraph.Edges.Where(edge => edge.Node2 == nextNode);
-            IEdge[] edgeArray = correspondingEdge == null ? edges as IEdge[] ?? edges.ToArray() : new IEdge[]{correspondingEdge};
+            IEdge[] edgeArray = correspondingEdge == null ? edges as IEdge[] ?? edges.ToArray() : new[]{correspondingEdge};
 
             string seperator = (string.IsNullOrEmpty(attributeValue) ? string.Empty : " ");
             if (IsAlternativeNode(nextNode))
@@ -71,13 +71,13 @@ namespace UseCaseAnalyser.Model.Model
             return attributeValue + seperator + GetNodeNumber(nextNode);
         }
 
-        private static INode FindStartNode(IGraph graph)
+        private static INode FindStartNode(UseCaseGraph graph)
         {
             return
                 graph.Nodes.FirstOrDefault(
                     node =>
                         node.GetAttributeByName(NodeAttributes.NodeType.AttributeName())
-                            .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode));
+                            .Value.Equals(UseCaseGraph.NodeTypeAttribute.StartNode) || graph.Edges.All(edge => edge.Node2 != node));
         }
 
         private static bool IsEndNode(INode node, UseCaseGraph useCaseGraph)
@@ -98,7 +98,7 @@ namespace UseCaseAnalyser.Model.Model
 
         private static int CountVariants(IGraph graph)
         {
-            return graph.Edges.Count(edge => IsAlternativeNode(edge.Node2) && !IsAlternativeNode(edge.Node1));
+            return graph.Edges.Count(IsVariantEntry);
         }
 
         private static bool IsVariantEntry(IEdge edge)
