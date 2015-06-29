@@ -188,7 +188,7 @@ namespace UseCaseAnalyser.Model.Model
                 if (mScenarios == null)
                 {
                     //  default traverse variant count: number of edges with description (variants) / 3 (but minimum 3)
-                    int variantCount = Edges.Count(e => e.GetAttributeByName("Description") != null);
+                    int variantCount = Edges.Count(e => e.GetAttributeByName(NodeAttributes.Description.AttributeName()) != null);
                     InitAttribute(UseCaseAttributes.TraverseVariantCount, (int) Math.Round(variantCount <= 2 ? 1.0 : variantCount / 2.0));
                     InitAttribute(UseCaseAttributes.TraverseLoopCount, 1);
 
@@ -225,7 +225,7 @@ namespace UseCaseAnalyser.Model.Model
         /// <returns>the use case graph as string</returns>
         public override string ToString()
         {
-            return (string) Attributes.Single(a => a.Name == "Name").Value;
+            return (string)GetAttributeByName(UseCaseAttributes.Name.AttributeName()).Value;
         }
 
         /// <summary>
