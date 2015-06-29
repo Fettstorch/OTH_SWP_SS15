@@ -37,6 +37,7 @@
             </Style.Resources>
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         </Style>
+        <converters:IsNullVisibilityConverter x:Key="IsNullVisibilityConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -48,7 +49,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.7*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="0.3*" />
+            <ColumnDefinition Width="0.3*" MinWidth="350" />
         </Grid.ColumnDefinitions>
         <GridSplitter ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Grid.Column="1" Grid.RowSpan="4" Width="5" Grid.Row="0" VerticalAlignment="Stretch"/>
         <GridSplitter ResizeDirection="Rows" Grid.Row="2" Grid.Column="2" Height="5" HorizontalAlignment="Stretch" />
@@ -126,7 +127,8 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </TabItem>
-            <TabItem Header="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource UseCaseToScenarioCountConverter}}">
+            <TabItem Header="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource UseCaseToScenarioCountConverter}}"
+                     Visibility="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource IsNullVisibilityConverter}}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
