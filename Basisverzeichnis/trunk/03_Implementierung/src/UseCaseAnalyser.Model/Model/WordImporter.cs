@@ -36,7 +36,6 @@ namespace UseCaseAnalyser.Model.Model
         #region EXPRESSIONS
         /// <summary>
         /// The expression which initiates a jump to another use case
-        /// ToDo: Use this expression for use case jumps
         /// </summary>
         private const string UseCaseJump = "Weiter mit:";
 
@@ -49,11 +48,6 @@ namespace UseCaseAnalyser.Model.Model
         /// The expression which defines the end of the use case
         /// </summary>
         private const string UseCaseEnd = "Ende.";
-
-        /// <summary>
-        /// The expression which is used as the description for the last node, the end node
-        /// </summary>
-        private const string EndDescription = "Der Use Case endet.";
 
         #endregion
 
@@ -357,18 +351,21 @@ namespace UseCaseAnalyser.Model.Model
             List<Paragraph> paragraphList = cells[1].Descendants<Paragraph>().ToList();
             INode oldNode = null;
             if (paragraphList.Count < 1) return false; // no normal routine found
-            IAttribute nodeType, normalIndex, descAttribute;
+            IAttribute descAttribute;
             int normalRoutinesCount = paragraphList.Count;
 
             //check if normal use case routine paragraph is empty - maybe user wanted to add them later
             if (paragraphList[0].InnerText.Equals(""))
             {
-                wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("No normal sequence was specified so no graph will be visualized and empty scenario matrix will be exported."), Report.Entrytype.WARNING));
+                wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, 
+                    "No normal sequence was specified, so no graph will be visualized and empty scenario matrix will be exported.", 
+                    Report.Entrytype.WARNING));
                 return true;
             }
 
             for (int i = 0; i < paragraphList.Count; i++)
-            {                
+            {
+                IAttribute nodeType;
                 if (i == 0)
                 {
                     // Type = Start Node
@@ -388,7 +385,7 @@ namespace UseCaseAnalyser.Model.Model
                         UseCaseGraph.NodeTypeAttribute.NormalNode);
                 }
 
-                normalIndex = new Attribute(NodeAttributes.NormalIndex.AttributeName(),
+                IAttribute normalIndex = new Attribute(NodeAttributes.NormalIndex.AttributeName(),
                     (i + 1).ToString());
                 descAttribute = new Attribute(NodeAttributes.Description.AttributeName(),
                     paragraphList[i].InnerText);
@@ -585,7 +582,7 @@ namespace UseCaseAnalyser.Model.Model
 
                 //create copy of corrupted doc file in temp directory
                 //ToDo decide where to create copy
-                String newDocPath = Path.GetTempPath() + Path.GetFileNameWithoutExtension(docPath) + ".docx";
+                string newDocPath = Path.GetTempPath() + Path.GetFileNameWithoutExtension(docPath) + ".docx";
                 FileInfo newDocFileInfo = new FileInfo(newDocPath);
                 if (newDocFileInfo.Exists)
                     newDocFileInfo.Delete();
