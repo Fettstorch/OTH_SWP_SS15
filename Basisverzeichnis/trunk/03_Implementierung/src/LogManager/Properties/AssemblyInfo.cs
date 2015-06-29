@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 #endif
 [assembly: AssemblyCompany("SoftwareProjekt SS 2015, Team B")]
 [assembly: AssemblyProduct("UseCaseAnalyser")]
-[assembly: AssemblyCopyright("Copyright © OTH Amberg-Weiden, SoftwareProjekt SS 2015, Team B 2015")]
+[assembly: AssemblyCopyright("Copyright © OTH Amberg-Weiden, SoftwareProjekt SS 2015, Team B")]
 [assembly: AssemblyTrademark("OTH Amberg-Weiden, SoftwareProjekt SS 2015, Team B")]
 [assembly: AssemblyCulture("")]
 
