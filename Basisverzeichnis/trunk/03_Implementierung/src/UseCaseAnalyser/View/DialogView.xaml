@@ -161,7 +161,7 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Properties of  " FontWeight="Bold" />
+                        <TextBlock Text="Properties of " FontWeight="Bold" />
                         <TextBlock Text="{Binding ElementName=UseCaseGraphViewer, Path=GraphElement, Converter={StaticResource GraphElementToStringConverter}}" FontWeight="Bold" />
                     </StackPanel>
                 </TabItem.Header>
