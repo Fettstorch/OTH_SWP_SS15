@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogManager", "LogManager\Lo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.GraphVisualiser", "UseCaseAnalyser.GraphVisualiser\UseCaseAnalyser.GraphVisualiser.csproj", "{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCaseAnalyser.Stubs", "UseCaseAnalyser.Stubs\UseCaseAnalyser.Stubs.csproj", "{08881A98-EC02-4206-9AE6-25F12CBEA577}"
-EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -63,10 +61,6 @@ Global
 		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08881A98-EC02-4206-9AE6-25F12CBEA577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08881A98-EC02-4206-9AE6-25F12CBEA577}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08881A98-EC02-4206-9AE6-25F12CBEA577}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08881A98-EC02-4206-9AE6-25F12CBEA577}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +73,5 @@ Global
 		{D1BDF7DB-3BAD-4C18-AE64-82BC47D5C730} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
 		{7044C575-02F4-4565-B590-893754651F53} = {10B5420B-DCFF-479E-955F-5A018B1FD38F}
 		{0B65E560-ACCC-46C9-AF4C-B0171852C8B7} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
-		{08881A98-EC02-4206-9AE6-25F12CBEA577} = {AD6DB6C4-8B21-4F31-9F23-146D1D9E114C}
 	EndGlobalSection
 EndGlobal

@@ -85,10 +85,6 @@
       <Project>{7044c575-02f4-4565-b590-893754651f53}</Project>
       <Name>LogManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UseCaseAnalyser.Stubs\UseCaseAnalyser.Stubs.csproj">
-      <Project>{08881a98-ec02-4206-9ae6-25f12cbea577}</Project>
-      <Name>UseCaseAnalyser.Stubs</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UseCaseAnalyser.Model\UseCaseAnalyser.Model.csproj">
       <Project>{f2c3ffb2-22a0-4a2b-aea9-dfd360310630}</Project>
       <Name>UseCaseAnalyser.Model</Name>
