@@ -421,7 +421,8 @@ namespace UseCaseAnalyser.GraphVisualiser
                 int nodeIndex;
                 int.TryParse(ucNodeNormalIndexAttribute.Value.ToString(), out nodeIndex);
 
-                if (ucNodeIndexPrevious == nodeIndex && UseCase.GetEdges(previousNode, orgNode).ToList().Any())
+                //only check nodes with same index and egdes from normal node to its variant (return jumps should not be counted)
+                if (ucNodeIndexPrevious == nodeIndex && UseCase.GetEdges(previousNode, orgNode).ToList().Any(edge => edge.Node1 == previousNode && edge.Node2 == orgNode))
                     variantCount++;
             }
 
