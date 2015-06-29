@@ -257,6 +257,11 @@ namespace UseCaseAnalyser.Model.Model
             }
 
             // Table is not a use case table!
+            string cellContent = cells.Count > 0 ? cells[0].InnerText : "(no content!)";
+
+            wordImporterReport.AddReportEntry(new Report.ReportEntry("unknown id", "Table was not detected as a use case! Content of cell is: "
+                    + cellContent, Report.Entrytype.WARNING));
+
             return false;
         }
 
