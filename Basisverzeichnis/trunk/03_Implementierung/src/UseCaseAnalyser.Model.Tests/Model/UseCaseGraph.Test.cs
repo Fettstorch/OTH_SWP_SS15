@@ -26,8 +26,8 @@ namespace UseCaseAnalyser.Model.Tests.Model
             Assert.IsEmpty(testGraph.Scenarios);
         }
 
-        [TestCase(false, false, ExpectedException = typeof(InvalidOperationException), TestName = "NoNameAttribute"
-            , Description = "No NameAttribute should throw an Exception.\r\nExpected: InvalidOperationException.")]
+        [TestCase(false, false, ExpectedException = typeof(NullReferenceException), TestName = "NoNameAttribute"
+            , Description = "No NameAttribute should throw an Exception.\r\nExpected: NullReferenceException.")]
         [TestCase(true, false, TestName = "DefaultTest", Description = "DefaultTest to check if method is working.")]
         [TestCase(true, true, ExpectedException = typeof(InvalidOperationException), TestName = "MoreThanOneNameAttribute",
             Description = "When more than one NameAttribute is present there should be an Excpetion. Should be handled by GraphElement.\r\nExpected: InvalidOperationException.")]
