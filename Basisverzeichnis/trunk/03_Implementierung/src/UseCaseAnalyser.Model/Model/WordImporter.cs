@@ -103,7 +103,7 @@ namespace UseCaseAnalyser.Model.Model
             }
             catch (Exception)
             {
-                throw new Exception("File could not be open. Either the file is corrupt, or opened in another process!");
+                throw new Exception("File could not be opened. Either the file is corrupt, or opened in another process!");
             }
             // Fetch all tables in the document
             IEnumerable<Table> tables = doc.MainDocumentPart.Document.Descendants<Table>();
@@ -444,7 +444,7 @@ namespace UseCaseAnalyser.Model.Model
             if (cells.Count != 2)
             {
                 wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId,
-                "Normal sequence paragraph is missing, for importing this use case it is required. If you do not want to add any sequence just leave this cells empty.",
+                "Normal sequence paragraph is missing, for importing use cases it is mandatory. If you do not want to add any sequence just leave this cells empty.",
                 Report.Entrytype.WARNING));
                 return false;
             }
@@ -459,7 +459,7 @@ namespace UseCaseAnalyser.Model.Model
             if (paragraphList[0].InnerText.Equals(""))
             {
                 wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, 
-                    "No normal sequence was specified, so no graph will be visualized and empty scenario matrix will be exported.", 
+                    "No normal sequence was specified, so no graph will be visualized and an empty scenario matrix will be exported.", 
                     Report.Entrytype.WARNING));
                 return true;
             }
