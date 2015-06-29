@@ -114,6 +114,8 @@ namespace UseCaseAnalyser.Model.Model
             int numberOfUseCases = 0;
             foreach (Table table in tables)
             {
+                if(!IsUseCaseTableFormat(table)) continue;
+
                 // every possible use case table
                 IEnumerable<TableRow> rows = table.Descendants<TableRow>();
                 UseCaseGraph useCaseGraph;
@@ -136,6 +138,89 @@ namespace UseCaseAnalyser.Model.Model
             }
 
             return actUseCases;
+        }
+
+        /// <summary>
+        /// Workaround: 
+        /// Checks if table fullfills format conditions to be a use case table. 
+        /// No content checks are performed - these are performed while parsing an
+        /// table because format warning/erros are creted there.
+        /// A better approach to this problem would be to parse all table and suppress
+        /// warnings/errors if it is ensured that table is not an UseCase table. Because 
+        /// this functionallity is not implemented yet, use this workaround to filter
+        /// some table that are definitly no UC table only by its format.
+        /// A valid use case table should be look like:
+        /// +-----------------------------------------------------+
+        /// +                      (UC-Name)                      +
+        /// +-----------------------------------------------------+
+        /// + ("Kennung")             | (UC-Kennung)              +
+        /// +-----------------------------------------------------+
+        /// + ("Priority")            | (UC-Priority)             +
+        /// +-----------------------------------------------------+
+        /// +                ("Kurzbeschreibung")                 +
+        /// +-----------------------------------------------------+
+        /// +                (Short description)                  +
+        /// +-----------------------------------------------------+
+        /// +                  ("Vorbedingung")                   +
+        /// +-----------------------------------------------------+
+        /// +                  (preconditions)                    +
+        /// +-----------------------------------------------------+
+        /// +                 ("Nachbedingung")                   +
+        /// +-----------------------------------------------------+
+        /// +                  (postconditions)                   +
+        /// +-----------------------------------------------------+
+        /// +                  ("Normaler Ablauf")                +
+        /// +-----------------------------------------------------+
+        /// +  empty    |     (Normal sequence steps)             +
+        /// +-----------------------------------------------------+
+        /// +               ("Ablauf-Varianten")                  +
+        /// +-----------------------------------------------------+
+        /// 
+        /// OPTIONAL {
+        ///     +  Variant-Index |     Variant trigger description    +
+        ///     +-----------------------------------------------------+
+        ///     +  empty    |     (Variant sequence steps)            +
+        ///     +-----------------------------------------------------+
+        /// 
+        ///            + ... + can be more more just one...
+        /// }
+        /// 
+        /// +-----------------------------------------------------+
+        /// +              ("Spezielle Anforderungen")            +
+        /// +-----------------------------------------------------+
+        /// +                  (special conditions)               +
+        /// +-----------------------------------------------------+
+        /// +                 ("Zu klärende Punkte")              +
+        /// +-----------------------------------------------------+
+        /// +            (open issues for clarification)          +
+        /// +-----------------------------------------------------+
+        /// </summary>
+        /// <param name="table">table that should be checked</param>
+        /// <returns>true if table fullfills use case table formats, false if not</returns>
+        private static bool IsUseCaseTableFormat(Table table)
+        {
+            List<TableRow> rows = table.Descendants<TableRow>().ToList();
+
+            //see
+            if (rows.Count == 0 || rows[0] == null) return false;
+            if (rows.Count < 16) return false; // Not a use case but a table -> stop importing, but no error
+
+
+            //second row (Kennung) does not have two colomns - do not check for contents, 
+            //this check will be performed later and cause an warning if failed
+            List<TableCell> colomns = rows[1].Descendants<TableCell>().ToList();
+            if (colomns.Count != 2) 
+                return false;
+
+            //third row (Priority) does not have two colomns - do not check for contents, 
+            //this check will be performed later and cause an warning if failed
+            colomns = rows[2].Descendants<TableCell>().ToList();
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            //[Mathias Schneider] keep it for better readability
+            if (colomns.Count != 2) 
+                return false;
+
+            return true;
         }
 
         /// <summary>
@@ -259,7 +344,7 @@ namespace UseCaseAnalyser.Model.Model
             // Table is not a use case table!
             string cellContent = cells.Count > 0 ? cells[0].InnerText : "(no content!)";
 
-            wordImporterReport.AddReportEntry(new Report.ReportEntry("unknown id", "Table was not detected as a use case! Content of cell is: "
+            wordImporterReport.AddReportEntry(new Report.ReportEntry("unknown id", "Table seems to be a use case table but has some format error! Content of corrupted cell is: "
                     + cellContent, Report.Entrytype.WARNING));
 
             return false;
@@ -348,14 +433,25 @@ namespace UseCaseAnalyser.Model.Model
             // Check the heading ("Normaler Ablauf")
             if (cells.Count != 1 || rowIndex + 1 >= rows.Count) return false;
             if (!string.Equals(cells[0].InnerText, UseCaseAttributes.NormalRoutine.AttributeName()))
+            {
+                wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("Format error! \"{0}\" could not be found in use case table.", UseCaseAttributes.NormalRoutine.AttributeName()), Report.Entrytype.ERROR));
                 return false;
+            }
+
 
             // Try to get the normal use case routine
             cells = rows[rowIndex + 1].Descendants<TableCell>().ToList();
-            if (cells.Count != 2) return false;
+            if (cells.Count != 2)
+            {
+                wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId,
+                "Normal sequence paragraph is missing, for importing this use case it is required. If you do not want to add any sequence just leave this cells empty.",
+                Report.Entrytype.WARNING));
+                return false;
+            }
             List<Paragraph> paragraphList = cells[1].Descendants<Paragraph>().ToList();
             INode oldNode = null;
             if (paragraphList.Count < 1) return false; // no normal routine found
+        
             IAttribute descAttribute;
             int normalRoutinesCount = paragraphList.Count;
 
@@ -418,7 +514,10 @@ namespace UseCaseAnalyser.Model.Model
 
             if (cells.Count != 1 || rowIndex + 1 >= rows.Count) return false;
             if (!string.Equals(cells[0].InnerText, UseCaseAttributes.SequenceVariation.AttributeName()))
-                return false; // invalid format
+            {
+                wordImporterReport.AddReportEntry(new Report.ReportEntry(actUseCaseId, string.Format("Format error! \"{0}\" could not be found in use case table.", UseCaseAttributes.SequenceVariation.AttributeName()), Report.Entrytype.ERROR));
+                return false;
+            }
 
             string varDesc = "";
             for (int i = rowIndex + 1; i < rows.Count - 4; i++)
