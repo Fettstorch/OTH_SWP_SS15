@@ -73,6 +73,7 @@
     <Compile Include="Converters\GraphElementToStringConverter.cs" />
     <Compile Include="Converters\HideAttributesConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
+    <Compile Include="Converters\IsNullVisibilityConverter.cs" />
     <Compile Include="Converters\TraverseLoopCountConverter.cs" />
     <Compile Include="Converters\UseCaseToScenarioCountConverter.cs" />
     <Compile Include="Converters\UseCaseToVariantCountConverter.cs" />
