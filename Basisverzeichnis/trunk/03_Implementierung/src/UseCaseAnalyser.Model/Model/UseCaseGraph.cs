@@ -188,7 +188,10 @@ namespace UseCaseAnalyser.Model.Model
                 if (mScenarios == null)
                 {
                     //  default traverse variant count: number of edges with description (variants) / 3 (but minimum 3)
-                    int variantCount = Edges.Count(e => e.GetAttributeByName(NodeAttributes.Description.AttributeName()) != null);
+                    int variantCount = Nodes.Count(e =>
+                        e.Attribute(NodeAttributes.NodeType,false) != null                                                   //first check if node has node type attribut
+                        && e.AttributeValue<NodeTypeAttribute>(NodeAttributes.NodeType).Equals(NodeTypeAttribute.JumpNode)   //afterwards check if node type is jump node
+                    );
                     InitAttribute(UseCaseAttributes.TraverseVariantCount, (int) Math.Round(variantCount <= 2 ? 1.0 : variantCount / 2.0));
                     InitAttribute(UseCaseAttributes.TraverseLoopCount, 1);
 

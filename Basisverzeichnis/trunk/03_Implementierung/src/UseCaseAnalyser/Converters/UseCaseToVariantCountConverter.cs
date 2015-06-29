@@ -27,7 +27,10 @@ namespace UseCaseAnalyser.Converters
         /// <returns>the converted value</returns>
         public override int Convert(UseCaseGraph source)
         {
-            int variantCount = source.Edges.Count(e => e.GetAttributeByName("Description") != null);
+            int variantCount = source.Nodes.Count(e =>
+                e.Attribute(NodeAttributes.NodeType, false) != null                                                                            //first check if node has node type attribut
+                && e.AttributeValue<UseCaseGraph.NodeTypeAttribute>(NodeAttributes.NodeType).Equals(UseCaseGraph.NodeTypeAttribute.JumpNode)   //afterwards check if node type is jump node
+            );
             return variantCount < 1 ? 1 : variantCount;
         }
     }
