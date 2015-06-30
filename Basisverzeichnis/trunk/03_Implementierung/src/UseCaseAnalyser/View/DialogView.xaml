@@ -148,11 +148,11 @@
                         <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource VariantTraverseCountConverter}}" 
                             Increment="1" Maximum="{Binding Path=SelectedUseCaseGraph, Converter={StaticResource UseCaseToVariantCountConverter}}" Minimum="1" 
                                 HorizontalAlignment="Stretch" ToolTip="Value to define how many variants to traverse in one scenario"
-                                               IsReadOnly="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource IsNullConverter}}"/>
+                                               IsReadOnly="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource IsNullConverter}}" AllowTextInput="False"/>
                         <TextBlock Text="  Traverse loops count: " />
                         <toolkit:IntegerUpDown Value="{Binding Path=SelectedUseCaseGraph, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TraverseLoopCountConverter}}"
                             Increment="1" Maximum="2" Minimum="1" HorizontalAlignment="Stretch" ToolTip="Value to define how many loops to traverse in the scenarios"
-                                               IsReadOnly="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource IsNullConverter}}"/>
+                                               IsReadOnly="{Binding Path=SelectedUseCaseGraph, Mode=OneWay, Converter={StaticResource IsNullConverter}}" AllowTextInput="False"/>
                         
                     </StackPanel>
                 </Grid>
